@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* (نفس التنسيقات السابقة) */
         .quiz-container { max-width: 800px; margin: 100px auto 2rem; padding: 0 2rem; }
         .quiz-header { text-align: center; margin-bottom: 3rem; }
         .quiz-header h1 { font-size: 3rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -70,114 +69,123 @@
     <script src="quiz-data.js"></script>
     <script src="theme.js"></script>
     <script>
-        // المتغيرات العامة
-        let currentQuestion = 0;
-        let userAnswers = new Array(QUIZ.length).fill(null);
-        let quizCompleted = false;
-        let score = 0;
-
-        document.addEventListener('DOMContentLoaded', loadQuestion);
-
-        function loadQuestion() {
-            if (quizCompleted) {
-                showResult();
-                return;
-            }
-
-            const q = QUIZ[currentQuestion];
-            const progress = ((currentQuestion + 1) / QUIZ.length) * 100;
-
-            let html = `
-                <div class="quiz-info">
-                    <span class="progress-text">السؤال ${currentQuestion + 1} من ${QUIZ.length}</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${progress}%"></div>
-                </div>
-                <div class="question-text">${q.question}</div>
-                <div class="options-grid" id="optionsGrid">
-            `;
-
-            q.options.forEach((opt, index) => {
-                const isSelected = userAnswers[currentQuestion] === index;
-                html += `
-                    <div class="option-item ${isSelected ? 'selected' : ''}" onclick="selectOption(${index})">
-                        <span class="option-prefix">${String.fromCharCode(65 + index)}</span>
-                        <span>${opt}</span>
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
-
-            html += `
-                <div class="question-footer">
-                    <button class="nav-btn nav-prev" onclick="prevQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>
-                        <i class="fas fa-arrow-right"></i> السابق
-                    </button>
-                    <button class="nav-btn nav-next" onclick="nextQuestion()">
-                        ${currentQuestion === QUIZ.length - 1 ? 'إنهاء' : 'التالي'} 
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                </div>
-            `;
-
-            document.getElementById('quizCard').innerHTML = html;
-        }
-
-        function selectOption(index) {
-            userAnswers[currentQuestion] = index;
-            // إعادة تحميل السؤال لتحديث التحديد
-            loadQuestion();
-        }
-
-        function nextQuestion() {
-            if (userAnswers[currentQuestion] === null) {
-                alert('الرجاء اختيار إجابة أولاً');
-                return;
-            }
-            if (currentQuestion < QUIZ.length - 1) {
-                currentQuestion++;
-                loadQuestion();
-            } else {
-                // احتساب النتيجة
-                score = userAnswers.reduce((acc, ans, idx) => {
-                    return acc + (ans === QUIZ[idx].correct ? 1 : 0);
-                }, 0);
-                quizCompleted = true;
-                loadQuestion(); // يؤدي إلى showResult
-            }
-        }
-
-        function prevQuestion() {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                loadQuestion();
-            }
-        }
-
-        function showResult() {
-            const percentage = Math.round((score / QUIZ.length) * 100);
+        // التحقق من وجود الأسئلة
+        if (typeof QUIZ === 'undefined' || QUIZ.length === 0) {
             document.getElementById('quizCard').innerHTML = `
                 <div class="result-card">
-                    <h2>نتيجتك</h2>
-                    <div class="result-score">${percentage}%</div>
-                    <div class="result-details">
-                        <div class="result-stat">
-                            <div class="result-stat-value">${score}</div>
-                            <div>إجابات صحيحة</div>
-                        </div>
-                        <div class="result-stat">
-                            <div class="result-stat-value">${QUIZ.length - score}</div>
-                            <div>إجابات خاطئة</div>
-                        </div>
-                    </div>
-                    <div class="result-actions">
-                        <button class="result-btn" onclick="location.reload()">إعادة الاختبار</button>
-                        <button class="result-btn" onclick="window.location.href='lessons.html'">الدروس</button>
-                    </div>
+                    <h2>⚠️ خطأ</h2>
+                    <p>لم يتم تحميل الأسئلة بشكل صحيح</p>
                 </div>
             `;
+        } else {
+            // المتغيرات العامة
+            let currentQuestion = 0;
+            let userAnswers = new Array(QUIZ.length).fill(null);
+            let quizCompleted = false;
+            let score = 0;
+
+            document.addEventListener('DOMContentLoaded', loadQuestion);
+
+            function loadQuestion() {
+                if (quizCompleted) {
+                    showResult();
+                    return;
+                }
+
+                const q = QUIZ[currentQuestion];
+                const progress = ((currentQuestion + 1) / QUIZ.length) * 100;
+
+                let html = `
+                    <div class="quiz-info">
+                        <span class="progress-text">السؤال ${currentQuestion + 1} من ${QUIZ.length}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options-grid" id="optionsGrid">
+                `;
+
+                q.options.forEach((opt, index) => {
+                    const isSelected = userAnswers[currentQuestion] === index;
+                    html += `
+                        <div class="option-item ${isSelected ? 'selected' : ''}" onclick="selectOption(${index})">
+                            <span class="option-prefix">${String.fromCharCode(65 + index)}</span>
+                            <span>${opt}</span>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+
+                html += `
+                    <div class="question-footer">
+                        <button class="nav-btn nav-prev" onclick="prevQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>
+                            <i class="fas fa-arrow-right"></i> السابق
+                        </button>
+                        <button class="nav-btn nav-next" onclick="nextQuestion()">
+                            ${currentQuestion === QUIZ.length - 1 ? 'إنهاء' : 'التالي'} 
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                `;
+
+                document.getElementById('quizCard').innerHTML = html;
+            }
+
+            function selectOption(index) {
+                userAnswers[currentQuestion] = index;
+                loadQuestion(); // إعادة تحميل لتحديث التحديد
+            }
+
+            function nextQuestion() {
+                if (userAnswers[currentQuestion] === null) {
+                    alert('الرجاء اختيار إجابة أولاً');
+                    return;
+                }
+                if (currentQuestion < QUIZ.length - 1) {
+                    currentQuestion++;
+                    loadQuestion();
+                } else {
+                    // احتساب النتيجة
+                    score = userAnswers.reduce((acc, ans, idx) => {
+                        return acc + (ans === QUIZ[idx].correct ? 1 : 0);
+                    }, 0);
+                    quizCompleted = true;
+                    loadQuestion();
+                }
+            }
+
+            function prevQuestion() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    loadQuestion();
+                }
+            }
+
+            function showResult() {
+                const percentage = Math.round((score / QUIZ.length) * 100);
+                document.getElementById('quizCard').innerHTML = `
+                    <div class="result-card">
+                        <h2>نتيجتك</h2>
+                        <div class="result-score">${percentage}%</div>
+                        <div class="result-details">
+                            <div class="result-stat">
+                                <div class="result-stat-value">${score}</div>
+                                <div>إجابات صحيحة</div>
+                            </div>
+                            <div class="result-stat">
+                                <div class="result-stat-value">${QUIZ.length - score}</div>
+                                <div>إجابات خاطئة</div>
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button class="result-btn" onclick="location.reload()">إعادة الاختبار</button>
+                            <button class="result-btn" onclick="window.location.href='lessons.html'">الدروس</button>
+                        </div>
+                    </div>
+                `;
+            }
         }
     </script>
 </body>
