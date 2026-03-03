@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineLingua | قصص قصيرة</title>
     
-    <!-- حماية الصفحة -->
-    <script src="auth-check.js"></script>
-    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* نفس الـ style اللي عندك */
+        /* كل الـ style حقك موجود */
         .stories-container {
             max-width: 1000px;
             margin: 100px auto 2rem;
@@ -510,7 +507,6 @@
                 <li><a href="lessons.html">الكلمات</a></li>
                 <li><a href="stories.html" class="active">القصص</a></li>
                 <li><a href="quiz.html">الاختبارات</a></li>
-                <li><a href="dashboard.html">لوحة التحكم</a></li>
             </ul>
             <div class="nav-buttons">
                 <div class="theme-toggle" id="themeToggle"></div>
@@ -549,11 +545,11 @@
         </div>
     </div>
 
-    <script src="stories-data.js"></script>
+    <script src="assets/data/stories-data.js"></script>
     <script src="translations.js"></script>
     <script src="theme.js"></script>
     <script>
-        // نظام تقدم القراءة
+        // نظام تقدم القراءة (باستخدام localStorage فقط)
         class ReadingProgress {
             constructor() {
                 this.completedStories = JSON.parse(localStorage.getItem('completedStories')) || [];
@@ -864,4 +860,4 @@
         });
     </script>
 </body>
-        </html>
+</html>
