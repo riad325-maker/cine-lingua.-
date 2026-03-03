@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineLingua | الاختبارات</title>
     
-    <!-- حماية الصفحة -->
-    <script src="auth-check.js"></script>
-    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* نفس الـ style اللي عندك */
+        /* كل الـ style حقك موجود */
         .quiz-container {
             max-width: 800px;
             margin: 100px auto 2rem;
@@ -408,7 +405,6 @@
                 <li><a href="lessons.html">الكلمات</a></li>
                 <li><a href="stories.html">القصص</a></li>
                 <li><a href="quiz.html" class="active">الاختبارات</a></li>
-                <li><a href="dashboard.html">لوحة التحكم</a></li>
             </ul>
             <div class="nav-buttons">
                 <div class="theme-toggle" id="themeToggle"></div>
@@ -451,11 +447,11 @@
         </div>
     </div>
 
-    <script src="words-data.js"></script>
+    <script src="assets/data/quiz-data.js"></script>
     <script src="translations.js"></script>
     <script src="theme.js"></script>
     <script>
-        // ========== 50+ سؤال جديد ==========
+        // الأسئلة (مأخوذة من ملف البيانات)
         const QUIZ_QUESTIONS = {
             vocabulary: {
                 beginner: [
