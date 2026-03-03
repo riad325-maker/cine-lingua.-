@@ -8,6 +8,146 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* إضافة تنسيقات القائمة والثيم */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        [data-theme="dark"] .navbar {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        /* زر القائمة */
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary);
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s;
+        }
+        
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        /* القائمة العلوية */
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        [data-theme="dark"] .nav-menu a {
+            color: var(--text-primary);
+        }
+        .nav-menu a:hover, .nav-menu a.active {
+            color: var(--primary);
+        }
+        
+        /* زر الثيم */
+        .theme-toggle {
+            display: flex;
+            gap: 0.5rem;
+            background: #f1f5f9;
+            padding: 0.25rem;
+            border-radius: 2rem;
+        }
+        [data-theme="dark"] .theme-toggle {
+            background: #334155;
+        }
+        .theme-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 2rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.3s;
+        }
+        .theme-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* استعلامات للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                left: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+                box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            }
+            
+            [data-theme="dark"] .nav-menu {
+                background: var(--bg-card);
+            }
+            
+            .nav-menu.show {
+                display: flex;
+            }
+            
+            .nav-menu li {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-menu a {
+                display: block;
+                padding: 0.75rem;
+                border-radius: 0.5rem;
+            }
+            
+            .nav-menu a:hover {
+                background: #f1f5f9;
+            }
+            
+            [data-theme="dark"] .nav-menu a:hover {
+                background: var(--bg-secondary);
+            }
+        }
+
+        /* التنسيقات الأصلية */
         .quiz-container { max-width: 800px; margin: 100px auto 2rem; padding: 0 2rem; }
         .quiz-header { text-align: center; margin-bottom: 3rem; }
         .quiz-header h1 { font-size: 3rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -40,13 +180,24 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo"><i class="fas fa-film"></i><span>CineLingua</span></div>
-            <ul class="nav-menu">
+            <div class="logo">
+                <i class="fas fa-film"></i>
+                <span>CineLingua</span>
+            </div>
+            
+            <!-- زر القائمة (يظهر في الجوال) -->
+            <button class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- القائمة العلوية -->
+            <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html">الرئيسية</a></li>
                 <li><a href="lessons.html">الكلمات</a></li>
                 <li><a href="stories.html">القصص</a></li>
                 <li><a href="quiz.html" class="active">الاختبارات</a></li>
             </ul>
+            
             <div class="theme-toggle" id="themeToggle">
                 <button class="theme-btn active" onclick="setTheme('light')"><i class="fas fa-sun"></i></button>
                 <button class="theme-btn" onclick="setTheme('dark')"><i class="fas fa-moon"></i></button>
@@ -186,6 +337,18 @@
                 `;
             }
         }
+
+        // دالة إظهار/إخفاء القائمة
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('show');
+        }
+
+        // إغلاق القائمة عند النقر على رابط
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navMenu').classList.remove('show');
+            });
+        });
     </script>
 </body>
 </html>
