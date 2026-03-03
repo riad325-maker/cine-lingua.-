@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineLingua | الكلمات والجمل</title>
     
-    <!-- حماية الصفحة (داخل head) -->
-    <script src="auth-check.js"></script>
-    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* كل الـ style حقك موجود */
         .lessons-container {
             max-width: 1200px;
             margin: 100px auto 2rem;
@@ -551,10 +549,8 @@
                 <li><a href="lessons.html" class="active">الكلمات</a></li>
                 <li><a href="stories.html">القصص</a></li>
                 <li><a href="quiz.html">الاختبارات</a></li>
-                <li><a href="dashboard.html">لوحة التحكم</a></li>
             </ul>
             <div class="nav-buttons">
-                <!-- زر الثيم من theme.js -->
                 <div class="theme-toggle" id="themeToggle"></div>
             </div>
         </div>
@@ -591,9 +587,7 @@
                 <button class="level-tab" onclick="loadLevel('advanced')">متقدم</button>
             </div>
 
-            <div class="categories-filter" id="categoriesFilter">
-                <!-- التصنيفات تتحط هنا -->
-            </div>
+            <div class="categories-filter" id="categoriesFilter"></div>
 
             <div class="view-options">
                 <button class="view-btn active" onclick="toggleView('grid')" title="عرض شبكي">
@@ -660,7 +654,6 @@
         });
 
         function updateTotalWords() {
-            // تصحيح الخطأ: beginmer -> beginner
             const total = (WORDS_DATA.beginner?.length || 0) + 
                          (WORDS_DATA.intermediate?.length || 0) + 
                          (WORDS_DATA.advanced?.length || 0);
@@ -675,20 +668,16 @@
             currentLevel = level;
             currentPage = 1;
             
-            // تحديث التبويبات
             document.querySelectorAll('.level-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             event.target.classList.add('active');
 
-            // جلب الكلمات
             currentWords = getWordsByLevel(level);
             
-            // استخراج التصنيفات
             const categories = ['all', ...new Set(currentWords.map(w => w.category))];
             updateCategories(categories);
 
-            // عرض الكلمات
             displayWords(currentWords);
         }
 
@@ -720,7 +709,6 @@
         }
 
         function displayWords(words) {
-            // تطبيق الترقيم
             const start = (currentPage - 1) * itemsPerPage;
             const end = start + itemsPerPage;
             const paginatedWords = words.slice(start, end);
@@ -914,5 +902,4 @@
         });
     </script>
 </body> 
-
-</html> 
+                </html>
