@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLingua | Short Stories</title>
+    <title>CineLingua | قصص قصيرة</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -37,12 +37,14 @@
         
         .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem; font-weight: bold; color: var(--primary); }
         
+        /* زر القائمة */
         .menu-toggle {
             background: none; border: none; font-size: 1.8rem; color: var(--primary);
             cursor: pointer; display: none; transition: all 0.3s;
         }
         .menu-toggle:hover { transform: scale(1.1); }
         
+        /* القائمة العلوية */
         .nav-menu {
             display: flex; gap: 2rem; list-style: none;
         }
@@ -52,6 +54,7 @@
         [data-theme="dark"] .nav-menu a { color: var(--text-primary); }
         .nav-menu a:hover, .nav-menu a.active { color: var(--primary); }
         
+        /* زر الثيم */
         .theme-toggle {
             display: flex; gap: 0.5rem; background: #f1f5f9; padding: 0.25rem; border-radius: 2rem;
         }
@@ -101,10 +104,9 @@
             border-color: transparent; color: white;
         }
 
-        /* شبكة القصص - بطاقات أصغر */
+        /* شبكة القصص */
         .stories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1.5rem;
         }
 
@@ -157,7 +159,7 @@
         }
         .read-btn:hover { transform: translateX(-5px); box-shadow: 0 5px 15px rgba(99,102,241,0.4); }
 
-        /* Full Screen Modal */
+        /* المودال */
         .story-modal {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: white; z-index: 2000; opacity: 0; visibility: hidden;
@@ -210,7 +212,7 @@
         [data-theme="dark"] .modal-translation { background: var(--bg-secondary); }
         .modal-translation.show { display: block; }
 
-        /* Questions Section - شبكة 2×2 */
+        /* الأسئلة */
         .questions-section {
             margin: 2rem 0; padding: 1.5rem; background: #f8fafc;
             border-radius: 1rem; border: 2px solid var(--border);
@@ -305,10 +307,10 @@
             </button>
             
             <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="lessons.html">Words</a></li>
-                <li><a href="stories.html" class="active">Stories</a></li>
-                <li><a href="quiz.html">Quiz</a></li>
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="lessons.html">الكلمات</a></li>
+                <li><a href="stories.html" class="active">القصص</a></li>
+                <li><a href="quiz.html">الاختبارات</a></li>
             </ul>
             
             <div class="theme-toggle" id="themeToggle">
@@ -320,16 +322,16 @@
 
     <div class="container">
         <div class="page-header">
-            <h1>📖 Short Stories</h1>
-            <p>Read the story, then answer the questions to test your understanding</p>
-            <div class="progress-badge" id="progressText">🚀 0 / 15 Stories Read</div>
+            <h1>📖 قصص قصيرة</h1>
+            <p>اقرأ القصة، ثم أجب على الأسئلة</p>
+            <div class="progress-badge" id="progressText">🚀 0 / 15 قصة مقروءة</div>
         </div>
 
         <div class="level-filter">
-            <button class="filter-btn active" onclick="filterStories('all')">All</button>
-            <button class="filter-btn" onclick="filterStories('مبتدئ')">Beginner</button>
-            <button class="filter-btn" onclick="filterStories('متوسط')">Intermediate</button>
-            <button class="filter-btn" onclick="filterStories('متقدم')">Advanced</button>
+            <button class="filter-btn active" onclick="filterStories('all')">الكل</button>
+            <button class="filter-btn" onclick="filterStories('مبتدئ')">مبتدئ</button>
+            <button class="filter-btn" onclick="filterStories('متوسط')">متوسط</button>
+            <button class="filter-btn" onclick="filterStories('متقدم')">متقدم</button>
         </div>
 
         <div id="storiesList" class="stories-grid"></div>
@@ -340,23 +342,26 @@
     </div>
 
     <footer class="footer">
-        <p>© 2024 CineLingua. All rights reserved</p>
+        <p>© 2024 CineLingua. جميع الحقوق محفوظة</p>
     </footer>
 
     <script src="stories-data.js"></script>
     <script src="theme.js"></script>
     <script>
+        // تحميل التقدم من localStorage
         let completedStories = JSON.parse(localStorage.getItem('completedStories')) || [];
         let currentFilter = 'all';
         let currentStory = null;
         let userAnswers = {};
 
+        // تحديث عداد التقدم
         function updateProgress() {
             const total = STORIES_DATA.beginner.length + STORIES_DATA.intermediate.length + STORIES_DATA.advanced.length;
             const count = completedStories.length;
-            document.getElementById('progressText').innerHTML = `🚀 ${count} / ${total} Stories Read`;
+            document.getElementById('progressText').innerHTML = `🚀 ${count} / ${total} قصة مقروءة`;
         }
 
+        // تصفية القصص حسب المستوى
         function filterStories(level) {
             currentFilter = level;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -364,6 +369,7 @@
             displayStories();
         }
 
+        // عرض القصص
         function displayStories() {
             let stories = [];
             if (currentFilter === 'all') {
@@ -379,7 +385,7 @@
                 const preview = story.content.length > 100 ? story.content.substring(0, 100) + '...' : story.content;
                 return `
                 <div class="story-card ${isCompleted ? 'completed' : ''}">
-                    ${isCompleted ? '<div class="completed-badge"><i class="fas fa-check-circle"></i> Read</div>' : ''}
+                    ${isCompleted ? '<div class="completed-badge"><i class="fas fa-check-circle"></i> مقروءة</div>' : ''}
                     <div class="story-image">
                         <img src="${story.image || 'https://images.unsplash.com/photo-1474932430478-367dbb6832c1?w=400'}" alt="${story.title}">
                     </div>
@@ -388,7 +394,7 @@
                         <p class="story-preview">${preview}</p>
                         <div class="story-footer">
                             <span class="difficulty-tag">${story.difficulty}</span>
-                            <button class="read-btn" onclick="openStory(${story.id})">Read</button>
+                            <button class="read-btn" onclick="openStory(${story.id})">اقرأ</button>
                         </div>
                     </div>
                 </div>
@@ -397,6 +403,7 @@
             updateProgress();
         }
 
+        // إظهار/إخفاء الترجمة
         function toggleTranslation() {
             const translation = document.getElementById('storyTranslation');
             if (translation) {
@@ -404,6 +411,7 @@
             }
         }
 
+        // فتح القصة في المودال
         function openStory(id) {
             const allStories = [...STORIES_DATA.beginner, ...STORIES_DATA.intermediate, ...STORIES_DATA.advanced];
             currentStory = allStories.find(s => s.id === id);
@@ -416,7 +424,7 @@
             if (currentStory.questions && currentStory.questions.length > 0) {
                 questionsHTML = `
                     <div class="questions-section">
-                        <h3><i class="fas fa-question-circle"></i> Questions</h3>
+                        <h3><i class="fas fa-question-circle"></i> الأسئلة</h3>
                         ${currentStory.questions.map((q, idx) => `
                             <div class="question-item" id="q-${idx}">
                                 <div class="question-text">${idx+1}. ${q.question}</div>
@@ -429,11 +437,11 @@
                                     `).join('')}
                                 </div>
                                 <div class="explanation" id="exp-${idx}">
-                                    ${q.explanation || `Correct answer: ${q.options[q.correct]}`}
+                                    ${q.explanation || `الإجابة الصحيحة: ${q.options[q.correct]}`}
                                 </div>
                             </div>
                         `).join('')}
-                        <button class="btn-check" onclick="checkAnswers()">Check Answers</button>
+                        <button class="btn-check" onclick="checkAnswers()">تحقق من الإجابات</button>
                     </div>
                 `;
             }
@@ -451,7 +459,7 @@
                 </div>
                 
                 <button class="translation-btn" onclick="toggleTranslation()">
-                    <i class="fas fa-language"></i> Show Arabic Translation
+                    <i class="fas fa-language"></i> إظهار الترجمة
                 </button>
                 
                 <div class="modal-translation" id="storyTranslation">
@@ -461,10 +469,9 @@
                 ${questionsHTML}
                 
                 <button class="btn-complete ${isCompleted ? 'disabled' : ''}" 
-                        onclick="markAsComplete(${currentStory.id})" 
-                        ${isCompleted ? 'disabled' : ''}
+                        onclick="toggleComplete(${currentStory.id})" 
                         id="completeBtn">
-                    ${isCompleted ? '✓ Story Completed' : '✔ Mark as Completed'}
+                    ${isCompleted ? '✓ تمت القراءة' : '✔ تحديد كمقروءة'}
                 </button>
             `;
             
@@ -472,6 +479,7 @@
             document.body.style.overflow = 'hidden';
         }
 
+        // اختيار إجابة
         function selectOption(questionIdx, optionIdx) {
             userAnswers[questionIdx] = optionIdx;
             
@@ -482,6 +490,7 @@
             event.currentTarget.classList.add('selected');
         }
 
+        // التحقق من الإجابات
         function checkAnswers() {
             if (!currentStory || !currentStory.questions) return;
             
@@ -507,48 +516,54 @@
             });
         }
 
-        function markAsComplete(id) {
-            if (currentStory.questions && currentStory.questions.length > 0) {
-                const answeredAll = currentStory.questions.every((_, idx) => userAnswers[idx] !== undefined);
-                if (!answeredAll) {
-                    alert('Please answer all questions first');
-                    return;
-                }
+        // تبديل حالة الإكمال (إضافة/إزالة)
+        function toggleComplete(id) {
+            const index = completedStories.indexOf(id);
+            
+            if (index === -1) {
+                // إضافة
+                completedStories.push(id);
+            } else {
+                // إزالة
+                completedStories.splice(index, 1);
             }
             
-            if (!completedStories.includes(id)) {
-                completedStories.push(id);
-                localStorage.setItem('completedStories', JSON.stringify(completedStories));
-                
-                const btn = document.getElementById('completeBtn');
-                btn.innerText = '✓ Story Completed';
-                btn.classList.add('disabled');
-                btn.disabled = true;
-                
-                displayStories();
-                
-                setTimeout(() => {
-                    closeStory();
-                }, 1000);
+            // حفظ في localStorage
+            localStorage.setItem('completedStories', JSON.stringify(completedStories));
+            
+            // تحديث واجهة المستخدم
+            displayStories();
+            
+            // إذا كنا داخل المودال، نحدث حالة الزر
+            const completeBtn = document.getElementById('completeBtn');
+            if (completeBtn) {
+                const isCompleted = completedStories.includes(id);
+                completeBtn.innerText = isCompleted ? '✓ تمت القراءة' : '✔ تحديد كمقروءة';
+                completeBtn.classList.toggle('disabled', isCompleted);
+                completeBtn.disabled = isCompleted;
             }
         }
 
+        // إغلاق المودال
         function closeStory() {
             document.getElementById('storyModal').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
+        // إظهار/إخفاء القائمة في الجوال
         function toggleMenu() {
             document.getElementById('navMenu').classList.toggle('show');
         }
 
+        // إغلاق القائمة عند النقر على رابط
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.addEventListener('click', () => {
                 document.getElementById('navMenu').classList.remove('show');
             });
         });
 
+        // التشغيل الأولي
         displayStories();
     </script>
 </body>
-</html>
+                                                             </html>
