@@ -118,12 +118,7 @@
         }
         [data-theme="dark"] .tense-card { background: var(--bg-card); }
         .tense-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
-        .tense-card.saved { border-color: var(--success); background: linear-gradient(135deg, rgba(22, 163, 74, 0.05), rgba(34, 197, 94, 0.1)); }
-
-        .saved-badge-tense {
-            position: absolute; top: 10px; right: 10px; background: var(--success); color: white;
-            padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.3rem; z-index: 10;
-        }
+        /* تم إزالة التنسيق الخاص بالبطاقة المحفوظة لأن العلامة ستكون داخل المودال فقط */
 
         .tense-header {
             padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
@@ -288,7 +283,7 @@
             color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
         }
         .modal-save-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
-        .modal-save-btn.saved { background: var(--success); }
+        .modal-save-btn.saved { background: var(--success); } /* الزر يتحول للأخضر عند الحفظ */
 
         /* رسائل */
         .no-results, .empty-saved { text-align: center; padding: 3rem; color: var(--gray); grid-column: 1 / -1; }
@@ -434,10 +429,9 @@
             const start = (currentPage - 1) * itemsPerPage;
             const end = Math.min(start + itemsPerPage, currentDisplayTenses.length);
             
+            // تم إزالة أيقونة الحفظ من البطاقة (السهم الموجود في الأسفل)
             grid.innerHTML = currentDisplayTenses.slice(start, end).map(t => {
-                const saved = savedTenses.includes(t.id);
-                return `<div class="tense-card ${saved ? 'saved' : ''}">
-                    ${saved ? '<div class="saved-badge-tense"><i class="fas fa-bookmark"></i> محفوظ</div>' : ''}
+                return `<div class="tense-card">
                     <div class="tense-header"><span class="tense-icon">${t.icon}</span><div><div class="tense-title">${t.name}</div><div class="tense-subtitle">${t.nameAr}</div></div></div>
                     <div class="tense-content">
                         <div class="tense-form">${t.form}</div>
@@ -447,9 +441,6 @@
                             <button class="learn-btn" onclick="openTense(${t.id})">تعلم الزمن</button>
                         </div>
                     </div>
-                    <button class="save-btn" onclick="toggleSave(${t.id}, event)" style="position:absolute; bottom:10px; left:10px; background:transparent; border:none; color:var(--primary); cursor:pointer;">
-                        <i class="fas ${saved ? 'fa-bookmark' : 'fa-bookmark'}"></i>
-                    </button>
                 </div>`;
             }).join('');
             document.getElementById('pageInfo').innerHTML = `عرض ${start+1}-${end} من ${currentDisplayTenses.length} زمن`;
@@ -488,13 +479,36 @@
 
         function goToPage(p) { currentPage = p; displayCurrentPage(); updatePagination(); }
 
-        function toggleSave(id, e) {
-            e?.stopPropagation();
-            savedTenses = savedTenses.includes(id) ? savedTenses.filter(i => i !== id) : [...savedTenses, id];
+        // دالة الحفظ الرئيسية (معدلة لتحديث الواجهة بشكل صحيح)
+        function toggleSave(id) {
+            const isSaved = savedTenses.includes(id);
+            if (isSaved) {
+                savedTenses = savedTenses.filter(i => i !== id);
+            } else {
+                savedTenses = [...savedTenses, id];
+            }
             localStorage.setItem('savedTenses', JSON.stringify(savedTenses));
+            
+            // تحديث الأرقام في الشريط العلوي وزر المحفوظات
             document.getElementById('savedCount').textContent = savedTenses.length;
             document.getElementById('savedBadge').textContent = savedTenses.length;
-            viewingSaved ? showSavedTenses() : displayCurrentPage();
+            
+            // تحديث شكل زر الحفظ في المودال إذا كان مفتوحاً
+            const modalSaveBtn = document.querySelector('.modal-save-btn');
+            if (modalSaveBtn) {
+                if (savedTenses.includes(id)) {
+                    modalSaveBtn.classList.add('saved');
+                    modalSaveBtn.innerHTML = '<i class="fas fa-bookmark"></i> تم الحفظ';
+                } else {
+                    modalSaveBtn.classList.remove('saved');
+                    modalSaveBtn.innerHTML = '<i class="fas fa-bookmark"></i> حفظ الزمن';
+                }
+            }
+            
+            // تحديث عرض المحفوظات إذا كنا نعرضها حالياً
+            if (viewingSaved) {
+                showSavedTenses();
+            }
         }
 
         function showSavedTenses() {
@@ -547,7 +561,7 @@
                     </div>`).join('')}
                     <button class="btn-check-exercises" onclick="checkExercises(${id})">تحقق من الإجابات</button></div>` : ''}
                 <div class="modal-actions">
-                    <button class="modal-save-btn ${savedTenses.includes(id) ? 'saved' : ''}" onclick="toggleSaveFromModal(${id})">
+                    <button class="modal-save-btn ${savedTenses.includes(id) ? 'saved' : ''}" onclick="toggleSave(${id})">
                         <i class="fas fa-bookmark"></i> ${savedTenses.includes(id) ? 'تم الحفظ' : 'حفظ الزمن'}
                     </button>
                 </div>`;
@@ -581,8 +595,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        function toggleSaveFromModal(id) { toggleSave(id); }
-
         function toggleMenu() { document.getElementById('navMenu').classList.toggle('show'); }
         document.querySelectorAll('.nav-menu a').forEach(l => l.addEventListener('click', () => document.getElementById('navMenu').classList.remove('show')));
 
@@ -598,4 +610,4 @@
         setTheme(localStorage.getItem('theme') || 'light');
     </script>
 </body>
-    </html>
+                            </html>
