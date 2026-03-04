@@ -65,7 +65,6 @@
         }
         .theme-btn.active { background: var(--primary); color: white; }
         
-        /* استعلامات للشاشات الصغيرة */
         @media (max-width: 768px) {
             .menu-toggle { display: block; }
             .nav-menu {
@@ -80,10 +79,7 @@
             .nav-menu a:hover { background: #f1f5f9; }
         }
 
-        /* الحاوية الرئيسية */
         .container { max-width: 1200px; margin: 100px auto 2rem; padding: 0 2rem; }
-
-        /* رأس الصفحة */
         .page-header { text-align: center; margin-bottom: 3rem; }
         .page-header h1 {
             font-size: 3rem; background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -94,7 +90,6 @@
             color: white; padding: 0.75rem 2rem; border-radius: 2rem; font-size: 1.1rem; margin-top: 1rem;
         }
 
-        /* فلتر المستويات */
         .level-filter {
             display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap;
         }
@@ -109,12 +104,10 @@
             border-color: transparent; color: white;
         }
 
-        /* شبكة القصص */
         .stories-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;
         }
 
-        /* بطاقة القصة */
         .story-card {
             background: white; border-radius: 1.5rem; overflow: hidden; box-shadow: var(--shadow);
             border: 2px solid transparent; transition: all 0.3s; position: relative;
@@ -125,7 +118,6 @@
         }
         .story-card.completed { border-color: var(--success); }
 
-        /* صورة القصة */
         .story-image {
             height: 200px; overflow: hidden;
         }
@@ -134,14 +126,12 @@
         }
         .story-card:hover .story-image img { transform: scale(1.05); }
 
-        /* شارة الإكمال */
         .completed-badge {
             position: absolute; top: 10px; right: 10px; background: var(--success);
             color: white; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.875rem;
             display: flex; align-items: center; gap: 0.5rem; z-index: 10;
         }
 
-        /* محتوى القصة */
         .story-content { padding: 1.5rem; }
         .story-title {
             font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--primary);
@@ -163,7 +153,6 @@
         }
         .read-btn:hover { transform: translateX(-5px); box-shadow: 0 5px 15px rgba(99,102,241,0.4); }
 
-        /* المودال (النافذة المنبثقة) */
         .story-modal {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;
@@ -187,7 +176,6 @@
         }
         .modal-close:hover { color: var(--danger); background: #fee2e2; }
 
-        /* محتوى المودال */
         .modal-title { font-size: 2rem; margin-bottom: 0.5rem; color: var(--primary); }
         .modal-difficulty {
             display: inline-block; padding: 0.25rem 1rem; border-radius: 2rem;
@@ -202,41 +190,6 @@
         }
         [data-theme="dark"] .modal-translation { background: var(--bg-secondary); }
 
-        /* قسم الأسئلة */
-        .questions-section {
-            margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border);
-        }
-        .questions-section h3 {
-            display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;
-        }
-        .question-item {
-            background: #f8fafc; padding: 1.5rem; border-radius: 1rem; margin-bottom: 1rem;
-        }
-        [data-theme="dark"] .question-item { background: var(--bg-secondary); }
-        .question-text { font-weight: 600; margin-bottom: 1rem; }
-        .options {
-            display: grid; gap: 0.75rem; margin-bottom: 1rem;
-        }
-        .option {
-            padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 0.75rem;
-            cursor: pointer; transition: all 0.3s; background: white;
-        }
-        [data-theme="dark"] .option { background: var(--bg-primary); }
-        .option:hover { border-color: var(--primary); background: #f1f5f9; }
-        .option.selected {
-            border-color: var(--primary); background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(236,72,153,0.1));
-        }
-        .option.correct {
-            border-color: var(--success); background: rgba(16,185,129,0.1);
-        }
-        .explanation {
-            margin-top: 0.5rem; padding: 0.5rem; border-radius: 0.5rem;
-            background: rgba(59,130,246,0.1); border-right: 3px solid var(--info);
-            display: none;
-        }
-        .explanation.show { display: block; }
-
-        /* زر الإكمال */
         .btn-complete {
             width: 100%; padding: 1rem; border: none; border-radius: 1rem;
             background: var(--success); color: white; font-size: 1.1rem;
@@ -248,7 +201,6 @@
         }
         .btn-complete.disabled:hover { transform: none; box-shadow: none; }
 
-        /* التذييل */
         .footer {
             background: var(--dark); color: white; text-align: center; padding: 2rem; margin-top: 4rem;
         }
@@ -263,12 +215,10 @@
                 <span>CineLingua</span>
             </div>
             
-            <!-- زر القائمة للجوال -->
             <button class="menu-toggle" onclick="toggleMenu()">
                 <i class="fas fa-bars"></i>
             </button>
             
-            <!-- القائمة العلوية -->
             <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html">الرئيسية</a></li>
                 <li><a href="lessons.html">الكلمات</a></li>
@@ -276,7 +226,6 @@
                 <li><a href="quiz.html">الاختبارات</a></li>
             </ul>
             
-            <!-- زر الثيم -->
             <div class="theme-toggle" id="themeToggle">
                 <button class="theme-btn active" onclick="setTheme('light')"><i class="fas fa-sun"></i></button>
                 <button class="theme-btn" onclick="setTheme('dark')"><i class="fas fa-moon"></i></button>
@@ -287,11 +236,10 @@
     <div class="container">
         <div class="page-header">
             <h1>📖 قصص قصيرة</h1>
-            <p>اقرأ القصص وتعلم كلمات جديدة واختبر فهمك</p>
+            <p>اقرأ القصص وتعلم كلمات جديدة</p>
             <div class="progress-badge" id="progressText">🚀 0 / 15 قصة مقروءة</div>
         </div>
 
-        <!-- أزرار التصفية -->
         <div class="level-filter">
             <button class="filter-btn active" onclick="filterStories('all')">الكل</button>
             <button class="filter-btn" onclick="filterStories('مبتدئ')">مبتدئ</button>
@@ -299,11 +247,9 @@
             <button class="filter-btn" onclick="filterStories('متقدم')">متقدم</button>
         </div>
 
-        <!-- شبكة القصص -->
         <div id="storiesList" class="stories-grid"></div>
     </div>
 
-    <!-- النافذة المنبثقة للقصة -->
     <div class="story-modal" id="storyModal">
         <div class="modal-content" id="modalContent"></div>
     </div>
@@ -315,20 +261,15 @@
     <script src="stories-data.js"></script>
     <script src="theme.js"></script>
     <script>
-        // تحميل التقدم من localStorage
         let completedStories = JSON.parse(localStorage.getItem('completedStories')) || [];
-        let currentStory = null;
-        let selectedAnswers = {};
         let currentFilter = 'all';
 
-        // تحديث عداد التقدم
         function updateProgress() {
             const total = STORIES_DATA.beginner.length + STORIES_DATA.intermediate.length + STORIES_DATA.advanced.length;
             const count = completedStories.length;
             document.getElementById('progressText').innerHTML = `🚀 ${count} / ${total} قصة مقروءة`;
         }
 
-        // تصفية القصص
         function filterStories(level) {
             currentFilter = level;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -336,7 +277,6 @@
             displayStories();
         }
 
-        // عرض القصص
         function displayStories() {
             let stories = [];
             if (currentFilter === 'all') {
@@ -349,7 +289,7 @@
             const list = document.getElementById('storiesList');
             list.innerHTML = stories.map(story => {
                 const isCompleted = completedStories.includes(story.id);
-                const preview = story.text.length > 120 ? story.text.substring(0, 120) + '...' : story.text;
+                const preview = story.content.length > 120 ? story.content.substring(0, 120) + '...' : story.content;
                 return `
                 <div class="story-card ${isCompleted ? 'completed' : ''}">
                     ${isCompleted ? '<div class="completed-badge"><i class="fas fa-check-circle"></i> تمت القراءة</div>' : ''}
@@ -370,97 +310,38 @@
             updateProgress();
         }
 
-        // فتح القصة في المودال
         function openStory(id) {
             const allStories = [...STORIES_DATA.beginner, ...STORIES_DATA.intermediate, ...STORIES_DATA.advanced];
-            currentStory = allStories.find(s => s.id === id);
-            if (!currentStory) return;
+            const story = allStories.find(s => s.id === id);
+            if (!story) return;
 
             const isCompleted = completedStories.includes(id);
             const modal = document.getElementById('storyModal');
-            
-            let questionsHTML = '';
-            if (currentStory.questions && currentStory.questions.length > 0) {
-                questionsHTML = `
-                    <div class="questions-section">
-                        <h3><i class="fas fa-question-circle"></i> اختبر فهمك</h3>
-                        ${currentStory.questions.map((q, idx) => `
-                            <div class="question-item" id="q-${idx}">
-                                <div class="question-text">${idx+1}. ${q.question}</div>
-                                <div class="options">
-                                    ${q.options.map((opt, optIdx) => `
-                                        <div class="option" onclick="selectOption(${idx}, ${optIdx})">
-                                            <span>${opt}</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                                <div class="explanation" id="exp-${idx}">${q.explanation || 'الإجابة الصحيحة هي ' + q.options[q.correct]}</div>
-                            </div>
-                        `).join('')}
-                        <button class="btn-check" onclick="checkAnswers()">تحقق من الإجابات</button>
-                    </div>
-                `;
-            }
 
             document.getElementById('modalContent').innerHTML = `
                 <button class="modal-close" onclick="closeStory()">✕</button>
-                <h2 class="modal-title">${currentStory.title}</h2>
-                <span class="modal-difficulty">${currentStory.difficulty}</span>
+                <h2 class="modal-title">${story.title}</h2>
+                <span class="modal-difficulty">${story.difficulty}</span>
                 
                 <div class="modal-text">
-                    ${currentStory.text}
+                    ${story.content}
                 </div>
                 
                 <div class="modal-translation">
                     <strong>الترجمة:</strong><br>
-                    ${currentStory.arabic}
+                    ${story.arabic}
                 </div>
                 
-                ${questionsHTML}
-                
                 <button class="btn-complete ${isCompleted ? 'disabled' : ''}" 
-                        onclick="markAsComplete(${currentStory.id})" ${isCompleted ? 'disabled' : ''}>
+                        onclick="markAsComplete(${story.id})" ${isCompleted ? 'disabled' : ''}>
                     ${isCompleted ? '✓ لقد قرأت هذه القصة' : '✔ تحديد كـ "تمت القراءة"'}
                 </button>
             `;
             
             modal.classList.add('active');
-            selectedAnswers = {};
         }
 
-        // اختيار إجابة
-        window.selectOption = function(questionIdx, optionIdx) {
-            selectedAnswers[questionIdx] = optionIdx;
-            
-            document.querySelectorAll(`#q-${questionIdx} .option`).forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            event.target.classList.add('selected');
-        };
-
-        // التحقق من الإجابات
-        window.checkAnswers = function() {
-            if (!currentStory || !currentStory.questions) return;
-            
-            currentStory.questions.forEach((q, idx) => {
-                const selected = selectedAnswers[idx];
-                const explanation = document.getElementById(`exp-${idx}`);
-                
-                if (selected !== undefined) {
-                    const options = document.querySelectorAll(`#q-${idx} .option`);
-                    if (selected === q.correct) {
-                        options[selected].classList.add('correct');
-                    } else {
-                        options[selected].classList.add('wrong');
-                        options[q.correct].classList.add('correct');
-                    }
-                }
-                explanation.classList.add('show');
-            });
-        };
-
-        // تحديد القصة كمقروءة
-        window.markAsComplete = function(id) {
+        function markAsComplete(id) {
             if (!completedStories.includes(id)) {
                 completedStories.push(id);
                 localStorage.setItem('completedStories', JSON.stringify(completedStories));
@@ -472,26 +353,22 @@
                 
                 displayStories();
             }
-        };
+        }
 
-        // إغلاق المودال
-        window.closeStory = function() {
+        function closeStory() {
             document.getElementById('storyModal').classList.remove('active');
-        };
+        }
 
-        // إظهار/إخفاء القائمة في الجوال
-        window.toggleMenu = function() {
+        function toggleMenu() {
             document.getElementById('navMenu').classList.toggle('show');
-        };
+        }
 
-        // إغلاق القائمة عند النقر على رابط
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.addEventListener('click', () => {
                 document.getElementById('navMenu').classList.remove('show');
             });
         });
 
-        // التحميل الأولي
         displayStories();
     </script>
 </body>
