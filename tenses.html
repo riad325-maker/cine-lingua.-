@@ -118,7 +118,6 @@
         }
         [data-theme="dark"] .tense-card { background: var(--bg-card); }
         .tense-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
-        /* تم إزالة التنسيق الخاص بالبطاقة المحفوظة لأن العلامة ستكون داخل المودال فقط */
 
         .tense-header {
             padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
@@ -131,7 +130,7 @@
         .tense-content { padding: 1rem; }
         .tense-form {
             background: #f1f5f9; padding: 0.5rem; border-radius: 0.5rem; font-family: monospace;
-            text-align: center; margin-bottom: 0.5rem; font-size: 0.9rem;
+            text-align: center; margin-bottom: 0.5rem; font-size: 0.9rem; white-space: pre-line;
         }
         [data-theme="dark"] .tense-form { background: var(--bg-secondary); }
 
@@ -180,7 +179,7 @@
         }
         [data-theme="dark"] .page-info { background: var(--bg-card); }
 
-        /* المودال */
+        /* المودال - مع تحسينات عرض النصوص */
         .tense-modal {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: white; z-index: 2000;
             opacity: 0; visibility: hidden; transition: all 0.3s; overflow-y: auto;
@@ -188,7 +187,14 @@
         [data-theme="dark"] .tense-modal { background: var(--bg-primary); }
         .tense-modal.active { opacity: 1; visibility: visible; }
 
-        .modal-container { max-width: 800px; margin: 0 auto; padding: 2rem; min-height: 100vh; position: relative; }
+        .modal-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
         
         .modal-close {
             position: sticky; top: 1rem; left: 1rem; width: 40px; height: 40px; border: 2px solid var(--border);
@@ -198,33 +204,45 @@
         [data-theme="dark"] .modal-close { background: var(--bg-card); }
         .modal-close:hover { background: var(--danger); color: white; border-color: var(--danger); }
 
-        .modal-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .modal-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
         .modal-icon { font-size: 3rem; }
         .modal-title { font-size: 2rem; color: var(--primary); }
         .modal-subtitle { font-size: 1.2rem; color: var(--gray); margin-bottom: 1rem; }
         
         .modal-form {
             background: #f1f5f9; padding: 1rem; border-radius: 1rem; font-family: monospace;
-            font-size: 1.2rem; text-align: center; margin-bottom: 1rem;
+            font-size: 1.2rem; text-align: center; margin-bottom: 1rem; white-space: pre-line;
         }
         [data-theme="dark"] .modal-form { background: var(--bg-secondary); }
         
         .modal-explanation {
             background: #f8fafc; padding: 1.5rem; border-radius: 1rem; margin: 1.5rem 0;
             border-right: 4px solid var(--primary); line-height: 1.8; white-space: pre-line;
+            overflow-x: hidden; word-wrap: break-word;
         }
         [data-theme="dark"] .modal-explanation { background: var(--bg-secondary); }
 
-        .examples-section { margin: 2rem 0; }
+        .examples-section {
+            margin: 2rem 0;
+            overflow-x: hidden;
+        }
         .examples-section h3 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
         .example-card {
             background: #f8fafc; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border-right: 4px solid var(--secondary);
+            word-wrap: break-word;
         }
         [data-theme="dark"] .example-card { background: var(--bg-secondary); }
+        .example-positive, .example-negative, .example-question {
+            word-wrap: break-word;
+            white-space: normal;
+        }
         .example-positive { color: var(--success); }
         .example-negative { color: var(--danger); }
         .example-question { color: var(--primary); }
-        .example-arabic { color: var(--gray); font-size: 0.9rem; margin: 0.3rem 0 0.8rem; }
+        .example-arabic {
+            color: var(--gray); font-size: 0.9rem; margin: 0.3rem 0 0.8rem;
+            word-wrap: break-word;
+        }
 
         .keywords-section { margin: 1.5rem 0; }
         .keyword-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -233,9 +251,10 @@
         }
         [data-theme="dark"] .keyword-item { background: var(--bg-secondary); }
 
-        /* تمارين */
+        /* تمارين - التعديلات المهمة لعرض النصوص الطويلة */
         .exercises-section {
             margin: 2rem 0; padding: 1.5rem; background: #f8fafc; border-radius: 1rem; border: 2px solid var(--border);
+            overflow-x: hidden;
         }
         [data-theme="dark"] .exercises-section { background: var(--bg-secondary); }
         .exercises-section h3 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
@@ -244,14 +263,32 @@
             background: white; padding: 1rem; border-radius: 0.75rem; margin-bottom: 1rem; border: 2px solid var(--border);
         }
         [data-theme="dark"] .exercise-item { background: var(--bg-card); }
-        .exercise-question { font-weight: 600; margin-bottom: 0.75rem; }
+        .exercise-question {
+            font-weight: 600; margin-bottom: 0.75rem;
+            word-wrap: break-word;
+        }
         
         .exercise-options {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
         }
+        
         .exercise-option {
-            padding: 0.5rem 0.75rem; border: 2px solid var(--border); border-radius: 0.5rem;
-            cursor: pointer; transition: all 0.3s; background: white; display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.75rem 0.5rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            word-break: break-word;
+            white-space: normal;
+            line-height: 1.4;
+            min-height: 50px;
         }
         [data-theme="dark"] .exercise-option { background: var(--bg-primary); }
         .exercise-option:hover { border-color: var(--primary); background: #f1f5f9; }
@@ -259,15 +296,31 @@
         .exercise-option.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
         .exercise-option.wrong { border-color: var(--danger); background: rgba(239,68,68,0.1); }
         
+        .exercise-option span:last-child {
+            flex: 1;
+            text-align: right;
+            font-size: 0.9rem;
+        }
+        
         .exercise-letter {
-            width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9;
-            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;
+            width: 25px;
+            height: 25px;
+            min-width: 25px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            flex-shrink: 0;
         }
         .exercise-option.selected .exercise-letter { background: var(--primary); color: white; }
         
         .exercise-explanation {
             margin-top: 0.5rem; padding: 0.5rem; border-radius: 0.5rem; background: rgba(59,130,246,0.1);
             border-right: 4px solid #3b82f6; display: none; font-size: 0.85rem;
+            word-wrap: break-word;
         }
         .exercise-explanation.show { display: block; }
         
@@ -283,7 +336,20 @@
             color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
         }
         .modal-save-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
-        .modal-save-btn.saved { background: var(--success); } /* الزر يتحول للأخضر عند الحفظ */
+        .modal-save-btn.saved { background: var(--success); }
+
+        @media (max-width: 768px) {
+            .exercise-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .exercise-option {
+                padding: 0.75rem;
+            }
+            
+            .pagination-controls { flex-direction: column; }
+            .page-numbers { order: -1; }
+        }
 
         /* رسائل */
         .no-results, .empty-saved { text-align: center; padding: 3rem; color: var(--gray); grid-column: 1 / -1; }
@@ -300,11 +366,6 @@
             background: var(--dark); color: white; text-align: center; padding: 2rem; margin-top: 4rem;
         }
         [data-theme="dark"] .footer { background: #020617; }
-
-        @media (max-width: 768px) {
-            .pagination-controls { flex-direction: column; }
-            .page-numbers { order: -1; }
-        }
     </style>
 </head>
 <body>
@@ -429,7 +490,6 @@
             const start = (currentPage - 1) * itemsPerPage;
             const end = Math.min(start + itemsPerPage, currentDisplayTenses.length);
             
-            // تم إزالة أيقونة الحفظ من البطاقة (السهم الموجود في الأسفل)
             grid.innerHTML = currentDisplayTenses.slice(start, end).map(t => {
                 return `<div class="tense-card">
                     <div class="tense-header"><span class="tense-icon">${t.icon}</span><div><div class="tense-title">${t.name}</div><div class="tense-subtitle">${t.nameAr}</div></div></div>
@@ -479,7 +539,6 @@
 
         function goToPage(p) { currentPage = p; displayCurrentPage(); updatePagination(); }
 
-        // دالة الحفظ الرئيسية (معدلة لتحديث الواجهة بشكل صحيح)
         function toggleSave(id) {
             const isSaved = savedTenses.includes(id);
             if (isSaved) {
@@ -489,11 +548,9 @@
             }
             localStorage.setItem('savedTenses', JSON.stringify(savedTenses));
             
-            // تحديث الأرقام في الشريط العلوي وزر المحفوظات
             document.getElementById('savedCount').textContent = savedTenses.length;
             document.getElementById('savedBadge').textContent = savedTenses.length;
             
-            // تحديث شكل زر الحفظ في المودال إذا كان مفتوحاً
             const modalSaveBtn = document.querySelector('.modal-save-btn');
             if (modalSaveBtn) {
                 if (savedTenses.includes(id)) {
@@ -505,7 +562,6 @@
                 }
             }
             
-            // تحديث عرض المحفوظات إذا كنا نعرضها حالياً
             if (viewingSaved) {
                 showSavedTenses();
             }
@@ -610,4 +666,4 @@
         setTheme(localStorage.getItem('theme') || 'light');
     </script>
 </body>
-</html>
+    </html>
