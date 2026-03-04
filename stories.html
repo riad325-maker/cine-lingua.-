@@ -188,11 +188,23 @@
             font-size: 1.2rem; line-height: 1.9; margin-bottom: 2rem;
             white-space: pre-line;
         }
+
+        /* زر الترجمة */
+        .translation-btn {
+            background: var(--primary); color: white; border: none;
+            padding: 0.75rem 1.5rem; border-radius: 2rem; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s; margin: 1rem 0;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .translation-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
         .modal-translation {
-            background: #f1f5f9; padding: 2rem; border-radius: 1.5rem; margin: 2rem 0;
+            background: #f1f5f9; padding: 1.5rem; border-radius: 1rem; margin: 1.5rem 0;
             border-right: 4px solid var(--primary); line-height: 1.8;
+            display: none; /* مخفية افتراضياً */
         }
         [data-theme="dark"] .modal-translation { background: var(--bg-secondary); }
+        .modal-translation.show { display: block; }
 
         /* قسم الأسئلة */
         .questions-section {
@@ -334,7 +346,6 @@
         let currentFilter = 'all';
         let currentStory = null;
         let userAnswers = {};
-        let allQuestionsAnswered = false;
 
         function updateProgress() {
             const total = STORIES_DATA.beginner.length + STORIES_DATA.intermediate.length + STORIES_DATA.advanced.length;
@@ -382,6 +393,13 @@
             updateProgress();
         }
 
+        function toggleTranslation() {
+            const translation = document.getElementById('storyTranslation');
+            if (translation) {
+                translation.classList.toggle('show');
+            }
+        }
+
         function openStory(id) {
             const allStories = [...STORIES_DATA.beginner, ...STORIES_DATA.intermediate, ...STORIES_DATA.advanced];
             currentStory = allStories.find(s => s.id === id);
@@ -389,13 +407,12 @@
 
             const isCompleted = completedStories.includes(id);
             userAnswers = {};
-            allQuestionsAnswered = false;
 
             let questionsHTML = '';
             if (currentStory.questions && currentStory.questions.length > 0) {
                 questionsHTML = `
                     <div class="questions-section">
-                        <h3><i class="fas fa-question-circle"></i> اختبر فهمك (أجب على جميع الأسئلة)</h3>
+                        <h3><i class="fas fa-question-circle"></i> Questions (Answer all)</h3>
                         ${currentStory.questions.map((q, idx) => `
                             <div class="question-item" id="q-${idx}">
                                 <div class="question-text">${idx+1}. ${q.question}</div>
@@ -408,11 +425,11 @@
                                     `).join('')}
                                 </div>
                                 <div class="explanation" id="exp-${idx}">
-                                    ${q.explanation || `الإجابة الصحيحة: ${q.options[q.correct]}`}
+                                    ${q.explanation || `The correct answer is: ${q.options[q.correct]}`}
                                 </div>
                             </div>
                         `).join('')}
-                        <button class="btn-check" onclick="checkAnswers()">تحقق من إجاباتي</button>
+                        <button class="btn-check" onclick="checkAnswers()">Check My Answers</button>
                     </div>
                 `;
             }
@@ -429,8 +446,11 @@
                     ${currentStory.content}
                 </div>
                 
-                <div class="modal-translation">
-                    <strong>الترجمة العربية:</strong><br>
+                <button class="translation-btn" onclick="toggleTranslation()">
+                    <i class="fas fa-language"></i> Show Translation
+                </button>
+                
+                <div class="modal-translation" id="storyTranslation">
                     ${currentStory.arabic}
                 </div>
                 
@@ -440,36 +460,31 @@
                         onclick="markAsComplete(${currentStory.id})" 
                         ${isCompleted ? 'disabled' : ''}
                         id="completeBtn">
-                    ${isCompleted ? '✓ لقد قرأت هذه القصة' : '✔ تأكيد إتمام القراءة'}
+                    ${isCompleted ? '✓ Story Completed' : '✔ Mark as Completed'}
                 </button>
             `;
             
             document.getElementById('storyModal').classList.add('active');
-            document.body.style.overflow = 'hidden'; // منع التمرير خلف المودال
+            document.body.style.overflow = 'hidden';
         }
 
         function selectOption(questionIdx, optionIdx) {
             userAnswers[questionIdx] = optionIdx;
             
-            // إزالة التحديد من جميع خيارات هذا السؤال
             document.querySelectorAll(`#q-${questionIdx} .option`).forEach(opt => {
                 opt.classList.remove('selected');
             });
             
-            // تحديد الخيار المختار
             event.currentTarget.classList.add('selected');
         }
 
         function checkAnswers() {
             if (!currentStory || !currentStory.questions) return;
             
-            let allCorrect = true;
-            
             currentStory.questions.forEach((q, idx) => {
                 const selected = userAnswers[idx];
                 const explanation = document.getElementById(`exp-${idx}`);
                 
-                // إزالة التنسيقات السابقة
                 const options = document.querySelectorAll(`#q-${idx} .option`);
                 options.forEach(opt => {
                     opt.classList.remove('correct', 'wrong');
@@ -481,29 +496,18 @@
                     } else {
                         options[selected].classList.add('wrong');
                         options[q.correct].classList.add('correct');
-                        allCorrect = false;
                     }
-                } else {
-                    allCorrect = false;
                 }
                 
                 explanation.classList.add('show');
             });
-            
-            // التحقق من الإجابة على جميع الأسئلة
-            const answeredAll = currentStory.questions.every((_, idx) => userAnswers[idx] !== undefined);
-            
-            if (answeredAll && allCorrect) {
-                allQuestionsAnswered = true;
-            }
         }
 
         function markAsComplete(id) {
-            // التحقق من الإجابة على جميع الأسئلة
             if (currentStory.questions && currentStory.questions.length > 0) {
                 const answeredAll = currentStory.questions.every((_, idx) => userAnswers[idx] !== undefined);
                 if (!answeredAll) {
-                    alert('الرجاء الإجابة على جميع الأسئلة أولاً');
+                    alert('Please answer all questions first');
                     return;
                 }
             }
@@ -513,13 +517,12 @@
                 localStorage.setItem('completedStories', JSON.stringify(completedStories));
                 
                 const btn = document.getElementById('completeBtn');
-                btn.innerText = '✓ لقد قرأت هذه القصة';
+                btn.innerText = '✓ Story Completed';
                 btn.classList.add('disabled');
                 btn.disabled = true;
                 
                 displayStories();
                 
-                // إغلاق المودال بعد ثانية
                 setTimeout(() => {
                     closeStory();
                 }, 1000);
@@ -528,7 +531,7 @@
 
         function closeStory() {
             document.getElementById('storyModal').classList.remove('active');
-            document.body.style.overflow = 'auto'; // إعادة التمرير
+            document.body.style.overflow = 'auto';
         }
 
         function toggleMenu() {
