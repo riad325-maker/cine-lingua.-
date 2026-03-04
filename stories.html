@@ -768,6 +768,139 @@
             display: block;
         }
 
+        /* الأسئلة */
+        .questions-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 1rem;
+            border: 2px solid var(--border);
+        }
+
+        [data-theme="dark"] .questions-section {
+            background: var(--bg-secondary);
+        }
+
+        .questions-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .question-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            border: 2px solid var(--border);
+        }
+
+        [data-theme="dark"] .question-item {
+            background: var(--bg-card);
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .option {
+            padding: 0.5rem 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        [data-theme="dark"] .option {
+            background: var(--bg-primary);
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: #f1f5f9;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(236,72,153,0.1));
+        }
+
+        .option.correct {
+            border-color: var(--success);
+            background: rgba(16,185,129,0.1);
+        }
+
+        .option.wrong {
+            border-color: var(--danger);
+            background: rgba(239,68,68,0.1);
+        }
+
+        .option-letter {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .option.selected .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .explanation {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background: rgba(59,130,246,0.1);
+            border-right: 4px solid #3b82f6;
+            display: none;
+            font-size: 0.85rem;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .btn-check {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.75rem;
+            background: var(--primary);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-check:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99,102,241,0.4);
+        }
+
         .modal-actions {
             display: flex;
             gap: 1rem;
@@ -915,6 +1048,8 @@
         let currentLevel = 'all';
         let currentSearchQuery = '';
         let viewingSaved = false;
+        let currentStory = null;
+        let userAnswers = {};
         
         // متغيرات التقسيم
         let currentPage = 1;
@@ -1158,25 +1293,52 @@
 
         // فتح القصة في المودال
         function openStory(storyId) {
-            const story = STORIES_DATA.find(s => s.id === storyId);
-            if (!story) return;
+            currentStory = STORIES_DATA.find(s => s.id === storyId);
+            if (!currentStory) return;
 
-            const isSaved = savedStories.includes(story.id);
+            const isSaved = savedStories.includes(currentStory.id);
+            userAnswers = {};
+
+            let questionsHTML = '';
+            if (currentStory.questions && currentStory.questions.length > 0) {
+                questionsHTML = `
+                    <div class="questions-section">
+                        <h3><i class="fas fa-question-circle"></i> أسئلة الفهم</h3>
+                        ${currentStory.questions.map((q, idx) => `
+                            <div class="question-item" id="q-${currentStory.id}-${idx}">
+                                <div class="question-text">${idx+1}. ${q.question}</div>
+                                <div class="options">
+                                    ${q.options.map((opt, optIdx) => `
+                                        <div class="option" onclick="selectOption(${currentStory.id}, ${idx}, ${optIdx})">
+                                            <span class="option-letter">${String.fromCharCode(65 + optIdx)}</span>
+                                            <span>${opt}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="explanation" id="exp-${currentStory.id}-${idx}">
+                                    ${q.explanation || `الإجابة الصحيحة: ${q.options[q.correct]}`}
+                                </div>
+                            </div>
+                        `).join('')}
+                        <button class="btn-check" onclick="checkAnswers(${currentStory.id})">تحقق من الإجابات</button>
+                    </div>
+                `;
+            }
 
             document.getElementById('modalContainer').innerHTML = `
                 <div class="modal-close" onclick="closeStory()">
                     <i class="fas fa-times"></i>
                 </div>
                 
-                <h1 class="modal-title">${story.title}</h1>
-                <span class="modal-difficulty">${story.difficulty}</span>
+                <h1 class="modal-title">${currentStory.title}</h1>
+                <span class="modal-difficulty">${currentStory.difficulty}</span>
                 
                 <div class="modal-image">
-                    <img src="${story.image}" alt="${story.title}">
+                    <img src="${currentStory.image}" alt="${currentStory.title}">
                 </div>
                 
                 <div class="modal-text">
-                    ${story.content}
+                    ${currentStory.content}
                 </div>
                 
                 <button class="translation-btn" onclick="toggleTranslation()">
@@ -1184,11 +1346,13 @@
                 </button>
                 
                 <div class="modal-translation" id="storyTranslation">
-                    ${story.arabic}
+                    ${currentStory.arabic}
                 </div>
                 
+                ${questionsHTML}
+                
                 <div class="modal-actions">
-                    <button class="modal-save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSaveFromModal(${story.id})">
+                    <button class="modal-save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSaveFromModal(${currentStory.id})">
                         <i class="fas fa-bookmark"></i>
                         ${isSaved ? 'تم الحفظ' : 'حفظ القصة'}
                     </button>
@@ -1199,10 +1363,52 @@
             document.body.style.overflow = 'hidden';
         }
 
+        // اختيار إجابة
+        function selectOption(storyId, questionIdx, optionIdx) {
+            if (!userAnswers[storyId]) userAnswers[storyId] = {};
+            userAnswers[storyId][questionIdx] = optionIdx;
+            
+            document.querySelectorAll(`#q-${storyId}-${questionIdx} .option`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            event.currentTarget.classList.add('selected');
+        }
+
+        // التحقق من الإجابات
+        function checkAnswers(storyId) {
+            const story = STORIES_DATA.find(s => s.id === storyId);
+            if (!story || !story.questions) return;
+            
+            story.questions.forEach((q, idx) => {
+                const selected = userAnswers[storyId]?.[idx];
+                const explanation = document.getElementById(`exp-${storyId}-${idx}`);
+                
+                const options = document.querySelectorAll(`#q-${storyId}-${idx} .option`);
+                options.forEach(opt => {
+                    opt.classList.remove('correct', 'wrong');
+                });
+                
+                if (selected !== undefined) {
+                    if (selected === q.correct) {
+                        options[selected].classList.add('correct');
+                    } else {
+                        options[selected].classList.add('wrong');
+                        options[q.correct].classList.add('correct');
+                    }
+                }
+                
+                if (explanation) {
+                    explanation.classList.add('show');
+                }
+            });
+        }
+
         // إغلاق المودال
         function closeStory() {
             document.getElementById('storyModal').classList.remove('active');
             document.body.style.overflow = 'auto';
+            currentStory = null;
         }
 
         // إظهار/إخفاء الترجمة
@@ -1255,4 +1461,4 @@
         setTheme(savedTheme);
     </script>
 </body>
-    </html>
+</html>
