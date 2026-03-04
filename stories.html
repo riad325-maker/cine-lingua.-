@@ -356,23 +356,9 @@
 
         .story-card.saved {
             border-color: var(--success);
-            background: linear-gradient(135deg, rgba(22, 163, 74, 0.05), rgba(34, 197, 94, 0.1));
         }
 
-        .saved-badge-story {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--success);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 2rem;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            z-index: 10;
-        }
+        /* تم إزالة saved-badge-story نهائياً */
 
         .story-image {
             height: 160px;
@@ -410,6 +396,8 @@
             font-size: 0.9rem;
             height: 60px;
             overflow: hidden;
+            text-align: left;
+            direction: ltr;
         }
 
         .story-footer {
@@ -620,7 +608,7 @@
             }
         }
 
-        /* المودال */
+        /* المودال - مع تحسينات النصوص */
         .story-modal {
             position: fixed;
             top: 0;
@@ -650,6 +638,7 @@
             padding: 2rem;
             position: relative;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .modal-close {
@@ -688,6 +677,8 @@
             font-size: 2rem;
             margin-bottom: 0.5rem;
             color: var(--primary);
+            text-align: left;
+            direction: ltr;
         }
 
         .modal-difficulty {
@@ -714,6 +705,67 @@
             object-fit: cover;
         }
 
+        .audio-controls {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .listen-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .listen-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .listen-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stop-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .stop-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .stop-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .modal-text {
             font-size: 1rem;
             line-height: 1.8;
@@ -723,6 +775,9 @@
             padding: 1.5rem;
             border-radius: 1rem;
             border-right: 4px solid var(--primary);
+            text-align: left;
+            direction: ltr;
+            word-wrap: break-word;
         }
 
         [data-theme="dark"] .modal-text {
@@ -758,6 +813,9 @@
             line-height: 1.8;
             display: none;
             font-size: 1rem;
+            text-align: right;
+            direction: rtl;
+            word-wrap: break-word;
         }
 
         [data-theme="dark"] .modal-translation {
@@ -775,6 +833,7 @@
             background: #f8fafc;
             border-radius: 1rem;
             border: 2px solid var(--border);
+            overflow-x: hidden;
         }
 
         [data-theme="dark"] .questions-section {
@@ -787,6 +846,7 @@
             gap: 0.5rem;
             margin-bottom: 1.5rem;
             font-size: 1.2rem;
+            text-align: right;
         }
 
         .question-item {
@@ -795,6 +855,8 @@
             border-radius: 0.75rem;
             margin-bottom: 1rem;
             border: 2px solid var(--border);
+            text-align: left;
+            direction: ltr;
         }
 
         [data-theme="dark"] .question-item {
@@ -805,6 +867,8 @@
             font-weight: 600;
             margin-bottom: 0.75rem;
             font-size: 0.95rem;
+            word-wrap: break-word;
+            text-align: left;
         }
 
         .options {
@@ -815,7 +879,7 @@
         }
 
         .option {
-            padding: 0.5rem 0.75rem;
+            padding: 0.75rem 0.5rem;
             border: 2px solid var(--border);
             border-radius: 0.5rem;
             cursor: pointer;
@@ -825,6 +889,12 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.85rem;
+            word-break: break-word;
+            white-space: normal;
+            line-height: 1.4;
+            min-height: 50px;
+            text-align: left;
+            direction: ltr;
         }
 
         [data-theme="dark"] .option {
@@ -851,9 +921,16 @@
             background: rgba(239,68,68,0.1);
         }
 
+        .option span:last-child {
+            flex: 1;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
         .option-letter {
-            width: 22px;
-            height: 22px;
+            width: 25px;
+            height: 25px;
+            min-width: 25px;
             border-radius: 50%;
             background: #f1f5f9;
             display: flex;
@@ -861,6 +938,7 @@
             justify-content: center;
             font-weight: 700;
             font-size: 0.8rem;
+            flex-shrink: 0;
         }
 
         .option.selected .option-letter {
@@ -876,6 +954,9 @@
             border-right: 4px solid #3b82f6;
             display: none;
             font-size: 0.85rem;
+            word-wrap: break-word;
+            text-align: left;
+            direction: ltr;
         }
 
         .explanation.show {
@@ -930,6 +1011,12 @@
 
         .modal-save-btn.saved {
             background: var(--success);
+        }
+
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
         }
 
         .footer {
@@ -1044,6 +1131,10 @@
         console.log('📚 STORIES_DATA:', STORIES_DATA);
         console.log('📊 عدد القصص:', STORIES_DATA.length);
 
+        // متغيرات النطق
+        let speechSynthesis = window.speechSynthesis;
+        let currentUtterance = null;
+
         // المتغيرات
         let savedStories = JSON.parse(localStorage.getItem('savedStories')) || [];
         let currentLevel = 'all';
@@ -1131,7 +1222,6 @@
                 const preview = story.content.length > 100 ? story.content.substring(0, 100) + '...' : story.content;
                 return `
                     <div class="story-card ${isSaved ? 'saved' : ''}">
-                        ${isSaved ? '<div class="saved-badge-story"><i class="fas fa-bookmark"></i> محفوظة</div>' : ''}
                         <div class="story-image">
                             <img src="${story.image || 'https://images.unsplash.com/photo-1474932430478-367dbb6832c1?w=400'}" alt="${story.title}">
                         </div>
@@ -1143,9 +1233,7 @@
                                 <button class="read-btn" onclick="openStory(${story.id})">اقرأ القصة</button>
                             </div>
                         </div>
-                        <button class="save-btn" onclick="toggleSave(${story.id}, event)" style="position: absolute; bottom: 10px; left: 10px; background: transparent; border: none; color: var(--primary); cursor: pointer;">
-                            <i class="fas ${isSaved ? 'fa-bookmark' : 'fa-bookmark'}"></i>
-                        </button>
+                        <!-- تم إزالة زر الحفظ من البطاقة تماماً -->
                     </div>
                 `;
             }).join('');
@@ -1233,12 +1321,8 @@
             updatePagination();
         }
 
-        // حفظ/إلغاء حفظ القصة
-        function toggleSave(storyId, event) {
-            if (event) {
-                event.stopPropagation();
-            }
-            
+        // حفظ/إلغاء حفظ القصة (داخل المودال فقط)
+        function toggleSave(storyId) {
             if (savedStories.includes(storyId)) {
                 savedStories = savedStories.filter(id => id !== storyId);
             } else {
@@ -1252,6 +1336,14 @@
                 showSavedStories();
             } else {
                 displayCurrentPage();
+            }
+
+            // تحديث زر الحفظ في المودال إذا كان مفتوحاً
+            const modalSaveBtn = document.querySelector('.modal-save-btn');
+            if (modalSaveBtn) {
+                const isSaved = savedStories.includes(storyId);
+                modalSaveBtn.classList.toggle('saved', isSaved);
+                modalSaveBtn.innerHTML = `<i class="fas fa-bookmark"></i> ${isSaved ? 'تم الحفظ' : 'حفظ القصة'}`;
             }
         }
 
@@ -1290,6 +1382,29 @@
             viewingSaved = false;
             document.querySelector('.saved-btn').style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
             applyFilters();
+        }
+
+        // دالة قراءة النص بصوت
+        function speakText(text, lang = 'en-US') {
+            // إيقاف أي قراءة حالية
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = lang;
+            currentUtterance.rate = 0.9; // سرعة القراءة
+            currentUtterance.pitch = 1;
+            currentUtterance.volume = 1;
+
+            speechSynthesis.speak(currentUtterance);
+        }
+
+        // إيقاف القراءة
+        function stopSpeaking() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
         }
 
         // فتح القصة في المودال
@@ -1338,6 +1453,15 @@
                     <img src="${currentStory.image}" alt="${currentStory.title}">
                 </div>
                 
+                <div class="audio-controls">
+                    <button class="listen-btn" onclick="speakText(\`${currentStory.content.replace(/`/g, '\\`')}\`, 'en-US')">
+                        <i class="fas fa-play"></i> استمع للقصة
+                    </button>
+                    <button class="stop-btn" onclick="stopSpeaking()">
+                        <i class="fas fa-stop"></i> إيقاف
+                    </button>
+                </div>
+                
                 <div class="modal-text">
                     ${currentStory.content}
                 </div>
@@ -1353,7 +1477,7 @@
                 ${questionsHTML}
                 
                 <div class="modal-actions">
-                    <button class="modal-save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSaveFromModal(${currentStory.id})">
+                    <button class="modal-save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSave(${currentStory.id})">
                         <i class="fas fa-bookmark"></i>
                         ${isSaved ? 'تم الحفظ' : 'حفظ القصة'}
                     </button>
@@ -1407,6 +1531,11 @@
 
         // إغلاق المودال
         function closeStory() {
+            // إيقاف أي قراءة عند إغلاق المودال
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+            
             document.getElementById('storyModal').classList.remove('active');
             document.body.style.overflow = 'auto';
             currentStory = null;
@@ -1417,19 +1546,6 @@
             const translation = document.getElementById('storyTranslation');
             if (translation) {
                 translation.classList.toggle('show');
-            }
-        }
-
-        // حفظ من داخل المودال
-        function toggleSaveFromModal(storyId) {
-            toggleSave(storyId);
-            
-            // تحديث واجهة المودال
-            const isSaved = savedStories.includes(storyId);
-            const saveBtn = document.querySelector('.modal-save-btn');
-            if (saveBtn) {
-                saveBtn.classList.toggle('saved', isSaved);
-                saveBtn.innerHTML = `<i class="fas fa-bookmark"></i> ${isSaved ? 'تم الحفظ' : 'حفظ القصة'}`;
             }
         }
 
@@ -1462,4 +1578,4 @@
         setTheme(savedTheme);
     </script>
 </body>
-</html>
+    </html>
