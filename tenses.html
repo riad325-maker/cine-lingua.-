@@ -211,7 +211,9 @@
         
         .modal-form {
             background: #f1f5f9; padding: 1rem; border-radius: 1rem; font-family: monospace;
-            font-size: 1.2rem; text-align: center; margin-bottom: 1rem; white-space: pre-line;
+            font-size: 1.2rem; text-align: left; /* تغيير المحاذاة لليسار */
+            direction: ltr; /* اتجاه النص من اليسار لليمين */
+            margin-bottom: 1rem; white-space: pre-line;
         }
         [data-theme="dark"] .modal-form { background: var(--bg-secondary); }
         
@@ -219,6 +221,8 @@
             background: #f8fafc; padding: 1.5rem; border-radius: 1rem; margin: 1.5rem 0;
             border-right: 4px solid var(--primary); line-height: 1.8; white-space: pre-line;
             overflow-x: hidden; word-wrap: break-word;
+            text-align: left; /* تغيير المحاذاة لليسار */
+            direction: ltr; /* اتجاه النص من اليسار لليمين */
         }
         [data-theme="dark"] .modal-explanation { background: var(--bg-secondary); }
 
@@ -230,11 +234,14 @@
         .example-card {
             background: #f8fafc; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border-right: 4px solid var(--secondary);
             word-wrap: break-word;
+            text-align: left; /* تغيير المحاذاة لليسار */
+            direction: ltr; /* اتجاه النص من اليسار لليمين */
         }
         [data-theme="dark"] .example-card { background: var(--bg-secondary); }
         .example-positive, .example-negative, .example-question {
             word-wrap: break-word;
             white-space: normal;
+            text-align: left; /* تغيير المحاذاة لليسار */
         }
         .example-positive { color: var(--success); }
         .example-negative { color: var(--danger); }
@@ -242,6 +249,8 @@
         .example-arabic {
             color: var(--gray); font-size: 0.9rem; margin: 0.3rem 0 0.8rem;
             word-wrap: break-word;
+            text-align: right; /* الترجمة العربية تبقى يمين */
+            direction: rtl;
         }
 
         .keywords-section { margin: 1.5rem 0; }
@@ -261,11 +270,14 @@
         
         .exercise-item {
             background: white; padding: 1rem; border-radius: 0.75rem; margin-bottom: 1rem; border: 2px solid var(--border);
+            text-align: left; /* تغيير المحاذاة لليسار */
+            direction: ltr; /* اتجاه النص من اليسار لليمين */
         }
         [data-theme="dark"] .exercise-item { background: var(--bg-card); }
         .exercise-question {
             font-weight: 600; margin-bottom: 0.75rem;
             word-wrap: break-word;
+            text-align: left;
         }
         
         .exercise-options {
@@ -289,6 +301,8 @@
             white-space: normal;
             line-height: 1.4;
             min-height: 50px;
+            text-align: left; /* تغيير المحاذاة لليسار */
+            direction: ltr; /* اتجاه النص من اليسار لليمين */
         }
         [data-theme="dark"] .exercise-option { background: var(--bg-primary); }
         .exercise-option:hover { border-color: var(--primary); background: #f1f5f9; }
@@ -298,7 +312,7 @@
         
         .exercise-option span:last-child {
             flex: 1;
-            text-align: right;
+            text-align: left; /* تغيير المحاذاة لليسار */
             font-size: 0.9rem;
         }
         
@@ -321,6 +335,8 @@
             margin-top: 0.5rem; padding: 0.5rem; border-radius: 0.5rem; background: rgba(59,130,246,0.1);
             border-right: 4px solid #3b82f6; display: none; font-size: 0.85rem;
             word-wrap: break-word;
+            text-align: left; /* تغيير المحاذاة لليسار */
+            direction: ltr;
         }
         .exercise-explanation.show { display: block; }
         
@@ -434,7 +450,7 @@
         <div class="modal-container" id="modalContainer"></div>
     </div>
 
-    <footer class="footer"><p>© 2024 CineLingua. جميع الحقوق محفوظة</p></footer>
+    <footer class="footer"><p>© 2026 CineLingua. جميع الحقوق محفوظة</p></footer>
 
     <script src="tenses-data.js"></script>
     <script>
