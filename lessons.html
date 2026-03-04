@@ -624,7 +624,7 @@
             <div class="filter-group category-group">
                 <span class="filter-label">التصنيف:</span>
                 <div class="filter-tabs category-tabs" id="categoryFilters">
-                    <!-- التصنيفات حتتولد تلقائياً من البيانات بالجافاسكريبت -->
+                    <!-- التصنيفات حتتولد تلقائياً من البيانات -->
                 </div>
             </div>
         </div>
@@ -632,8 +632,19 @@
         <div class="words-grid" id="wordsGrid"></div>
     </div>
 
-    <script src="words-data.js"></script>
+    <!-- استدعاء ملفات البيانات الثلاثة -->
+    <script src="beginner-data.js"></script>
+    <script src="intermediate-data.js"></script>
+    <script src="advanced-data.js"></script>
+    
     <script>
+        // دمج البيانات من الملفات الثلاثة
+        const WORDS_DATA = {
+            beginner: typeof BEGINNER_WORDS !== 'undefined' ? BEGINNER_WORDS : [],
+            intermediate: typeof INTERMEDIATE_WORDS !== 'undefined' ? INTERMEDIATE_WORDS : [],
+            advanced: typeof ADVANCED_WORDS !== 'undefined' ? ADVANCED_WORDS : []
+        };
+
         // البيانات والمتغيرات
         let savedWords = JSON.parse(localStorage.getItem('savedWords')) || [];
         let currentLevel = 'all';
@@ -645,13 +656,11 @@
         // تحميل الأصوات وتجهيزها
         window.speechSynthesis.onvoiceschanged = function() {
             const voices = window.speechSynthesis.getVoices();
-            // البحث عن صوت قوقل الأمريكي
             selectedVoice = voices.find(voice => 
                 voice.lang === 'en-US' && 
                 (voice.name.includes('Google') || voice.name.includes('google'))
             );
             
-            // إذا ما لقينا قوقل، نستخدم أول صوت أمريكي
             if (!selectedVoice) {
                 selectedVoice = voices.find(voice => voice.lang === 'en-US');
             }
@@ -670,47 +679,28 @@
         function generateCategoryFilters() {
             const categories = new Set();
             
-            // جمع كل التصنيفات من جميع المستويات
             for (let level in WORDS_DATA) {
                 WORDS_DATA[level].forEach(word => {
                     if (word.category) categories.add(word.category);
                 });
             }
             
-            // ترتيب التصنيفات أبجدياً
             const sortedCategories = Array.from(categories).sort();
             
-            // بناء أزرار التصنيفات
             const categoryContainer = document.getElementById('categoryFilters');
             categoryContainer.innerHTML = '<button class="filter-tab category-tab active" onclick="filterByCategory(\'all\')">📋 الكل</button>';
             
             sortedCategories.forEach(category => {
-                // اختيار إيموجي مناسب حسب التصنيف
                 let emoji = '📌';
                 if (category.includes('تحيات')) emoji = '👋';
                 else if (category.includes('أدب')) emoji = '🤝';
                 else if (category.includes('أساسيات')) emoji = '🔤';
-                else if (category.includes('تعارف')) emoji = '👥';
-                else if (category.includes('علاقات')) emoji = '💞';
-                else if (category.includes('عائلة')) emoji = '👨‍👩‍👧';
-                else if (category.includes('مكان')) emoji = '🏠';
-                else if (category.includes('مواصلات')) emoji = '🚗';
+                else if (category.includes('ألوان')) emoji = '🎨';
+                else if (category.includes('فواكه')) emoji = '🍎';
+                else if (category.includes('حيوانات')) emoji = '🦁';
                 else if (category.includes('طعام')) emoji = '🍔';
                 else if (category.includes('أفعال')) emoji = '🏃';
-                else if (category.includes('أدوات')) emoji = '✏️';
-                else if (category.includes('وظائف')) emoji = '💼';
-                else if (category.includes('مشاعر')) emoji = '😊';
                 else if (category.includes('صفات')) emoji = '⭐';
-                else if (category.includes('طبيعة')) emoji = '🌿';
-                else if (category.includes('أثاث')) emoji = '🪑';
-                else if (category.includes('ناس')) emoji = '🧑';
-                else if (category.includes('سفر')) emoji = '✈️';
-                else if (category.includes('عمل')) emoji = '💼';
-                else if (category.includes('ظرف')) emoji = '⏱️';
-                else if (category.includes('دراسة')) emoji = '📚';
-                else if (category.includes('روابط')) emoji = '🔗';
-                else if (category.includes('أكاديمي')) emoji = '🎓';
-                else if (category.includes('عام')) emoji = '📌';
                 
                 categoryContainer.innerHTML += `<button class="filter-tab category-tab" onclick="filterByCategory('${category}')">${emoji} ${category}</button>`;
             });
@@ -751,7 +741,6 @@
 
             document.querySelectorAll('#categoryFilters .filter-tab').forEach(tab => {
                 tab.classList.remove('active');
-                // إزالة الإيموجي والمسافات للمقارنة
                 const tabText = tab.textContent.replace(/[^\p{L}\s]/gu, '').trim();
                 if (tabText === category || (category === 'all' && tabText === 'الكل')) {
                     tab.classList.add('active');
@@ -770,19 +759,16 @@
 
             let words = [];
 
-            // تصفية بالمستوى
             if (currentLevel === 'all') {
                 words = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
             } else {
                 words = WORDS_DATA[currentLevel] || [];
             }
 
-            // تصفية بالتصنيف
             if (currentCategory !== 'all') {
                 words = words.filter(word => word.category === currentCategory);
             }
 
-            // تصفية بالبحث
             if (currentSearchQuery.length >= 2) {
                 const query = currentSearchQuery.toLowerCase();
                 words = words.filter(item =>
@@ -861,14 +847,13 @@
             applyFilters();
         }
 
-        // نطق الكلمة - نسخة مطورة بصوت قوقل الواضح
+        // نطق الكلمة
         function playWord(word) {
             const utterance = new SpeechSynthesisUtterance(word);
             utterance.lang = 'en-US';
-            utterance.rate = 0.9;      // أبطأ شوي عشان الوضوح
-            utterance.volume = 1;       // أعلى صوت
+            utterance.rate = 0.9;
+            utterance.volume = 1;
             
-            // استخدام صوت قوقل المحفوظ
             if (selectedVoice) {
                 utterance.voice = selectedVoice;
             }
