@@ -155,31 +155,42 @@ const WORDS_DATA = {
         { id: 348, word: "empirical", arabic: "تجريبي/واقعي", pronunciation: "إمبيريكال", example: "Empirical evidence.", exampleArabic: "دليل تجريبي", category: "أكاديمي" },
         { id: 349, word: "fluctuate", arabic: "يتذبذب", pronunciation: "فلوكتشويت", example: "Prices fluctuate.", exampleArabic: "الأسعار تتذبذب", category: "أفعال" },
         { id: 350, word: "justification", arabic: "تبرير", pronunciation: "جاستفيكيشن", example: "The justification for war.", exampleArabic: "تبرير الحرب", category: "عام" }
-    ],
-    daily_phrases: [
-        { phrase: "How are you?", arabic: "كيف حالك؟", pronunciation: "هاو آر يو", situation: "تحية" },
-        { phrase: "I'm fine, thank you", arabic: "أنا بخير، شكراً", pronunciation: "آيم فاين، ثانك يو", situation: "رد على تحية" },
-        { phrase: "What's your name?", arabic: "ما اسمك؟", pronunciation: "واتس يور نيم", situation: "تعارف" },
-        { phrase: "Nice to meet you", arabic: "تشرفت بمقابلتك", pronunciation: "نايس تو ميت يو", situation: "تعارف" },
-        { phrase: "Where are you from?", arabic: "من أين أنت؟", pronunciation: "وير آر يو فروم", situation: "تعارف" }
     ]
 };
 
-// وظائف المساعدة (Helpers)
+// دوال المساعدة
 function getWordsByLevel(level) {
     return WORDS_DATA[level] || [];
 }
 
 function searchWords(query) {
     query = query.toLowerCase();
-    const allWords = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
-    return allWords.filter(item => 
-        item.word.toLowerCase().includes(query) || 
-        item.arabic.includes(query)
-    );
+    let results = [];
+    
+    for (let level in WORDS_DATA) {
+        const matches = WORDS_DATA[level].filter(item => 
+            item.word.toLowerCase().includes(query) ||
+            item.arabic.includes(query)
+        );
+        results = results.concat(matches);
+    }
+    
+    return results;
 }
 
 function getRandomWord() {
     const allWords = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
     return allWords[Math.floor(Math.random() * allWords.length)];
 }
+
+function getCategories() {
+    const categories = new Set();
+    
+    for (let level in WORDS_DATA) {
+        WORDS_DATA[level].forEach(word => {
+            if (word.category) categories.add(word.category);
+        });
+    }
+    
+    return Array.from(categories).sort();
+            }
