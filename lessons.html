@@ -555,6 +555,126 @@
             background: var(--primary-dark);
             transform: scale(1.05);
         }
+
+        /* تنسيقات التقسيم */
+        .pagination-container {
+            margin: 3rem 0 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        [data-theme="dark"] .page-btn {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-color: var(--primary);
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: var(--gray);
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .page-number {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--dark);
+            border-radius: 50%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        [data-theme="dark"] .page-number {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-color: var(--border);
+        }
+
+        .page-number:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .page-number.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .page-info {
+            text-align: center;
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 500;
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            border: 1px solid var(--border);
+            display: inline-block;
+        }
+
+        [data-theme="dark"] .page-info {
+            background: var(--bg-card);
+            border-color: var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .pagination-controls {
+                flex-direction: column;
+            }
+            
+            .page-numbers {
+                order: -1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -629,10 +749,32 @@
             </div>
         </div>
 
+        <!-- شبكة الكلمات -->
         <div class="words-grid" id="wordsGrid"></div>
+
+        <!-- التقسيم -->
+        <div class="pagination-container" id="paginationContainer">
+            <div class="pagination-controls">
+                <button class="page-btn" onclick="changePage('prev')" id="prevBtn" disabled>
+                    <i class="fas fa-chevron-right"></i> السابق
+                </button>
+                
+                <div class="page-numbers" id="pageNumbers">
+                    <!-- الأرقام تتولد هنا -->
+                </div>
+                
+                <button class="page-btn" onclick="changePage('next')" id="nextBtn">
+                    التالي <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            
+            <div class="page-info" id="pageInfo">
+                عرض 0-0 من 0 كلمة
+            </div>
+        </div>
     </div>
 
-    <!-- استدعاء ملفات البيانات الثلاثة -->
+    <!-- استدعاء ملفات البيانات -->
     <script src="beginner-data.js"></script>
     <script src="intermediate-data.js"></script>
     <script src="advanced-data.js"></script>
@@ -652,8 +794,14 @@
         let currentSearchQuery = '';
         let viewingSaved = false;
         let selectedVoice = null;
+        
+        // متغيرات التقسيم
+        let currentPage = 1;
+        let itemsPerPage = 50;
+        let totalPages = 1;
+        let currentDisplayWords = [];
 
-        // تحميل الأصوات وتجهيزها
+        // تحميل الأصوات
         window.speechSynthesis.onvoiceschanged = function() {
             const voices = window.speechSynthesis.getVoices();
             selectedVoice = voices.find(voice => 
@@ -675,7 +823,7 @@
             applyFilters();
         });
 
-        // توليد أزرار التصنيفات من البيانات الفعلية
+        // توليد أزرار التصنيفات
         function generateCategoryFilters() {
             const categories = new Set();
             
@@ -693,14 +841,20 @@
             sortedCategories.forEach(category => {
                 let emoji = '📌';
                 if (category.includes('تحيات')) emoji = '👋';
-                else if (category.includes('أدب')) emoji = '🤝';
-                else if (category.includes('أساسيات')) emoji = '🔤';
-                else if (category.includes('ألوان')) emoji = '🎨';
-                else if (category.includes('فواكه')) emoji = '🍎';
-                else if (category.includes('حيوانات')) emoji = '🦁';
+                else if (category.includes('منزل')) emoji = '🏠';
+                else if (category.includes('عائلة')) emoji = '👨‍👩‍👧';
                 else if (category.includes('طعام')) emoji = '🍔';
+                else if (category.includes('تسوق')) emoji = '🛒';
+                else if (category.includes('مواصلات')) emoji = '🚗';
+                else if (category.includes('صحة')) emoji = '🏥';
+                else if (category.includes('عمل')) emoji = '💼';
+                else if (category.includes('تعليم')) emoji = '📚';
+                else if (category.includes('وقت')) emoji = '⏰';
+                else if (category.includes('ملابس')) emoji = '👕';
+                else if (category.includes('اتجاهات')) emoji = '🗺️';
+                else if (category.includes('مشاعر')) emoji = '😊';
                 else if (category.includes('أفعال')) emoji = '🏃';
-                else if (category.includes('صفات')) emoji = '⭐';
+                else if (category.includes('تكنولوجيا')) emoji = '📱';
                 
                 categoryContainer.innerHTML += `<button class="filter-tab category-tab" onclick="filterByCategory('${category}')">${emoji} ${category}</button>`;
             });
@@ -777,19 +931,29 @@
                 );
             }
 
-            displayWords(words);
+            currentDisplayWords = words;
+            currentPage = 1;
+            displayCurrentPage();
+            updatePagination();
         }
 
-        // عرض الكلمات
-        function displayWords(words) {
+        // عرض الصفحة الحالية
+        function displayCurrentPage() {
             const grid = document.getElementById('wordsGrid');
-
-            if (words.length === 0) {
+            
+            if (currentDisplayWords.length === 0) {
                 grid.innerHTML = '<div class="no-results">❌ لا توجد كلمات مطابقة للبحث</div>';
+                document.getElementById('paginationContainer').style.display = 'none';
                 return;
             }
-
-            grid.innerHTML = words.map(item => {
+            
+            document.getElementById('paginationContainer').style.display = 'flex';
+            
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, currentDisplayWords.length);
+            const pageWords = currentDisplayWords.slice(start, end);
+            
+            grid.innerHTML = pageWords.map(item => {
                 const isSaved = savedWords.includes(item.id);
                 return `
                     <div class="word-card ${isSaved ? 'saved' : ''}">
@@ -811,6 +975,92 @@
                     </div>
                 `;
             }).join('');
+            
+            // تحديث معلومات الصفحة
+            document.getElementById('pageInfo').innerHTML = 
+                `عرض ${start + 1}-${end} من ${currentDisplayWords.length} كلمة`;
+        }
+
+        // تحديث التقسيم
+        function updatePagination() {
+            totalPages = Math.ceil(currentDisplayWords.length / itemsPerPage);
+            
+            // تحديث الأزرار
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages;
+            
+            // إنشاء أرقام الصفحات
+            const pageNumbers = document.getElementById('pageNumbers');
+            pageNumbers.innerHTML = '';
+            
+            // عرض 5 صفحات فقط مع إمكانية رؤية الباقي
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            
+            if (startPage > 1) {
+                // زر للصفحة الأولى
+                const firstBtn = document.createElement('button');
+                firstBtn.className = 'page-number';
+                firstBtn.textContent = '1';
+                firstBtn.onclick = () => goToPage(1);
+                pageNumbers.appendChild(firstBtn);
+                
+                if (startPage > 2) {
+                    const dots = document.createElement('span');
+                    dots.className = 'page-number';
+                    dots.textContent = '...';
+                    dots.style.border = 'none';
+                    dots.style.cursor = 'default';
+                    pageNumbers.appendChild(dots);
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.className = `page-number ${i === currentPage ? 'active' : ''}`;
+                btn.textContent = i;
+                btn.onclick = () => goToPage(i);
+                pageNumbers.appendChild(btn);
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const dots = document.createElement('span');
+                    dots.className = 'page-number';
+                    dots.textContent = '...';
+                    dots.style.border = 'none';
+                    dots.style.cursor = 'default';
+                    pageNumbers.appendChild(dots);
+                }
+                
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'page-number';
+                lastBtn.textContent = totalPages;
+                lastBtn.onclick = () => goToPage(totalPages);
+                pageNumbers.appendChild(lastBtn);
+            }
+        }
+
+        // تغيير الصفحة
+        function changePage(direction) {
+            if (direction === 'prev' && currentPage > 1) {
+                currentPage--;
+            } else if (direction === 'next' && currentPage < totalPages) {
+                currentPage++;
+            }
+            displayCurrentPage();
+            updatePagination();
+        }
+
+        // الذهاب لصفحة معينة
+        function goToPage(page) {
+            currentPage = page;
+            displayCurrentPage();
+            updatePagination();
         }
 
         // عرض الكلمات المحفوظة
@@ -829,13 +1079,17 @@
                 `;
                 viewingSaved = true;
                 document.querySelector('.saved-btn').style.background = 'var(--success)';
+                document.getElementById('paginationContainer').style.display = 'none';
                 return;
             }
 
             const allWords = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
             const savedWordsList = allWords.filter(word => savedWords.includes(word.id));
 
-            displayWords(savedWordsList);
+            currentDisplayWords = savedWordsList;
+            currentPage = 1;
+            displayCurrentPage();
+            updatePagination();
             viewingSaved = true;
             document.querySelector('.saved-btn').style.background = 'var(--success)';
         }
@@ -875,7 +1129,8 @@
             if (viewingSaved) {
                 showSavedWords();
             } else {
-                applyFilters();
+                // إعادة عرض الصفحة الحالية مع تحديث حالة الحفظ
+                displayCurrentPage();
             }
         }
 
@@ -917,4 +1172,4 @@
         setTheme(savedTheme);
     </script>
 </body>
-    </html>
+                    </html>
