@@ -642,10 +642,10 @@
         }
 
         .modal-close {
-            position: sticky;
-            top: 1rem;
-            left: 1rem;
-            z-index: 10;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10000;
             background: white;
             border: 2px solid var(--border);
             width: 40px;
@@ -1386,26 +1386,78 @@
 
         // دالة قراءة النص بصوت
         function speakText(text, lang = 'en-US') {
-            // إيقاف أي قراءة حالية
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
-            }
+    // إيقاف أي قراءة حالية
+    if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+    }
 
-            currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = lang;
-            currentUtterance.rate = 0.9; // سرعة القراءة
-            currentUtterance.pitch = 1;
-            currentUtterance.volume = 1;
+    currentUtterance = new SpeechSynthesisUtterance(text);
+    currentUtterance.lang = lang;
+    currentUtterance.rate = 0.8;      // ⭐ أبطأ (0.8 بدل 0.9) = أوضح للقصص
+    currentUtterance.pitch = 1.1;      // ⭐ نبرة أعلى = أوضح
+    currentUtterance.volume = 1;
 
-            speechSynthesis.speak(currentUtterance);
+    // البحث عن أفضل صوت متاح
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(voice => 
+        voice.lang === 'en-US' && 
+        (voice.name.includes('Google') || voice.name.includes('google'))
+    ) || voices.find(voice => voice.lang === 'en-US');
+    
+    if (preferredVoice) {
+        currentUtterance.voice = preferredVoice;
+        console.log('📖 القراءة بصوت:', preferredVoice.name);
+    }
+
+    // تحسينات إضافية للقراءة
+    currentUtterance.onboundary = function(event) {
+        // هذا يتفعل عند كل كلمة (تقدر تسوي هايلايت للكلمة المقروءة لو حاب)
+        if (event.name === 'word') {
+            console.log('🔊 جاري قراءة:', text.substr(event.charIndex, event.charLength));
         }
+    };
 
-        // إيقاف القراءة
-        function stopSpeaking() {
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
-            }
+    currentUtterance.onend = function() {
+        console.log('✅ انتهت القراءة');
+    };
+
+    currentUtterance.onerror = function(error) {
+        console.log('❌ خطأ في القراءة:', error);
+    };
+
+    speechSynthesis.speak(currentUtterance);
+}
+
+// إيقاف القراءة
+function stopSpeaking() {
+    if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        console.log('⏹️ تم إيقاف القراءة');
+    }
+}
+
+// قراءة فقرة مع توقف طبيعي
+function speakParagraph(text, lang = 'en-US') {
+    // تقسيم النص إلى جمل (حسب النقاط)
+    const sentences = text.split(/(?<=[.!?])\s+/);
+    let index = 0;
+    
+    function readNext() {
+        if (index < sentences.length) {
+            speakText(sentences[index], lang);
+            index++;
         }
+    }
+    
+    // استمع لنهاية كل جملة واقرأ اللي بعدها
+    if (currentUtterance) {
+        currentUtterance.onend = function() {
+            setTimeout(readNext, 500); // وقف 0.5 ثانية بين الجمل
+        };
+    }
+    
+    readNext();
+                                       }
 
         // فتح القصة في المودال
         function openStory(storyId) {
@@ -1454,12 +1506,13 @@
                 </div>
                 
                 <div class="audio-controls">
-                    <button class="listen-btn" onclick="speakText(\`${currentStory.content.replace(/`/g, '\\`')}\`, 'en-US')">
-                        <i class="fas fa-play"></i> استمع للقصة
-                    </button>
-                    <button class="stop-btn" onclick="stopSpeaking()">
-                        <i class="fas fa-stop"></i> إيقاف
-                    </button>
+                    <button onclick="speakText('${story.content}', 'en-US')">
+    <i class="fas fa-headphones"></i> استمع للقصة
+</button>
+
+<button onclick="stopSpeaking()">
+    <i class="fas fa-stop"></i> إيقاف
+</button>
                 </div>
                 
                 <div class="modal-text">
@@ -1578,4 +1631,4 @@
         setTheme(savedTheme);
     </script>
 </body>
-    </html>
+        </html>
