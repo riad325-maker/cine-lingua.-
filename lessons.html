@@ -483,6 +483,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            font-size: 0.85rem;
         }
 
         [data-theme="dark"] .action-btn {
@@ -674,6 +675,10 @@
             .page-numbers {
                 order: -1;
             }
+            
+            .word-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -693,8 +698,8 @@
                 <li><a href="index.html">الرئيسية</a></li>
                 <li><a href="lessons.html" class="active">الكلمات</a></li>
                 <li><a href="stories.html">القصص</a></li>
+                <li><a href="tenses.html">الأزمنة</a></li>
                 <li><a href="quiz.html">الاختبارات</a></li>
-                <li><a href="tenses.html">االأزمنة</a></li>
             </ul>
 
             <div class="theme-toggle" id="themeToggle">
@@ -720,9 +725,7 @@
 
         <!-- الفلاتر -->
         <div class="filters-container">
-            <!-- السطر الأول: فلاتر المستوى + زر المحفوظات -->
             <div class="filter-row">
-                <!-- فلتر المستوى -->
                 <div class="filter-group">
                     <span class="filter-label">المستوى:</span>
                     <div class="filter-tabs" id="levelFilters">
@@ -733,7 +736,6 @@
                     </div>
                 </div>
 
-                <!-- زر الكلمات المحفوظة -->
                 <button class="saved-btn" onclick="showSavedWords()">
                     <i class="fas fa-bookmark"></i>
                     <span>الكلمات المحفوظة</span>
@@ -741,54 +743,39 @@
                 </button>
             </div>
 
-            <!-- السطر الثاني: فلتر التصنيف (بحجم أصغر) -->
             <div class="filter-group category-group">
                 <span class="filter-label">التصنيف:</span>
-                <div class="filter-tabs category-tabs" id="categoryFilters">
-                    <!-- التصنيفات حتتولد تلقائياً من البيانات -->
-                </div>
+                <div class="filter-tabs category-tabs" id="categoryFilters"></div>
             </div>
         </div>
 
-        <!-- شبكة الكلمات -->
         <div class="words-grid" id="wordsGrid"></div>
 
-        <!-- التقسيم -->
         <div class="pagination-container" id="paginationContainer">
             <div class="pagination-controls">
                 <button class="page-btn" onclick="changePage('prev')" id="prevBtn" disabled>
                     <i class="fas fa-chevron-right"></i> السابق
                 </button>
-                
-                <div class="page-numbers" id="pageNumbers">
-                    <!-- الأرقام تتولد هنا -->
-                </div>
-                
+                <div class="page-numbers" id="pageNumbers"></div>
                 <button class="page-btn" onclick="changePage('next')" id="nextBtn">
                     التالي <i class="fas fa-chevron-left"></i>
                 </button>
             </div>
-            
-            <div class="page-info" id="pageInfo">
-                عرض 0-0 من 0 كلمة
-            </div>
+            <div class="page-info" id="pageInfo">عرض 0-0 من 0 كلمة</div>
         </div>
     </div>
 
-    <!-- استدعاء ملفات البيانات -->
     <script src="beginner-data.js"></script>
     <script src="intermediate-data.js"></script>
     <script src="advanced-data.js"></script>
     
     <script>
-        // دمج البيانات من الملفات الثلاثة
         const WORDS_DATA = {
             beginner: typeof BEGINNER_WORDS !== 'undefined' ? BEGINNER_WORDS : [],
             intermediate: typeof INTERMEDIATE_WORDS !== 'undefined' ? INTERMEDIATE_WORDS : [],
             advanced: typeof ADVANCED_WORDS !== 'undefined' ? ADVANCED_WORDS : []
         };
 
-        // البيانات والمتغيرات
         let savedWords = JSON.parse(localStorage.getItem('savedWords')) || [];
         let currentLevel = 'all';
         let currentCategory = 'all';
@@ -796,131 +783,105 @@
         let viewingSaved = false;
         let selectedVoice = null;
         
-        // متغيرات التقسيم
         let currentPage = 1;
         let itemsPerPage = 50;
         let totalPages = 1;
         let currentDisplayWords = [];
 
-        // تحميل الأصوات
         window.speechSynthesis.onvoiceschanged = function() {
-    const voices = window.speechSynthesis.getVoices();
-    selectedVoice = voices.find(voice => 
-        voice.lang === 'en-US' && 
-        (voice.name.includes('Google') || voice.name.includes('google'))
-    );
-    
-    if (!selectedVoice) {
-        selectedVoice = voices.find(voice => voice.lang === 'en-US');
-    }
-    
-    console.log('✅ الصوت المستخدم:', selectedVoice?.name || 'الصوت الافتراضي');
-};
+            const voices = window.speechSynthesis.getVoices();
+            selectedVoice = voices.find(voice => 
+                voice.lang === 'en-US' && 
+                (voice.name.includes('Google') || voice.name.includes('google'))
+            ) || voices.find(voice => voice.lang === 'en-US');
+            
+            console.log('✅ الصوت:', selectedVoice?.name || 'الافتراضي');
+        };
 
-// 🎤 دالة النطق الخارقة
-function playWord(word) {
-    window.speechSynthesis.cancel(); // أوقف أي صوت شغال
-    
-    const utterance = new SpeechSynthesisUtterance(word);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.85;  // ⭐ أبطأ شوي = أوضح
-    utterance.pitch = 1.1;   // ⭐ نبرة أعلى = أوضح
-    utterance.volume = 1;    // أعلى صوت
-    
-    if (selectedVoice) {
-        utterance.voice = selectedVoice;
-    }
-    
-    window.speechSynthesis.speak(utterance);
-}
+        if (window.speechSynthesis.getVoices().length > 0) {
+            window.speechSynthesis.onvoiceschanged();
+        }
 
-// 🐢 نطق بطيء جداً (للكلمات الصعبة)
-function playWordSuperSlow(word) {
-    window.speechSynthesis.cancel();
-    
-    const utterance = new SpeechSynthesisUtterance(word);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.5;   // 🐢 نص السرعة
-    utterance.pitch = 1.2;   // نبرة أعلى
-    utterance.volume = 1;
-    
-    if (selectedVoice) {
-        utterance.voice = selectedVoice;
-    }
-    
-    window.speechSynthesis.speak(utterance);
-         }
+        function playWord(word) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            utterance.volume = 1;
+            if (selectedVoice) utterance.voice = selectedVoice;
+            window.speechSynthesis.speak(utterance);
+        }
 
-        // توليد أزرار التصنيفات
+        function playWordSuperSlow(word) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.5;
+            utterance.pitch = 1.2;
+            utterance.volume = 1;
+            if (selectedVoice) utterance.voice = selectedVoice;
+            window.speechSynthesis.speak(utterance);
+        }
+
         function generateCategoryFilters() {
             const categories = new Set();
-            
             for (let level in WORDS_DATA) {
                 WORDS_DATA[level].forEach(word => {
                     if (word.category) categories.add(word.category);
                 });
             }
             
-            const sortedCategories = Array.from(categories).sort();
+            const sorted = Array.from(categories).sort();
+            const container = document.getElementById('categoryFilters');
+            container.innerHTML = '<button class="filter-tab category-tab active" onclick="filterByCategory(\'all\')">📋 الكل</button>';
             
-            const categoryContainer = document.getElementById('categoryFilters');
-            categoryContainer.innerHTML = '<button class="filter-tab category-tab active" onclick="filterByCategory(\'all\')">📋 الكل</button>';
-            
-            sortedCategories.forEach(category => {
+            sorted.forEach(cat => {
                 let emoji = '📌';
-                if (category.includes('تحيات')) emoji = '👋';
-                else if (category.includes('منزل')) emoji = '🏠';
-                else if (category.includes('عائلة')) emoji = '👨‍👩‍👧';
-                else if (category.includes('طعام')) emoji = '🍔';
-                else if (category.includes('تسوق')) emoji = '🛒';
-                else if (category.includes('مواصلات')) emoji = '🚗';
-                else if (category.includes('صحة')) emoji = '🏥';
-                else if (category.includes('عمل')) emoji = '💼';
-                else if (category.includes('تعليم')) emoji = '📚';
-                else if (category.includes('وقت')) emoji = '⏰';
-                else if (category.includes('ملابس')) emoji = '👕';
-                else if (category.includes('اتجاهات')) emoji = '🗺️';
-                else if (category.includes('مشاعر')) emoji = '😊';
-                else if (category.includes('أفعال')) emoji = '🏃';
-                else if (category.includes('تكنولوجيا')) emoji = '📱';
+                if (cat.includes('تحيات')) emoji = '👋';
+                else if (cat.includes('منزل')) emoji = '🏠';
+                else if (cat.includes('عائلة')) emoji = '👨‍👩‍👧';
+                else if (cat.includes('طعام')) emoji = '🍔';
+                else if (cat.includes('تسوق')) emoji = '🛒';
+                else if (cat.includes('مواصلات')) emoji = '🚗';
+                else if (cat.includes('صحة')) emoji = '🏥';
+                else if (cat.includes('عمل')) emoji = '💼';
+                else if (cat.includes('تعليم')) emoji = '📚';
+                else if (cat.includes('وقت')) emoji = '⏰';
+                else if (cat.includes('ملابس')) emoji = '👕';
+                else if (cat.includes('اتجاهات')) emoji = '🗺️';
+                else if (cat.includes('مشاعر')) emoji = '😊';
+                else if (cat.includes('أفعال')) emoji = '🏃';
+                else if (cat.includes('تكنولوجيا')) emoji = '📱';
                 
-                categoryContainer.innerHTML += `<button class="filter-tab category-tab" onclick="filterByCategory('${category}')">${emoji} ${category}</button>`;
+                container.innerHTML += `<button class="filter-tab category-tab" onclick="filterByCategory('${cat}')">${emoji} ${cat}</button>`;
             });
         }
 
-        // حساب إجمالي الكلمات
         function updateTotalWords() {
             const total = (WORDS_DATA.beginner?.length || 0) +
-                (WORDS_DATA.intermediate?.length || 0) +
-                (WORDS_DATA.advanced?.length || 0);
+                         (WORDS_DATA.intermediate?.length || 0) +
+                         (WORDS_DATA.advanced?.length || 0);
             document.getElementById('totalWords').textContent = total;
             document.getElementById('savedCount').textContent = savedWords.length;
         }
 
-        // فلتر المستوى
         function filterByLevel(level) {
             if (viewingSaved) exitSavedView();
-
             currentLevel = level;
-
             document.querySelectorAll('#levelFilters .filter-tab').forEach(tab => {
                 tab.classList.remove('active');
-                if (tab.textContent.includes(level === 'all' ? 'الكل' :
-                    level === 'beginner' ? 'مبتدئ' :
-                        level === 'intermediate' ? 'متوسط' : 'متقدم')) {
+                if (tab.textContent.includes(level === 'all' ? 'الكل' : 
+                    level === 'beginner' ? 'مبتدئ' : 
+                    level === 'intermediate' ? 'متوسط' : 'متقدم')) {
                     tab.classList.add('active');
                 }
             });
-
             applyFilters();
         }
 
-        // فلتر التصنيف
         function filterByCategory(category) {
             if (viewingSaved) exitSavedView();
-
             currentCategory = category;
-
             document.querySelectorAll('#categoryFilters .filter-tab').forEach(tab => {
                 tab.classList.remove('active');
                 const tabText = tab.textContent.replace(/[^\p{L}\s]/gu, '').trim();
@@ -928,19 +889,13 @@ function playWordSuperSlow(word) {
                     tab.classList.add('active');
                 }
             });
-
             applyFilters();
         }
 
-        // تطبيق جميع الفلاتر
         function applyFilters() {
-            if (viewingSaved) {
-                showSavedWords();
-                return;
-            }
+            if (viewingSaved) { showSavedWords(); return; }
 
             let words = [];
-
             if (currentLevel === 'all') {
                 words = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
             } else {
@@ -948,15 +903,12 @@ function playWordSuperSlow(word) {
             }
 
             if (currentCategory !== 'all') {
-                words = words.filter(word => word.category === currentCategory);
+                words = words.filter(w => w.category === currentCategory);
             }
 
             if (currentSearchQuery.length >= 2) {
-                const query = currentSearchQuery.toLowerCase();
-                words = words.filter(item =>
-                    item.word.toLowerCase().includes(query) ||
-                    item.arabic.includes(query)
-                );
+                const q = currentSearchQuery.toLowerCase();
+                words = words.filter(w => w.word.toLowerCase().includes(q) || w.arabic.includes(q));
             }
 
             currentDisplayWords = words;
@@ -965,12 +917,11 @@ function playWordSuperSlow(word) {
             updatePagination();
         }
 
-        // عرض الصفحة الحالية
         function displayCurrentPage() {
             const grid = document.getElementById('wordsGrid');
             
             if (currentDisplayWords.length === 0) {
-                grid.innerHTML = '<div class="no-results">❌ لا توجد كلمات مطابقة للبحث</div>';
+                grid.innerHTML = '<div class="no-results">❌ لا توجد كلمات</div>';
                 document.getElementById('paginationContainer').style.display = 'none';
                 return;
             }
@@ -979,12 +930,12 @@ function playWordSuperSlow(word) {
             
             const start = (currentPage - 1) * itemsPerPage;
             const end = Math.min(start + itemsPerPage, currentDisplayWords.length);
-            const pageWords = currentDisplayWords.slice(start, end);
+            const page = currentDisplayWords.slice(start, end);
             
-            grid.innerHTML = pageWords.map(item => {
-                const isSaved = savedWords.includes(item.id);
+            grid.innerHTML = page.map(item => {
+                const saved = savedWords.includes(item.id);
                 return `
-                    <div class="word-card ${isSaved ? 'saved' : ''}">
+                    <div class="word-card ${saved ? 'saved' : ''}">
                         <div class="word-header">
                             <span class="word-text">${item.word}</span>
                             <span class="word-arabic">${item.arabic}</span>
@@ -996,125 +947,107 @@ function playWordSuperSlow(word) {
                         </div>
                         <div class="word-actions">
                             <button class="action-btn" onclick="playWord('${item.word}')"><i class="fas fa-volume-up"></i> استماع</button>
-                            <button class="action-btn ${isSaved ? 'saved' : ''}" onclick="toggleSave(${item.id})">
-                                <i class="fas fa-bookmark"></i> ${isSaved ? 'محفوظة' : 'حفظ'}
+                            <button class="action-btn" onclick="playWordSuperSlow('${item.word}')"><i class="fas fa-ear-listen"></i> واضح</button>
+                            <button class="action-btn ${saved ? 'saved' : ''}" onclick="toggleSave(${item.id})">
+                                <i class="fas fa-bookmark"></i> ${saved ? 'محفوظة' : 'حفظ'}
                             </button>
                         </div>
                     </div>
                 `;
             }).join('');
             
-            // تحديث معلومات الصفحة
             document.getElementById('pageInfo').innerHTML = 
-                `عرض ${start + 1}-${end} من ${currentDisplayWords.length} كلمة`;
+                `عرض ${start+1}-${end} من ${currentDisplayWords.length} كلمة`;
         }
 
-        // تحديث التقسيم
         function updatePagination() {
             totalPages = Math.ceil(currentDisplayWords.length / itemsPerPage);
-            
-            // تحديث الأزرار
             document.getElementById('prevBtn').disabled = currentPage === 1;
             document.getElementById('nextBtn').disabled = currentPage === totalPages;
             
-            // إنشاء أرقام الصفحات
-            const pageNumbers = document.getElementById('pageNumbers');
-            pageNumbers.innerHTML = '';
+            const nums = document.getElementById('pageNumbers');
+            nums.innerHTML = '';
             
-            // عرض 5 صفحات فقط مع إمكانية رؤية الباقي
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(totalPages, startPage + 4);
+            let start = Math.max(1, currentPage - 2);
+            let end = Math.min(totalPages, start + 4);
             
-            if (endPage - startPage < 4) {
-                startPage = Math.max(1, endPage - 4);
-            }
+            if (end - start < 4) start = Math.max(1, end - 4);
             
-            if (startPage > 1) {
-                // زر للصفحة الأولى
-                const firstBtn = document.createElement('button');
-                firstBtn.className = 'page-number';
-                firstBtn.textContent = '1';
-                firstBtn.onclick = () => goToPage(1);
-                pageNumbers.appendChild(firstBtn);
-                
-                if (startPage > 2) {
+            if (start > 1) {
+                const first = document.createElement('button');
+                first.className = 'page-number';
+                first.textContent = '1';
+                first.onclick = () => goToPage(1);
+                nums.appendChild(first);
+                if (start > 2) {
                     const dots = document.createElement('span');
                     dots.className = 'page-number';
                     dots.textContent = '...';
                     dots.style.border = 'none';
                     dots.style.cursor = 'default';
-                    pageNumbers.appendChild(dots);
+                    nums.appendChild(dots);
                 }
             }
             
-            for (let i = startPage; i <= endPage; i++) {
+            for (let i = start; i <= end; i++) {
                 const btn = document.createElement('button');
                 btn.className = `page-number ${i === currentPage ? 'active' : ''}`;
                 btn.textContent = i;
                 btn.onclick = () => goToPage(i);
-                pageNumbers.appendChild(btn);
+                nums.appendChild(btn);
             }
             
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) {
+            if (end < totalPages) {
+                if (end < totalPages - 1) {
                     const dots = document.createElement('span');
                     dots.className = 'page-number';
                     dots.textContent = '...';
                     dots.style.border = 'none';
                     dots.style.cursor = 'default';
-                    pageNumbers.appendChild(dots);
+                    nums.appendChild(dots);
                 }
-                
-                const lastBtn = document.createElement('button');
-                lastBtn.className = 'page-number';
-                lastBtn.textContent = totalPages;
-                lastBtn.onclick = () => goToPage(totalPages);
-                pageNumbers.appendChild(lastBtn);
+                const last = document.createElement('button');
+                last.className = 'page-number';
+                last.textContent = totalPages;
+                last.onclick = () => goToPage(totalPages);
+                nums.appendChild(last);
             }
         }
 
-        // تغيير الصفحة
-        function changePage(direction) {
-            if (direction === 'prev' && currentPage > 1) {
-                currentPage--;
-            } else if (direction === 'next' && currentPage < totalPages) {
-                currentPage++;
-            }
+        function changePage(dir) {
+            if (dir === 'prev' && currentPage > 1) currentPage--;
+            else if (dir === 'next' && currentPage < totalPages) currentPage++;
             displayCurrentPage();
             updatePagination();
         }
 
-        // الذهاب لصفحة معينة
-        function goToPage(page) {
-            currentPage = page;
-            displayCurrentPage();
-            updatePagination();
+        function goToPage(p) { currentPage = p; displayCurrentPage(); updatePagination(); }
+
+        function toggleSave(id) {
+            savedWords = savedWords.includes(id) ? savedWords.filter(i => i !== id) : [...savedWords, id];
+            localStorage.setItem('savedWords', JSON.stringify(savedWords));
+            document.getElementById('savedCount').textContent = savedWords.length;
+            document.getElementById('savedBadge').textContent = savedWords.length;
+            viewingSaved ? showSavedWords() : displayCurrentPage();
         }
 
-        // عرض الكلمات المحفوظة
         function showSavedWords() {
-            if (savedWords.length === 0) {
-                const grid = document.getElementById('wordsGrid');
-                grid.innerHTML = `
+            if (!savedWords.length) {
+                document.getElementById('wordsGrid').innerHTML = `
                     <div class="empty-saved">
                         <i class="fas fa-bookmark"></i>
                         <h3>لا توجد كلمات محفوظة</h3>
-                        <p>احفظ الكلمات التي تريد مراجعتها لاحقاً</p>
-                        <button class="back-btn" onclick="exitSavedView()">
-                            <i class="fas fa-arrow-right"></i> العودة للكلمات
-                        </button>
-                    </div>
-                `;
+                        <p>احفظ الكلمات لمراجعتها لاحقاً</p>
+                        <button class="back-btn" onclick="exitSavedView()">العودة</button>
+                    </div>`;
                 viewingSaved = true;
                 document.querySelector('.saved-btn').style.background = 'var(--success)';
                 document.getElementById('paginationContainer').style.display = 'none';
                 return;
             }
-
-            const allWords = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
-            const savedWordsList = allWords.filter(word => savedWords.includes(word.id));
-
-            currentDisplayWords = savedWordsList;
+            
+            const all = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
+            currentDisplayWords = all.filter(w => savedWords.includes(w.id));
             currentPage = 1;
             displayCurrentPage();
             updatePagination();
@@ -1122,67 +1055,23 @@ function playWordSuperSlow(word) {
             document.querySelector('.saved-btn').style.background = 'var(--success)';
         }
 
-        // الخروج من عرض المحفوظات
         function exitSavedView() {
             viewingSaved = false;
             document.querySelector('.saved-btn').style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
             applyFilters();
         }
 
-        // نطق الكلمة
-        function playWord(word) {
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            utterance.volume = 1;
-            
-            if (selectedVoice) {
-                utterance.voice = selectedVoice;
-            }
-            
-            window.speechSynthesis.speak(utterance);
-        }
-
-        // حفظ/إلغاء حفظ الكلمة
-        function toggleSave(wordId) {
-            if (savedWords.includes(wordId)) {
-                savedWords = savedWords.filter(id => id !== wordId);
-            } else {
-                savedWords.push(wordId);
-            }
-            localStorage.setItem('savedWords', JSON.stringify(savedWords));
-            document.getElementById('savedCount').textContent = savedWords.length;
-            document.getElementById('savedBadge').textContent = savedWords.length;
-
-            if (viewingSaved) {
-                showSavedWords();
-            } else {
-                // إعادة عرض الصفحة الحالية مع تحديث حالة الحفظ
-                displayCurrentPage();
-            }
-        }
-
-        // البحث
         document.getElementById('searchInput').addEventListener('input', (e) => {
             if (viewingSaved) exitSavedView();
             currentSearchQuery = e.target.value;
-            if (currentSearchQuery.length === 0 || currentSearchQuery.length >= 2) {
-                applyFilters();
-            }
+            if (!currentSearchQuery.length || currentSearchQuery.length >= 2) applyFilters();
         });
 
-        // دوال القائمة
-        function toggleMenu() {
-            document.getElementById('navMenu').classList.toggle('show');
-        }
+        function toggleMenu() { document.getElementById('navMenu').classList.toggle('show'); }
+        document.querySelectorAll('.nav-menu a').forEach(l => l.addEventListener('click', () => 
+            document.getElementById('navMenu').classList.remove('show')
+        ));
 
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('navMenu').classList.remove('show');
-            });
-        });
-
-        // دالة الثيم
         window.setTheme = function(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
@@ -1195,9 +1084,15 @@ function playWordSuperSlow(word) {
             });
         };
 
-        // تحميل الثيم المحفوظ
+        document.addEventListener('DOMContentLoaded', () => {
+            generateCategoryFilters();
+            updateTotalWords();
+            document.getElementById('savedBadge').textContent = savedWords.length;
+            applyFilters();
+        });
+
         const savedTheme = localStorage.getItem('theme') || 'light';
         setTheme(savedTheme);
     </script>
 </body>
-                    </html>
+    </html>
