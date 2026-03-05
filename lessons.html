@@ -505,9 +505,19 @@
         }
 
         .action-btn.slow {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
+            background: #f1f5f9;
+            color: var(--dark);
         }
+
+        [data-theme="dark"] .action-btn.slow {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+ 
+        .action-btn.slow:hover {
+            background: var(--primary);
+            color: white;
+        } 
 
         /* رسالة عدم وجود نتائج */
         .no-results {
