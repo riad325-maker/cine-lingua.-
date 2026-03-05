@@ -468,10 +468,12 @@
             display: flex;
             gap: 0.5rem;
             margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         .action-btn {
             flex: 1;
+            min-width: 90px;
             padding: 0.75rem;
             border: none;
             border-radius: 1rem;
@@ -494,10 +496,16 @@
         .action-btn:hover {
             background: var(--primary);
             color: white;
+            transform: translateY(-2px);
         }
 
         .action-btn.saved {
             background: var(--success);
+            color: white;
+        }
+
+        .action-btn.slow {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
         }
 
@@ -679,6 +687,10 @@
             .word-actions {
                 flex-direction: column;
             }
+            
+            .action-btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -770,12 +782,20 @@
     <script src="advanced-data.js"></script>
     
     <script>
+        // دالة لتنظيف النصوص من علامات الاقتباس
+        function escapeString(str) {
+            if (!str) return '';
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/`/g, '\\`');
+        }
+
+        // دمج البيانات من الملفات الثلاثة
         const WORDS_DATA = {
             beginner: typeof BEGINNER_WORDS !== 'undefined' ? BEGINNER_WORDS : [],
             intermediate: typeof INTERMEDIATE_WORDS !== 'undefined' ? INTERMEDIATE_WORDS : [],
             advanced: typeof ADVANCED_WORDS !== 'undefined' ? ADVANCED_WORDS : []
         };
 
+        // البيانات والمتغيرات
         let savedWords = JSON.parse(localStorage.getItem('savedWords')) || [];
         let currentLevel = 'all';
         let currentCategory = 'all';
@@ -783,105 +803,109 @@
         let viewingSaved = false;
         let selectedVoice = null;
         
+        // متغيرات التقسيم
         let currentPage = 1;
         let itemsPerPage = 50;
         let totalPages = 1;
         let currentDisplayWords = [];
 
-        window.speechSynthesis.onvoiceschanged = function() {
+        // تحميل الأصوات
+        function loadVoices() {
             const voices = window.speechSynthesis.getVoices();
-            selectedVoice = voices.find(voice => 
-                voice.lang === 'en-US' && 
-                (voice.name.includes('Google') || voice.name.includes('google'))
-            ) || voices.find(voice => voice.lang === 'en-US');
-            
-            console.log('✅ الصوت:', selectedVoice?.name || 'الافتراضي');
-        };
+            if (voices.length > 0) {
+                selectedVoice = voices.find(voice => 
+                    voice.lang === 'en-US' && 
+                    (voice.name.includes('Google') || voice.name.includes('google'))
+                ) || voices.find(voice => voice.lang === 'en-US');
+                
+                console.log('✅ الصوت المستخدم:', selectedVoice?.name || 'الصوت الافتراضي');
+            }
+        }
 
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        
+        // تحميل فوري للأصوات إذا كانت موجودة
         if (window.speechSynthesis.getVoices().length > 0) {
-            window.speechSynthesis.onvoiceschanged();
+            loadVoices();
         }
 
-        function playWord(word) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            utterance.volume = 1;
-            if (selectedVoice) utterance.voice = selectedVoice;
-            window.speechSynthesis.speak(utterance);
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            generateCategoryFilters();
+            updateTotalWords();
+            document.getElementById('savedBadge').textContent = savedWords.length;
+            applyFilters();
+        });
 
-        function playWordSuperSlow(word) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.5;
-            utterance.pitch = 1.2;
-            utterance.volume = 1;
-            if (selectedVoice) utterance.voice = selectedVoice;
-            window.speechSynthesis.speak(utterance);
-        }
-
+        // توليد أزرار التصنيفات
         function generateCategoryFilters() {
             const categories = new Set();
+            
             for (let level in WORDS_DATA) {
                 WORDS_DATA[level].forEach(word => {
                     if (word.category) categories.add(word.category);
                 });
             }
             
-            const sorted = Array.from(categories).sort();
-            const container = document.getElementById('categoryFilters');
-            container.innerHTML = '<button class="filter-tab category-tab active" onclick="filterByCategory(\'all\')">📋 الكل</button>';
+            const sortedCategories = Array.from(categories).sort();
             
-            sorted.forEach(cat => {
+            const categoryContainer = document.getElementById('categoryFilters');
+            categoryContainer.innerHTML = '<button class="filter-tab category-tab active" onclick="filterByCategory(\'all\')">📋 الكل</button>';
+            
+            sortedCategories.forEach(category => {
                 let emoji = '📌';
-                if (cat.includes('تحيات')) emoji = '👋';
-                else if (cat.includes('منزل')) emoji = '🏠';
-                else if (cat.includes('عائلة')) emoji = '👨‍👩‍👧';
-                else if (cat.includes('طعام')) emoji = '🍔';
-                else if (cat.includes('تسوق')) emoji = '🛒';
-                else if (cat.includes('مواصلات')) emoji = '🚗';
-                else if (cat.includes('صحة')) emoji = '🏥';
-                else if (cat.includes('عمل')) emoji = '💼';
-                else if (cat.includes('تعليم')) emoji = '📚';
-                else if (cat.includes('وقت')) emoji = '⏰';
-                else if (cat.includes('ملابس')) emoji = '👕';
-                else if (cat.includes('اتجاهات')) emoji = '🗺️';
-                else if (cat.includes('مشاعر')) emoji = '😊';
-                else if (cat.includes('أفعال')) emoji = '🏃';
-                else if (cat.includes('تكنولوجيا')) emoji = '📱';
+                if (category.includes('تحيات')) emoji = '👋';
+                else if (category.includes('منزل')) emoji = '🏠';
+                else if (category.includes('عائلة')) emoji = '👨‍👩‍👧';
+                else if (category.includes('طعام')) emoji = '🍔';
+                else if (category.includes('تسوق')) emoji = '🛒';
+                else if (category.includes('مواصلات')) emoji = '🚗';
+                else if (category.includes('صحة')) emoji = '🏥';
+                else if (category.includes('عمل')) emoji = '💼';
+                else if (category.includes('تعليم')) emoji = '📚';
+                else if (category.includes('وقت')) emoji = '⏰';
+                else if (category.includes('ملابس')) emoji = '👕';
+                else if (category.includes('اتجاهات')) emoji = '🗺️';
+                else if (category.includes('مشاعر')) emoji = '😊';
+                else if (category.includes('أفعال')) emoji = '🏃';
+                else if (category.includes('تكنولوجيا')) emoji = '📱';
                 
-                container.innerHTML += `<button class="filter-tab category-tab" onclick="filterByCategory('${cat}')">${emoji} ${cat}</button>`;
+                categoryContainer.innerHTML += `<button class="filter-tab category-tab" onclick="filterByCategory('${category}')">${emoji} ${category}</button>`;
             });
         }
 
+        // حساب إجمالي الكلمات
         function updateTotalWords() {
             const total = (WORDS_DATA.beginner?.length || 0) +
-                         (WORDS_DATA.intermediate?.length || 0) +
-                         (WORDS_DATA.advanced?.length || 0);
+                (WORDS_DATA.intermediate?.length || 0) +
+                (WORDS_DATA.advanced?.length || 0);
             document.getElementById('totalWords').textContent = total;
             document.getElementById('savedCount').textContent = savedWords.length;
         }
 
+        // فلتر المستوى
         function filterByLevel(level) {
             if (viewingSaved) exitSavedView();
+
             currentLevel = level;
+
             document.querySelectorAll('#levelFilters .filter-tab').forEach(tab => {
                 tab.classList.remove('active');
-                if (tab.textContent.includes(level === 'all' ? 'الكل' : 
-                    level === 'beginner' ? 'مبتدئ' : 
-                    level === 'intermediate' ? 'متوسط' : 'متقدم')) {
+                if (tab.textContent.includes(level === 'all' ? 'الكل' :
+                    level === 'beginner' ? 'مبتدئ' :
+                        level === 'intermediate' ? 'متوسط' : 'متقدم')) {
                     tab.classList.add('active');
                 }
             });
+
             applyFilters();
         }
 
+        // فلتر التصنيف
         function filterByCategory(category) {
             if (viewingSaved) exitSavedView();
+
             currentCategory = category;
+
             document.querySelectorAll('#categoryFilters .filter-tab').forEach(tab => {
                 tab.classList.remove('active');
                 const tabText = tab.textContent.replace(/[^\p{L}\s]/gu, '').trim();
@@ -889,13 +913,19 @@
                     tab.classList.add('active');
                 }
             });
+
             applyFilters();
         }
 
+        // تطبيق جميع الفلاتر
         function applyFilters() {
-            if (viewingSaved) { showSavedWords(); return; }
+            if (viewingSaved) {
+                showSavedWords();
+                return;
+            }
 
             let words = [];
+
             if (currentLevel === 'all') {
                 words = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
             } else {
@@ -903,12 +933,15 @@
             }
 
             if (currentCategory !== 'all') {
-                words = words.filter(w => w.category === currentCategory);
+                words = words.filter(word => word.category === currentCategory);
             }
 
             if (currentSearchQuery.length >= 2) {
-                const q = currentSearchQuery.toLowerCase();
-                words = words.filter(w => w.word.toLowerCase().includes(q) || w.arabic.includes(q));
+                const query = currentSearchQuery.toLowerCase();
+                words = words.filter(item =>
+                    item.word.toLowerCase().includes(query) ||
+                    item.arabic.includes(query)
+                );
             }
 
             currentDisplayWords = words;
@@ -917,11 +950,12 @@
             updatePagination();
         }
 
+        // عرض الصفحة الحالية
         function displayCurrentPage() {
             const grid = document.getElementById('wordsGrid');
             
             if (currentDisplayWords.length === 0) {
-                grid.innerHTML = '<div class="no-results">❌ لا توجد كلمات</div>';
+                grid.innerHTML = '<div class="no-results">❌ لا توجد كلمات مطابقة للبحث</div>';
                 document.getElementById('paginationContainer').style.display = 'none';
                 return;
             }
@@ -930,12 +964,13 @@
             
             const start = (currentPage - 1) * itemsPerPage;
             const end = Math.min(start + itemsPerPage, currentDisplayWords.length);
-            const page = currentDisplayWords.slice(start, end);
+            const pageWords = currentDisplayWords.slice(start, end);
             
-            grid.innerHTML = page.map(item => {
-                const saved = savedWords.includes(item.id);
+            grid.innerHTML = pageWords.map(item => {
+                const isSaved = savedWords.includes(item.id);
+                const escapedWord = escapeString(item.word);
                 return `
-                    <div class="word-card ${saved ? 'saved' : ''}">
+                    <div class="word-card ${isSaved ? 'saved' : ''}">
                         <div class="word-header">
                             <span class="word-text">${item.word}</span>
                             <span class="word-arabic">${item.arabic}</span>
@@ -946,108 +981,127 @@
                             <div class="example-arabic">${item.exampleArabic}</div>
                         </div>
                         <div class="word-actions">
-                            <button class="action-btn" onclick="playWord('${item.word}')"><i class="fas fa-volume-up"></i> استماع</button>
-                            <button class="action-btn" onclick="playWordSuperSlow('${item.word}')"><i class="fas fa-ear-listen"></i> واضح</button>
-                            <button class="action-btn ${saved ? 'saved' : ''}" onclick="toggleSave(${item.id})">
-                                <i class="fas fa-bookmark"></i> ${saved ? 'محفوظة' : 'حفظ'}
+                            <button class="action-btn" onclick="playWord('${escapedWord}')">
+                                <i class="fas fa-volume-up"></i> استماع
+                            </button>
+                            <button class="action-btn slow" onclick="playWordSuperSlow('${escapedWord}')">
+                                <i class="fas fa-ear-listen"></i> واضح
+                            </button>
+                            <button class="action-btn ${isSaved ? 'saved' : ''}" onclick="toggleSave(${item.id})">
+                                <i class="fas fa-bookmark"></i> ${isSaved ? 'محفوظة' : 'حفظ'}
                             </button>
                         </div>
                     </div>
                 `;
             }).join('');
             
+            // تحديث معلومات الصفحة
             document.getElementById('pageInfo').innerHTML = 
-                `عرض ${start+1}-${end} من ${currentDisplayWords.length} كلمة`;
+                `عرض ${start + 1}-${end} من ${currentDisplayWords.length} كلمة`;
         }
 
+        // تحديث التقسيم
         function updatePagination() {
             totalPages = Math.ceil(currentDisplayWords.length / itemsPerPage);
+            
             document.getElementById('prevBtn').disabled = currentPage === 1;
             document.getElementById('nextBtn').disabled = currentPage === totalPages;
             
-            const nums = document.getElementById('pageNumbers');
-            nums.innerHTML = '';
+            const pageNumbers = document.getElementById('pageNumbers');
+            pageNumbers.innerHTML = '';
             
-            let start = Math.max(1, currentPage - 2);
-            let end = Math.min(totalPages, start + 4);
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
             
-            if (end - start < 4) start = Math.max(1, end - 4);
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
             
-            if (start > 1) {
-                const first = document.createElement('button');
-                first.className = 'page-number';
-                first.textContent = '1';
-                first.onclick = () => goToPage(1);
-                nums.appendChild(first);
-                if (start > 2) {
+            if (startPage > 1) {
+                const firstBtn = document.createElement('button');
+                firstBtn.className = 'page-number';
+                firstBtn.textContent = '1';
+                firstBtn.onclick = () => goToPage(1);
+                pageNumbers.appendChild(firstBtn);
+                
+                if (startPage > 2) {
                     const dots = document.createElement('span');
                     dots.className = 'page-number';
                     dots.textContent = '...';
                     dots.style.border = 'none';
                     dots.style.cursor = 'default';
-                    nums.appendChild(dots);
+                    pageNumbers.appendChild(dots);
                 }
             }
             
-            for (let i = start; i <= end; i++) {
+            for (let i = startPage; i <= endPage; i++) {
                 const btn = document.createElement('button');
                 btn.className = `page-number ${i === currentPage ? 'active' : ''}`;
                 btn.textContent = i;
                 btn.onclick = () => goToPage(i);
-                nums.appendChild(btn);
+                pageNumbers.appendChild(btn);
             }
             
-            if (end < totalPages) {
-                if (end < totalPages - 1) {
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
                     const dots = document.createElement('span');
                     dots.className = 'page-number';
                     dots.textContent = '...';
                     dots.style.border = 'none';
                     dots.style.cursor = 'default';
-                    nums.appendChild(dots);
+                    pageNumbers.appendChild(dots);
                 }
-                const last = document.createElement('button');
-                last.className = 'page-number';
-                last.textContent = totalPages;
-                last.onclick = () => goToPage(totalPages);
-                nums.appendChild(last);
+                
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'page-number';
+                lastBtn.textContent = totalPages;
+                lastBtn.onclick = () => goToPage(totalPages);
+                pageNumbers.appendChild(lastBtn);
             }
         }
 
-        function changePage(dir) {
-            if (dir === 'prev' && currentPage > 1) currentPage--;
-            else if (dir === 'next' && currentPage < totalPages) currentPage++;
+        // تغيير الصفحة
+        function changePage(direction) {
+            if (direction === 'prev' && currentPage > 1) {
+                currentPage--;
+            } else if (direction === 'next' && currentPage < totalPages) {
+                currentPage++;
+            }
             displayCurrentPage();
             updatePagination();
         }
 
-        function goToPage(p) { currentPage = p; displayCurrentPage(); updatePagination(); }
-
-        function toggleSave(id) {
-            savedWords = savedWords.includes(id) ? savedWords.filter(i => i !== id) : [...savedWords, id];
-            localStorage.setItem('savedWords', JSON.stringify(savedWords));
-            document.getElementById('savedCount').textContent = savedWords.length;
-            document.getElementById('savedBadge').textContent = savedWords.length;
-            viewingSaved ? showSavedWords() : displayCurrentPage();
+        // الذهاب لصفحة معينة
+        function goToPage(page) {
+            currentPage = page;
+            displayCurrentPage();
+            updatePagination();
         }
 
+        // عرض الكلمات المحفوظة
         function showSavedWords() {
-            if (!savedWords.length) {
-                document.getElementById('wordsGrid').innerHTML = `
+            if (savedWords.length === 0) {
+                const grid = document.getElementById('wordsGrid');
+                grid.innerHTML = `
                     <div class="empty-saved">
                         <i class="fas fa-bookmark"></i>
                         <h3>لا توجد كلمات محفوظة</h3>
-                        <p>احفظ الكلمات لمراجعتها لاحقاً</p>
-                        <button class="back-btn" onclick="exitSavedView()">العودة</button>
-                    </div>`;
+                        <p>احفظ الكلمات التي تريد مراجعتها لاحقاً</p>
+                        <button class="back-btn" onclick="exitSavedView()">
+                            <i class="fas fa-arrow-right"></i> العودة للكلمات
+                        </button>
+                    </div>
+                `;
                 viewingSaved = true;
                 document.querySelector('.saved-btn').style.background = 'var(--success)';
                 document.getElementById('paginationContainer').style.display = 'none';
                 return;
             }
-            
-            const all = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
-            currentDisplayWords = all.filter(w => savedWords.includes(w.id));
+
+            const allWords = [...WORDS_DATA.beginner, ...WORDS_DATA.intermediate, ...WORDS_DATA.advanced];
+            const savedWordsList = allWords.filter(word => savedWords.includes(word.id));
+
+            currentDisplayWords = savedWordsList;
             currentPage = 1;
             displayCurrentPage();
             updatePagination();
@@ -1055,23 +1109,100 @@
             document.querySelector('.saved-btn').style.background = 'var(--success)';
         }
 
+        // الخروج من عرض المحفوظات
         function exitSavedView() {
             viewingSaved = false;
             document.querySelector('.saved-btn').style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
             applyFilters();
         }
 
+        // نطق الكلمة
+        function playWord(word) {
+            if (!window.speechSynthesis) {
+                alert('❌ متصفحك لا يدعم النطق');
+                return;
+            }
+            
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.0;
+            utterance.volume = 1;
+            
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+            
+            utterance.onerror = (e) => console.log('❌ خطأ في النطق:', e);
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // نطق بطيء جداً
+        function playWordSuperSlow(word) {
+            if (!window.speechSynthesis) {
+                alert('❌ متصفحك لا يدعم النطق');
+                return;
+            }
+            
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.5;
+            utterance.pitch = 1.2;
+            utterance.volume = 1;
+            
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+            
+            utterance.onerror = (e) => console.log('❌ خطأ في النطق:', e);
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // حفظ/إلغاء حفظ الكلمة
+        function toggleSave(wordId) {
+            if (savedWords.includes(wordId)) {
+                savedWords = savedWords.filter(id => id !== wordId);
+            } else {
+                savedWords.push(wordId);
+            }
+            localStorage.setItem('savedWords', JSON.stringify(savedWords));
+            document.getElementById('savedCount').textContent = savedWords.length;
+            document.getElementById('savedBadge').textContent = savedWords.length;
+
+            if (viewingSaved) {
+                showSavedWords();
+            } else {
+                displayCurrentPage();
+            }
+        }
+
+        // البحث
         document.getElementById('searchInput').addEventListener('input', (e) => {
             if (viewingSaved) exitSavedView();
             currentSearchQuery = e.target.value;
-            if (!currentSearchQuery.length || currentSearchQuery.length >= 2) applyFilters();
+            if (currentSearchQuery.length === 0 || currentSearchQuery.length >= 2) {
+                applyFilters();
+            }
         });
 
-        function toggleMenu() { document.getElementById('navMenu').classList.toggle('show'); }
-        document.querySelectorAll('.nav-menu a').forEach(l => l.addEventListener('click', () => 
-            document.getElementById('navMenu').classList.remove('show')
-        ));
+        // دوال القائمة
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('show');
+        }
 
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navMenu').classList.remove('show');
+            });
+        });
+
+        // دالة الثيم
         window.setTheme = function(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
@@ -1084,15 +1215,9 @@
             });
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            generateCategoryFilters();
-            updateTotalWords();
-            document.getElementById('savedBadge').textContent = savedWords.length;
-            applyFilters();
-        });
-
+        // تحميل الثيم المحفوظ
         const savedTheme = localStorage.getItem('theme') || 'light';
         setTheme(savedTheme);
     </script>
 </body>
-    </html>
+                                                                                                           </html>
