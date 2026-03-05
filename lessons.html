@@ -801,29 +801,29 @@
         let itemsPerPage = 50;
         let totalPages = 1;
         let currentDisplayWords = [];
+        
+    window.speechSynthesis.onvoiceschanged = function() {
+    const voices = window.speechSynthesis.getVoices();
+    
+    // ابحث عن Google US فقط
+    selectedVoice = voices.find(voice => 
+        voice.lang === 'en-US' && 
+        (voice.name.includes('Google') || voice.name.includes('google'))
+    );
+    
+    // إذا ما لقينا Google US، نستخدم أي صوت أمريكي
+    if (!selectedVoice) {
+        selectedVoice = voices.find(voice => voice.lang === 'en-US');
+        console.log('⚠️ Google US غير متوفر، تم استخدام:', selectedVoice?.name);
+    } else {
+        console.log('✅ Google US جاهز:', selectedVoice.name);
+    }
+};
 
-        // تحميل الأصوات
-        window.speechSynthesis.onvoiceschanged = function() {
-            const voices = window.speechSynthesis.getVoices();
-            selectedVoice = voices.find(voice => 
-                voice.lang === 'en-US' && 
-                (voice.name.includes('Google') || voice.name.includes('google'))
-            );
-            
-            if (!selectedVoice) {
-                selectedVoice = voices.find(voice => voice.lang === 'en-US');
-            }
-            
-            console.log('✅ الصوت المستخدم:', selectedVoice?.name || 'الصوت الافتراضي');
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            generateCategoryFilters();
-            updateTotalWords();
-            document.getElementById('savedBadge').textContent = savedWords.length;
-            applyFilters();
-        });
-
+// تأكد من تحميل الأصوات
+if (window.speechSynthesis.getVoices().length > 0) {
+    window.speechSynthesis.onvoiceschanged();
+}
         // توليد أزرار التصنيفات
         function generateCategoryFilters() {
             const categories = new Set();
