@@ -67,7 +67,7 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* Install Banner */
+        /* Install Banner - محدث بالصورة */
         .install-banner {
             position: fixed;
             bottom: 20px;
@@ -98,14 +98,22 @@
         .install-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.5rem;
             flex-shrink: 0;
+            overflow: hidden;
+            background: white;
+            padding: 4px;
+            border: 2px solid var(--border);
+        }
+
+        .install-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
         }
 
         .install-content { flex-grow: 1; }
@@ -581,10 +589,10 @@
 </head>
 <body>
 
-    <!-- INSTALL BANNER -->
+    <!-- INSTALL BANNER (محدث بالصورة) -->
     <div class="install-banner" id="installBanner">
         <div class="install-icon">
-            <i class="fas fa-film"></i>
+            <img src="https://i.postimg.cc/J4xdc62M/20260305-233826.png" alt="CineLingua">
         </div>
         <div class="install-content">
             <h4>ثبّت تطبيق CineLingua</h4>
@@ -598,6 +606,7 @@
         </button>
     </div>
 
+    <!-- باقي الملف كما هو ... -->
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-container">
@@ -949,4 +958,4 @@
         });
     </script>
 </body>
-    </html>
+                        </html>
