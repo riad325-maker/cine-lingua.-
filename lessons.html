@@ -801,29 +801,56 @@
         let itemsPerPage = 50;
         let totalPages = 1;
         let currentDisplayWords = [];
-        
-    window.speechSynthesis.onvoiceschanged = function() {
+
+        // تحميل الأصوات
+        window.speechSynthesis.onvoiceschanged = function() {
     const voices = window.speechSynthesis.getVoices();
-    
-    // ابحث عن Google US فقط
     selectedVoice = voices.find(voice => 
         voice.lang === 'en-US' && 
         (voice.name.includes('Google') || voice.name.includes('google'))
     );
     
-    // إذا ما لقينا Google US، نستخدم أي صوت أمريكي
     if (!selectedVoice) {
         selectedVoice = voices.find(voice => voice.lang === 'en-US');
-        console.log('⚠️ Google US غير متوفر، تم استخدام:', selectedVoice?.name);
-    } else {
-        console.log('✅ Google US جاهز:', selectedVoice.name);
     }
+    
+    console.log('✅ الصوت المستخدم:', selectedVoice?.name || 'الصوت الافتراضي');
 };
 
-// تأكد من تحميل الأصوات
-if (window.speechSynthesis.getVoices().length > 0) {
-    window.speechSynthesis.onvoiceschanged();
+// 🎤 دالة النطق الخارقة
+function playWord(word) {
+    window.speechSynthesis.cancel(); // أوقف أي صوت شغال
+    
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.85;  // ⭐ أبطأ شوي = أوضح
+    utterance.pitch = 1.1;   // ⭐ نبرة أعلى = أوضح
+    utterance.volume = 1;    // أعلى صوت
+    
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
+    
+    window.speechSynthesis.speak(utterance);
 }
+
+// 🐢 نطق بطيء جداً (للكلمات الصعبة)
+function playWordSuperSlow(word) {
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.5;   // 🐢 نص السرعة
+    utterance.pitch = 1.2;   // نبرة أعلى
+    utterance.volume = 1;
+    
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
+    
+    window.speechSynthesis.speak(utterance);
+         }
+
         // توليد أزرار التصنيفات
         function generateCategoryFilters() {
             const categories = new Set();
