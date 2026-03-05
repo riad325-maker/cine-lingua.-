@@ -1073,9 +1073,32 @@
 
     <script src="stories-data.js"></script>
     <script>
+        // دالة لتنظيف النصوص من علامات الاقتباس
+        function escapeString(str) {
+            if (!str) return '';
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/`/g, '\\`');
+        }
+
         // متغيرات النطق
         let speechSynthesis = window.speechSynthesis;
         let currentUtterance = null;
+        let selectedVoice = null;
+
+        // تحميل الأصوات
+        function loadVoices() {
+            const voices = window.speechSynthesis.getVoices();
+            selectedVoice = voices.find(voice => 
+                voice.lang === 'en-US' && 
+                (voice.name.includes('Google') || voice.name.includes('google'))
+            ) || voices.find(voice => voice.lang === 'en-US');
+            
+            console.log('✅ الصوت المستخدم:', selectedVoice?.name || 'الصوت الافتراضي');
+        }
+
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        if (window.speechSynthesis.getVoices().length > 0) {
+            loadVoices();
+        }
 
         // المتغيرات
         let savedStories = JSON.parse(localStorage.getItem('savedStories')) || [];
@@ -1265,32 +1288,35 @@
         }
 
         function speakText(text, lang = 'en-US') {
+            if (!window.speechSynthesis) {
+                alert('❌ متصفحك لا يدعم النطق');
+                return;
+            }
+
             if (speechSynthesis.speaking) {
                 speechSynthesis.cancel();
             }
 
-            currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = lang;
-            currentUtterance.rate = 0.8;
-            currentUtterance.pitch = 1.1;
-            currentUtterance.volume = 1;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.8;
+            utterance.pitch = 1.1;
+            utterance.volume = 1;
 
-            const voices = window.speechSynthesis.getVoices();
-            const preferredVoice = voices.find(voice => 
-                voice.lang === 'en-US' && 
-                (voice.name.includes('Google') || voice.name.includes('google'))
-            ) || voices.find(voice => voice.lang === 'en-US');
-            
-            if (preferredVoice) {
-                currentUtterance.voice = preferredVoice;
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                console.log('📖 القراءة بصوت:', selectedVoice.name);
             }
 
-            speechSynthesis.speak(currentUtterance);
+            utterance.onerror = (e) => console.log('❌ خطأ في النطق:', e);
+
+            speechSynthesis.speak(utterance);
         }
 
         function stopSpeaking() {
             if (speechSynthesis.speaking) {
                 speechSynthesis.cancel();
+                console.log('⏹️ تم إيقاف القراءة');
             }
         }
 
@@ -1327,6 +1353,8 @@
                 `;
             }
 
+            const escapedContent = escapeString(currentStory.content);
+
             document.getElementById('modalContainer').innerHTML = `
                 <div class="modal-close" onclick="closeStory()">
                     <i class="fas fa-times"></i>
@@ -1340,7 +1368,7 @@
                 </div>
                 
                 <div class="audio-controls">
-                    <button class="audio-btn listen" onclick='speakText(\`${currentStory.content.replace(/`/g, '\\`')}\`, "en-US")'>
+                    <button class="audio-btn listen" onclick='speakText("${escapedContent}", "en-US")'>
                         <i class="fas fa-headphones"></i> استمع للقصة
                     </button>
                     <button class="audio-btn stop" onclick="stopSpeaking()">
@@ -1448,4 +1476,4 @@
         setTheme(savedTheme);
     </script>
 </body>
-    </html>
+                </html>
