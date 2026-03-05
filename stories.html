@@ -642,10 +642,10 @@
         }
 
         .modal-close {
-            position: sticky;
-            top: 1rem;
-            left: 1rem;
-            z-index: 10;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
             background: white;
             border: 2px solid var(--border);
             width: 40px;
@@ -1393,8 +1393,8 @@
 
             currentUtterance = new SpeechSynthesisUtterance(text);
             currentUtterance.lang = lang;
-            currentUtterance.rate = 0.9; // سرعة القراءة
-            currentUtterance.pitch = 1;
+            currentUtterance.rate = 0.8; // سرعة القراءة
+            currentUtterance.pitch = 1.1;
             currentUtterance.volume = 1;
 
             speechSynthesis.speak(currentUtterance);
