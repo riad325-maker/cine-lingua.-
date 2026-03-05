@@ -1321,85 +1321,86 @@
         }
 
         function openStory(storyId) {
-            currentStory = STORIES_DATA.find(s => s.id === storyId);
-            if (!currentStory) return;
+    currentStory = STORIES_DATA.find(s => s.id === storyId);
+    if (!currentStory) return;
 
-            const isSaved = savedStories.includes(currentStory.id);
-            userAnswers = {};
+    const isSaved = savedStories.includes(currentStory.id);
+    userAnswers = {};
 
-            let questionsHTML = '';
-            if (currentStory.questions && currentStory.questions.length > 0) {
-                questionsHTML = `
-                    <div class="questions-section">
-                        <h3>📝 أسئلة الفهم</h3>
-                        ${currentStory.questions.map((q, idx) => `
-                            <div class="question-item" id="q-${currentStory.id}-${idx}">
-                                <div class="question-text">${idx+1}. ${q.question}</div>
-                                <div class="options">
-                                    ${q.options.map((opt, optIdx) => `
-                                        <div class="option" onclick="selectOption(${currentStory.id}, ${idx}, ${optIdx})">
-                                            <span class="option-letter">${String.fromCharCode(65 + optIdx)}</span>
-                                            <span>${opt}</span>
-                                        </div>
-                                    `).join('')}
+    // 👇 استخدام JSON.stringify لحل مشكلة علامات الاقتباس
+    const safeContent = JSON.stringify(currentStory.content);
+
+    let questionsHTML = '';
+    if (currentStory.questions && currentStory.questions.length > 0) {
+        questionsHTML = `
+            <div class="questions-section">
+                <h3>📝 أسئلة الفهم</h3>
+                ${currentStory.questions.map((q, idx) => `
+                    <div class="question-item" id="q-${currentStory.id}-${idx}">
+                        <div class="question-text">${idx+1}. ${q.question}</div>
+                        <div class="options">
+                            ${q.options.map((opt, optIdx) => `
+                                <div class="option" onclick="selectOption(${currentStory.id}, ${idx}, ${optIdx})">
+                                    <span class="option-letter">${String.fromCharCode(65 + optIdx)}</span>
+                                    <span>${opt}</span>
                                 </div>
-                                <div class="explanation" id="exp-${currentStory.id}-${idx}">
-                                    ${q.explanation || `الإجابة: ${q.options[q.correct]}`}
-                                </div>
-                            </div>
-                        `).join('')}
-                        <button class="btn-check" onclick="checkAnswers(${currentStory.id})">تحقق من الإجابات</button>
+                            `).join('')}
+                        </div>
+                        <div class="explanation" id="exp-${currentStory.id}-${idx}">
+                            ${q.explanation || `الإجابة: ${q.options[q.correct]}`}
+                        </div>
                     </div>
-                `;
-            }
+                `).join('')}
+                <button class="btn-check" onclick="checkAnswers(${currentStory.id})">تحقق من الإجابات</button>
+            </div>
+        `;
+    }
 
-            const escapedContent = escapeString(currentStory.content);
+    document.getElementById('modalContainer').innerHTML = `
+        <div class="modal-close" onclick="closeStory()">
+            <i class="fas fa-times"></i>
+        </div>
+        
+        <h1 class="modal-title">${currentStory.title}</h1>
+        <span class="modal-difficulty">${currentStory.difficulty}</span>
+        
+        <div class="modal-image">
+            <img src="${currentStory.image}" alt="${currentStory.title}">
+        </div>
+        
+        <div class="audio-controls">
+            <button class="audio-btn listen" onclick='speakText(${safeContent}, "en-US")'>
+                <i class="fas fa-headphones"></i> استمع للقصة
+            </button>
+            <button class="audio-btn stop" onclick="stopSpeaking()">
+                <i class="fas fa-stop"></i> إيقاف
+            </button>
+        </div>
+        
+        <div class="modal-text">
+            ${currentStory.content}
+        </div>
+        
+        <button class="translation-btn" onclick="toggleTranslation()">
+            <i class="fas fa-language"></i> إظهار الترجمة
+        </button>
+        
+        <div class="modal-translation" id="storyTranslation">
+            ${currentStory.arabic}
+        </div>
+        
+        ${questionsHTML}
+        
+        <div class="modal-actions">
+            <button class="modal-save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSave(${currentStory.id})">
+                <i class="fas fa-bookmark"></i> ${isSaved ? 'تم الحفظ' : 'حفظ القصة'}
+            </button>
+        </div>
+    `;
 
-            document.getElementById('modalContainer').innerHTML = `
-                <div class="modal-close" onclick="closeStory()">
-                    <i class="fas fa-times"></i>
-                </div>
-                
-                <h1 class="modal-title">${currentStory.title}</h1>
-                <span class="modal-difficulty">${currentStory.difficulty}</span>
-                
-                <div class="modal-image">
-                    <img src="${currentStory.image}" alt="${currentStory.title}">
-                </div>
-                
-                <div class="audio-controls">
-                    <button class="audio-btn listen" onclick='speakText("${escapedContent}", "en-US")'>
-                        <i class="fas fa-headphones"></i> استمع للقصة
-                    </button>
-                    <button class="audio-btn stop" onclick="stopSpeaking()">
-                        <i class="fas fa-stop"></i> إيقاف
-                    </button>
-                </div>
-                
-                <div class="modal-text">
-                    ${currentStory.content}
-                </div>
-                
-                <button class="translation-btn" onclick="toggleTranslation()">
-                    <i class="fas fa-language"></i> إظهار الترجمة
-                </button>
-                
-                <div class="modal-translation" id="storyTranslation">
-                    ${currentStory.arabic}
-                </div>
-                
-                ${questionsHTML}
-                
-                <div class="modal-actions">
-                    <button class="modal-save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSave(${currentStory.id})">
-                        <i class="fas fa-bookmark"></i> ${isSaved ? 'تم الحفظ' : 'حفظ القصة'}
-                    </button>
-                </div>
-            `;
-
-            document.getElementById('storyModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+    document.getElementById('storyModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
 
         function selectOption(storyId, questionIdx, optionIdx) {
             if (!userAnswers[storyId]) userAnswers[storyId] = {};
@@ -1476,4 +1477,4 @@
         setTheme(savedTheme);
     </script>
 </body>
-                </html>
+    </html>
