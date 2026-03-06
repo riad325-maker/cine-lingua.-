@@ -1,6 +1,6 @@
-// advanced-data.js - 340 كلمة للمستوى المتقدم (كلمات متقدمة للمحادثات المعقدة)
+// advanced-data.js - 500 كلمة للمستوى المتقدم (محدث)
 const ADVANCED_WORDS = [
-    // ========== تحيات ومجاملات متقدمة جداً ========== (22 كلمة)
+    // ========== تحيات ومجاملات متقدمة ========== (25 كلمة)
     { id: 5001, word: "hospitality", arabic: "ضيافة", pronunciation: "هوسبيتاليتي", example: "Thank you for your hospitality.", exampleArabic: "شكراً لكرم ضيافتكم", category: "تحيات" },
     { id: 5002, word: "courtesy", arabic: "لباقة", pronunciation: "كورتيسي", example: "He treated us with courtesy.", exampleArabic: "عاملنا بلباقة", category: "تحيات" },
     { id: 5003, word: "etiquette", arabic: "آداب", pronunciation: "إيتيكيت", example: "Learn proper etiquette.", exampleArabic: "تعلم الآداب الصحيحة", category: "تحيات" },
@@ -23,8 +23,11 @@ const ADVANCED_WORDS = [
     { id: 5020, word: "altruistic", arabic: "إيثاري", pronunciation: "ألترويستيك", example: "Altruistic behavior.", exampleArabic: "سلوك إيثاري", category: "تحيات" },
     { id: 5021, word: "selfless", arabic: "غير أناني", pronunciation: "سيلفليس", example: "Selfless service.", exampleArabic: "خدمة غير أنانية", category: "تحيات" },
     { id: 5022, word: "considerate", arabic: "مراعٍ", pronunciation: "كونسيديريت", example: "Considerate of others.", exampleArabic: "مراعٍ للآخرين", category: "تحيات" },
+    { id: 5023, word: "thoughtful", arabic: "مراعٍ", pronunciation: "ثوتفول", example: "Thoughtful gesture.", exampleArabic: "بادرة مراعاة", category: "تحيات" },
+    { id: 5024, word: "courteous", arabic: "مهذب", pronunciation: "كورتيس", example: "Courteous behavior.", exampleArabic: "سلوك مهذب", category: "تحيات" },
+    { id: 5025, word: "polite", arabic: "مؤدب", pronunciation: "بولايت", example: "Polite response.", exampleArabic: "رد مؤدب", category: "تحيات" },
 
-    // ========== المنزل والأثاث متقدم جداً ========== (22 كلمة)
+    // ========== المنزل والأثاث ========== (25 كلمة)
     { id: 5101, word: "interior", arabic: "داخلي", pronunciation: "إنتيريور", example: "Interior design.", exampleArabic: "تصميم داخلي", category: "منزل" },
     { id: 5102, word: "exterior", arabic: "خارجي", pronunciation: "إكستيريور", example: "Exterior paint.", exampleArabic: "دهان خارجي", category: "منزل" },
     { id: 5103, word: "architecture", arabic: "هندسة معمارية", pronunciation: "أركيتيكتشر", example: "Modern architecture.", exampleArabic: "هندسة معمارية حديثة", category: "منزل" },
@@ -47,8 +50,11 @@ const ADVANCED_WORDS = [
     { id: 5120, word: "microwave", arabic: "ميكروويف", pronunciation: "مايكروويف", example: "Heat food in microwave.", exampleArabic: "سخن الطعام في الميكروويف", category: "منزل" },
     { id: 5121, word: "dishwasher", arabic: "غسالة أطباق", pronunciation: "ديشواشر", example: "Load the dishwasher.", exampleArabic: "حمّل غسالة الأطباق", category: "منزل" },
     { id: 5122, word: "washing machine", arabic: "غسالة", pronunciation: "واشينغ ماشين", example: "Put clothes in washing machine.", exampleArabic: "ضع الملابس في الغسالة", category: "منزل" },
+    { id: 5123, word: "dryer", arabic: "نشافة", pronunciation: "دراير", example: "Clothes dryer.", exampleArabic: "نشافة ملابس", category: "منزل" },
+    { id: 5124, word: "furniture", arabic: "أثاث", pronunciation: "فيرنيشور", example: "Modern furniture.", exampleArabic: "أثاث حديث", category: "منزل" },
+    { id: 5125, word: "carpet", arabic: "سجاد", pronunciation: "كاربت", example: "Persian carpet.", exampleArabic: "سجاد فارسي", category: "منزل" },
 
-    // ========== العائلة والعلاقات متقدم جداً ========== (23 كلمة)
+    // ========== العائلة والعلاقات ========== (25 كلمة)
     { id: 5201, word: "ancestry", arabic: "نسب", pronunciation: "أنسيستري", example: "Trace your ancestry.", exampleArabic: "تتبع نسبك", category: "عائلة" },
     { id: 5202, word: "lineage", arabic: "سلالة", pronunciation: "لينيج", example: "Royal lineage.", exampleArabic: "سلالة ملكية", category: "عائلة" },
     { id: 5203, word: "descendant", arabic: "سليل", pronunciation: "ديسيندنت", example: "He is a descendant of kings.", exampleArabic: "هو سليل ملوك", category: "عائلة" },
@@ -72,8 +78,10 @@ const ADVANCED_WORDS = [
     { id: 5221, word: "treasure", arabic: "يكنز", pronunciation: "تريجر", example: "Treasure every moment.", exampleArabic: "كنز كل لحظة", category: "عائلة" },
     { id: 5222, word: "appreciate", arabic: "يقدر", pronunciation: "أبريشيت", example: "Appreciate your parents.", exampleArabic: "قدر والديك", category: "عائلة" },
     { id: 5223, word: "value", arabic: "يقدر", pronunciation: "فاليو", example: "Value your relationships.", exampleArabic: "قدر علاقاتك", category: "عائلة" },
+    { id: 5224, word: "respect", arabic: "احترام", pronunciation: "ريسبكت", example: "Respect your elders.", exampleArabic: "احترم كبارك", category: "عائلة" },
+    { id: 5225, word: "honor", arabic: "شرف", pronunciation: "أونر", example: "Family honor.", exampleArabic: "شرف العائلة", category: "عائلة" },
 
-    // ========== الطعام والشراب متقدم جداً ========== (22 كلمة)
+    // ========== الطعام والشراب ========== (25 كلمة)
     { id: 5301, word: "gourmet", arabic: "ذواقة", pronunciation: "غورميه", example: "Gourmet food.", exampleArabic: "طعام الذواقة", category: "طعام" },
     { id: 5302, word: "cuisine", arabic: "مطبخ", pronunciation: "كويسين", example: "French cuisine.", exampleArabic: "المطبخ الفرنسي", category: "طعام" },
     { id: 5303, word: "delicacy", arabic: "طعام شهي", pronunciation: "ديليكاسي", example: "Local delicacy.", exampleArabic: "طعام شهي محلي", category: "طعام" },
@@ -96,8 +104,11 @@ const ADVANCED_WORDS = [
     { id: 5320, word: "roast", arabic: "يشوي", pronunciation: "روست", example: "Roast chicken.", exampleArabic: "دجاج مشوي", category: "طعام" },
     { id: 5321, word: "bake", arabic: "يخبز", pronunciation: "بيك", example: "Bake bread.", exampleArabic: "اخبز خبزاً", category: "طعام" },
     { id: 5322, word: "fry", arabic: "يقلي", pronunciation: "فراي", example: "Fry the eggs.", exampleArabic: "اقلِ البيض", category: "طعام" },
+    { id: 5323, word: "boil", arabic: "يغلي", pronunciation: "بويل", example: "Boil the water.", exampleArabic: "اغلي الماء", category: "طعام" },
+    { id: 5324, word: "steam", arabic: "يبخر", pronunciation: "ستيم", example: "Steam vegetables.", exampleArabic: "بخّر الخضار", category: "طعام" },
+    { id: 5325, word: "simmer", arabic: "يترك على نار هادئة", pronunciation: "سيمر", example: "Simmer for 20 minutes.", exampleArabic: "اتركه على نار هادئة لمدة 20 دقيقة", category: "طعام" },
 
-    // ========== التسوق والمال متقدم جداً ========== (22 كلمة)
+    // ========== التسوق والمال ========== (25 كلمة)
     { id: 5401, word: "investment", arabic: "استثمار", pronunciation: "إنفيستمينت", example: "Good investment.", exampleArabic: "استثمار جيد", category: "تسوق" },
     { id: 5402, word: "finance", arabic: "تمويل", pronunciation: "فاينانس", example: "Personal finance.", exampleArabic: "تمويل شخصي", category: "تسوق" },
     { id: 5403, word: "economy", arabic: "اقتصاد", pronunciation: "إيكونومي", example: "Global economy.", exampleArabic: "الاقتصاد العالمي", category: "تسوق" },
@@ -120,8 +131,11 @@ const ADVANCED_WORDS = [
     { id: 5420, word: "loan", arabic: "قرض", pronunciation: "لون", example: "Bank loan.", exampleArabic: "قرض بنكي", category: "تسوق" },
     { id: 5421, word: "mortgage", arabic: "رهن", pronunciation: "مورغيج", example: "Home mortgage.", exampleArabic: "رهن منزلي", category: "تسوق" },
     { id: 5422, word: "interest", arabic: "فائدة", pronunciation: "إنترست", example: "Interest rate.", exampleArabic: "معدل الفائدة", category: "تسوق" },
+    { id: 5423, word: "currency", arabic: "عملة", pronunciation: "كارنسي", example: "Foreign currency.", exampleArabic: "عملة أجنبية", category: "تسوق" },
+    { id: 5424, word: "exchange", arabic: "صرف", pronunciation: "إكس تشينج", example: "Currency exchange.", exampleArabic: "صرف عملات", category: "تسوق" },
+    { id: 5425, word: "discount", arabic: "خصم", pronunciation: "ديسكاونت", example: "Get a discount.", exampleArabic: "احصل على خصم", category: "تسوق" },
 
-    // ========== المواصلات والسفر متقدم جداً ========== (23 كلمة)
+    // ========== المواصلات والسفر ========== (25 كلمة)
     { id: 5501, word: "itinerary", arabic: "خط سير", pronunciation: "آيتنيراري", example: "Plan your itinerary.", exampleArabic: "خطط لخط سيرك", category: "مواصلات" },
     { id: 5502, word: "destination", arabic: "وجهة", pronunciation: "ديستينيشن", example: "Popular destination.", exampleArabic: "وجهة شعبية", category: "مواصلات" },
     { id: 5503, word: "accommodation", arabic: "إقامة", pronunciation: "أكوموديشن", example: "Find accommodation.", exampleArabic: "ابحث عن إقامة", category: "مواصلات" },
@@ -145,8 +159,10 @@ const ADVANCED_WORDS = [
     { id: 5521, word: "immigration", arabic: "هجرة", pronunciation: "إميغريشن", example: "Immigration officer.", exampleArabic: "ضابط هجرة", category: "مواصلات" },
     { id: 5522, word: "boarding", arabic: "صعود", pronunciation: "بوردينغ", example: "Boarding pass.", exampleArabic: "بطاقة صعود", category: "مواصلات" },
     { id: 5523, word: "gate", arabic: "بوابة", pronunciation: "جيت", example: "Gate number.", exampleArabic: "رقم البوابة", category: "مواصلات" },
+    { id: 5524, word: "terminal", arabic: "صالة", pronunciation: "تيرمينال", example: "Departure terminal.", exampleArabic: "صالة المغادرة", category: "مواصلات" },
+    { id: 5525, word: "baggage", arabic: "أمتعة", pronunciation: "باجيدج", example: "Baggage claim.", exampleArabic: "استلام الأمتعة", category: "مواصلات" },
 
-    // ========== الصحة والجسم متقدم جداً ========== (22 كلمة)
+    // ========== الصحة والجسم ========== (25 كلمة)
     { id: 5601, word: "wellness", arabic: "عافية", pronunciation: "ويلنس", example: "Wellness center.", exampleArabic: "مركز عافية", category: "صحة" },
     { id: 5602, word: "hygiene", arabic: "نظافة", pronunciation: "هايجين", example: "Personal hygiene.", exampleArabic: "نظافة شخصية", category: "صحة" },
     { id: 5603, word: "sanitation", arabic: "صرف صحي", pronunciation: "سانيتيشن", example: "Proper sanitation.", exampleArabic: "صرف صحي مناسب", category: "صحة" },
@@ -169,8 +185,11 @@ const ADVANCED_WORDS = [
     { id: 5620, word: "rehabilitation", arabic: "تأهيل", pronunciation: "ريهابيليتيشن", example: "Rehabilitation center.", exampleArabic: "مركز تأهيل", category: "صحة" },
     { id: 5621, word: "surgery", arabic: "جراحة", pronunciation: "سيرجري", example: "Minor surgery.", exampleArabic: "جراحة بسيطة", category: "صحة" },
     { id: 5622, word: "transplant", arabic: "زرع", pronunciation: "ترانسبلانت", example: "Organ transplant.", exampleArabic: "زرع أعضاء", category: "صحة" },
+    { id: 5623, word: "medicine", arabic: "دواء", pronunciation: "ميديسين", example: "Take medicine.", exampleArabic: "تناول الدواء", category: "صحة" },
+    { id: 5624, word: "prescription", arabic: "روشتة", pronunciation: "بريسكريبشن", example: "Doctor's prescription.", exampleArabic: "روشتة الطبيب", category: "صحة" },
+    { id: 5625, word: "treatment", arabic: "علاج", pronunciation: "تريتمنت", example: "Effective treatment.", exampleArabic: "علاج فعال", category: "صحة" },
 
-    // ========== العمل والوظائف متقدم جداً ========== (22 كلمة)
+    // ========== العمل والوظائف ========== (25 كلمة)
     { id: 5701, word: "corporate", arabic: "شركات", pronunciation: "كوربوريت", example: "Corporate world.", exampleArabic: "عالم الشركات", category: "عمل" },
     { id: 5702, word: "executive", arabic: "تنفيذي", pronunciation: "إكزكيوتيف", example: "Executive position.", exampleArabic: "منصب تنفيذي", category: "عمل" },
     { id: 5703, word: "management", arabic: "إدارة", pronunciation: "مانيدجمنت", example: "Management team.", exampleArabic: "فريق إدارة", category: "عمل" },
@@ -193,8 +212,11 @@ const ADVANCED_WORDS = [
     { id: 5720, word: "pension", arabic: "معاش", pronunciation: "بينشن", example: "Pension fund.", exampleArabic: "صندوق معاشات", category: "عمل" },
     { id: 5721, word: "benefits", arabic: "مزايا", pronunciation: "بينيفيتس", example: "Employee benefits.", exampleArabic: "مزايا الموظفين", category: "عمل" },
     { id: 5722, word: "insurance", arabic: "تأمين", pronunciation: "إنشورانس", example: "Health insurance.", exampleArabic: "تأمين صحي", category: "عمل" },
+    { id: 5723, word: "salary", arabic: "راتب", pronunciation: "سالاري", example: "Monthly salary.", exampleArabic: "راتب شهري", category: "عمل" },
+    { id: 5724, word: "wage", arabic: "أجر", pronunciation: "ويج", example: "Hourly wage.", exampleArabic: "أجر بالساعة", category: "عمل" },
+    { id: 5725, word: "bonus", arabic: "مكافأة", pronunciation: "بونس", example: "Annual bonus.", exampleArabic: "مكافأة سنوية", category: "عمل" },
 
-    // ========== التعليم والدراسة متقدم جداً ========== (23 كلمة)
+    // ========== التعليم والدراسة ========== (25 كلمة)
     { id: 5801, word: "academic", arabic: "أكاديمي", pronunciation: "أكاديميك", example: "Academic year.", exampleArabic: "سنة أكاديمية", category: "تعليم" },
     { id: 5802, word: "curriculum", arabic: "منهج", pronunciation: "كيريكيولوم", example: "School curriculum.", exampleArabic: "منهج مدرسي", category: "تعليم" },
     { id: 5803, word: "syllabus", arabic: "مقرر", pronunciation: "سيلابس", example: "Course syllabus.", exampleArabic: "مقرر الدورة", category: "تعليم" },
@@ -218,8 +240,10 @@ const ADVANCED_WORDS = [
     { id: 5821, word: "fellowship", arabic: "زمالة", pronunciation: "فيلوشيب", example: "Research fellowship.", exampleArabic: "زمالة بحثية", category: "تعليم" },
     { id: 5822, word: "internship", arabic: "تدريب", pronunciation: "إنترنشيب", example: "Summer internship.", exampleArabic: "تدريب صيفي", category: "تعليم" },
     { id: 5823, word: "apprenticeship", arabic: "تدريب مهني", pronunciation: "أبرينتيسشيب", example: "Apprenticeship program.", exampleArabic: "برنامج تدريب مهني", category: "تعليم" },
+    { id: 5824, word: "degree", arabic: "درجة", pronunciation: "ديغري", example: "University degree.", exampleArabic: "درجة جامعية", category: "تعليم" },
+    { id: 5825, word: "diploma", arabic: "دبلوم", pronunciation: "ديبلوما", example: "Diploma course.", exampleArabic: "دورة دبلوم", category: "تعليم" },
 
-    // ========== الوقت والتاريخ متقدم جداً ========== (22 كلمة)
+    // ========== الوقت والتاريخ ========== (25 كلمة)
     { id: 5901, word: "chronological", arabic: "تسلسل زمني", pronunciation: "كرونولوجيكال", example: "Chronological order.", exampleArabic: "ترتيب زمني", category: "وقت" },
     { id: 5902, word: "simultaneous", arabic: "متزامن", pronunciation: "سيمولتينيوس", example: "Simultaneous events.", exampleArabic: "أحداث متزامنة", category: "وقت" },
     { id: 5903, word: "concurrent", arabic: "متواز", pronunciation: "كونكارنت", example: "Concurrent sessions.", exampleArabic: "جلسات متوازية", category: "وقت" },
@@ -242,8 +266,11 @@ const ADVANCED_WORDS = [
     { id: 5920, word: "monthly", arabic: "شهري", pronunciation: "مانثلي", example: "Monthly meeting.", exampleArabic: "اجتماع شهري", category: "وقت" },
     { id: 5921, word: "weekly", arabic: "أسبوعي", pronunciation: "ويكلي", example: "Weekly schedule.", exampleArabic: "جدول أسبوعي", category: "وقت" },
     { id: 5922, word: "daily", arabic: "يومي", pronunciation: "دايلي", example: "Daily routine.", exampleArabic: "روتين يومي", category: "وقت" },
+    { id: 5923, word: "hourly", arabic: "كل ساعة", pronunciation: "أورلي", example: "Hourly rate.", exampleArabic: "سعر بالساعة", category: "وقت" },
+    { id: 5924, word: "nightly", arabic: "ليلي", pronunciation: "نايتلي", example: "Nightly news.", exampleArabic: "أخبار ليلية", category: "وقت" },
+    { id: 5925, word: "daylight", arabic: "ضوء النهار", pronunciation: "داي لايت", example: "Daylight saving.", exampleArabic: "التوقيت الصيفي", category: "وقت" },
 
-    // ========== الملابس والموضة متقدم جداً ========== (23 كلمة)
+    // ========== الملابس والموضة ========== (25 كلمة)
     { id: 6001, word: "fashionable", arabic: "أنيق", pronunciation: "فاشونابل", example: "Fashionable clothes.", exampleArabic: "ملابس أنيقة", category: "ملابس" },
     { id: 6002, word: "stylish", arabic: "أنيق", pronunciation: "ستايليش", example: "Stylish outfit.", exampleArabic: "زي أنيق", category: "ملابس" },
     { id: 6003, word: "trendy", arabic: "رائج", pronunciation: "تريندي", example: "Trendy fashion.", exampleArabic: "موضة رائجة", category: "ملابس" },
@@ -267,8 +294,10 @@ const ADVANCED_WORDS = [
     { id: 6021, word: "watch", arabic: "ساعة", pronunciation: "واتش", example: "Luxury watch.", exampleArabic: "ساعة فاخرة", category: "ملابس" },
     { id: 6022, word: "belt", arabic: "حزام", pronunciation: "بيلت", example: "Leather belt.", exampleArabic: "حزام جلد", category: "ملابس" },
     { id: 6023, word: "scarf", arabic: "وشاح", pronunciation: "سكارف", example: "Silk scarf.", exampleArabic: "وشاح حرير", category: "ملابس" },
+    { id: 6024, word: "hat", arabic: "قبعة", pronunciation: "هات", example: "Summer hat.", exampleArabic: "قبعة صيفية", category: "ملابس" },
+    { id: 6025, word: "gloves", arabic: "قفازات", pronunciation: "غلوفز", example: "Leather gloves.", exampleArabic: "قفازات جلدية", category: "ملابس" },
 
-    // ========== الاتجاهات والأماكن متقدم جداً ========== (23 كلمة)
+    // ========== الاتجاهات والأماكن ========== (25 كلمة)
     { id: 6101, word: "geographical", arabic: "جغرافي", pronunciation: "جيوغرافيكال", example: "Geographical location.", exampleArabic: "موقع جغرافي", category: "اتجاهات" },
     { id: 6102, word: "topographical", arabic: "طبوغرافي", pronunciation: "توبوغرافيكال", example: "Topographical map.", exampleArabic: "خريطة طبوغرافية", category: "اتجاهات" },
     { id: 6103, word: "urban", arabic: "حضري", pronunciation: "أوربان", example: "Urban area.", exampleArabic: "منطقة حضرية", category: "اتجاهات" },
@@ -292,8 +321,10 @@ const ADVANCED_WORDS = [
     { id: 6121, word: "church", arabic: "كنيسة", pronunciation: "تشيرتش", example: "Old church.", exampleArabic: "كنيسة قديمة", category: "اتجاهات" },
     { id: 6122, word: "synagogue", arabic: "كنيس", pronunciation: "سيناجوج", example: "Historic synagogue.", exampleArabic: "كنيس تاريخي", category: "اتجاهات" },
     { id: 6123, word: "square", arabic: "ميدان", pronunciation: "سكوير", example: "Town square.", exampleArabic: "ميدان المدينة", category: "اتجاهات" },
+    { id: 6124, word: "avenue", arabic: "جادة", pronunciation: "أفنيو", example: "Fifth Avenue.", exampleArabic: "الجادة الخامسة", category: "اتجاهات" },
+    { id: 6125, word: "boulevard", arabic: "شارع", pronunciation: "بوليفارد", example: "Sunset Boulevard.", exampleArabic: "شارع الغروب", category: "اتجاهات" },
 
-    // ========== المشاعر والأحاسيس متقدم جداً ========== (22 كلمة)
+    // ========== المشاعر والأحاسيس ========== (25 كلمة)
     { id: 6201, word: "compassion", arabic: "تعاطف", pronunciation: "كومباشن", example: "Show compassion.", exampleArabic: "أظهر تعاطفاً", category: "مشاعر" },
     { id: 6202, word: "empathy", arabic: "تفهم", pronunciation: "إمباثي", example: "Feel empathy.", exampleArabic: "اشعر بالتفهم", category: "مشاعر" },
     { id: 6203, word: "sympathy", arabic: "تعاطف", pronunciation: "سيمباثي", example: "Express sympathy.", exampleArabic: "أعرب عن تعاطفك", category: "مشاعر" },
@@ -316,8 +347,11 @@ const ADVANCED_WORDS = [
     { id: 6220, word: "contentment", arabic: "قناعة", pronunciation: "كونتينتمنت", example: "Feel contentment.", exampleArabic: "اشعر بالقناعة", category: "مشاعر" },
     { id: 6221, word: "satisfaction", arabic: "رضا", pronunciation: "ساتيسفاكشن", example: "Job satisfaction.", exampleArabic: "رضا وظيفي", category: "مشاعر" },
     { id: 6222, word: "fulfillment", arabic: "إشباع", pronunciation: "فولفيلمنت", example: "Personal fulfillment.", exampleArabic: "إشباع شخصي", category: "مشاعر" },
+    { id: 6223, word: "gratitude", arabic: "امتنان", pronunciation: "غراتيتيود", example: "Express gratitude.", exampleArabic: "أعرب عن امتنانك", category: "مشاعر" },
+    { id: 6224, word: "appreciation", arabic: "تقدير", pronunciation: "أبريشييشن", example: "Show appreciation.", exampleArabic: "أظهر التقدير", category: "مشاعر" },
+    { id: 6225, word: "admiration", arabic: "إعجاب", pronunciation: "أدميريشن", example: "Great admiration.", exampleArabic: "إعجاب كبير", category: "مشاعر" },
 
-    // ========== الأفعال اليومية متقدم جداً ========== (23 كلمة)
+    // ========== الأفعال اليومية ========== (25 كلمة)
     { id: 6301, word: "accomplish", arabic: "ينجز", pronunciation: "أكامبليش", example: "Accomplish goals.", exampleArabic: "أنجز الأهداف", category: "أفعال" },
     { id: 6302, word: "achieve", arabic: "يحقق", pronunciation: "أتشيف", example: "Achieve success.", exampleArabic: "حقق نجاحاً", category: "أفعال" },
     { id: 6303, word: "attain", arabic: "ينال", pronunciation: "أتين", example: "Attain knowledge.", exampleArabic: "ينال المعرفة", category: "أفعال" },
@@ -337,12 +371,14 @@ const ADVANCED_WORDS = [
     { id: 6317, word: "innovate", arabic: "يبتكر", pronunciation: "إنوفيت", example: "Innovate new ideas.", exampleArabic: "ابتكر أفكاراً جديدة", category: "أفعال" },
     { id: 6318, word: "develop", arabic: "يطور", pronunciation: "ديفيلوب", example: "Develop skills.", exampleArabic: "طور المهارات", category: "أفعال" },
     { id: 6319, word: "improve", arabic: "يحسن", pronunciation: "إمبروف", example: "Improve yourself.", exampleArabic: "حسّن نفسك", category: "أفعال" },
-    { id: 6320, word: "enhance", arabic: "يعزز", pronunciation: "إنهانس", example: "Enance performance.", exampleArabic: "عزز الأداء", category: "أفعال" },
+    { id: 6320, word: "enhance", arabic: "يعزز", pronunciation: "إنهانس", example: "Enhance performance.", exampleArabic: "عزز الأداء", category: "أفعال" },
     { id: 6321, word: "refine", arabic: "يصقل", pronunciation: "ري فاين", example: "Refine skills.", exampleArabic: "صقل المهارات", category: "أفعال" },
     { id: 6322, word: "perfect", arabic: "يتقن", pronunciation: "بيرفكت", example: "Perfect your craft.", exampleArabic: "أتقن حرفتك", category: "أفعال" },
     { id: 6323, word: "master", arabic: "يتقن", pronunciation: "ماستر", example: "Master language.", exampleArabic: "أتقن اللغة", category: "أفعال" },
+    { id: 6324, word: "learn", arabic: "يتعلم", pronunciation: "ليرن", example: "Learn new things.", exampleArabic: "تعلم أشياء جديدة", category: "أفعال" },
+    { id: 6325, word: "understand", arabic: "يفهم", pronunciation: "أندرستاند", example: "Understand the lesson.", exampleArabic: "افهم الدرس", category: "أفعال" },
 
-    // ========== التكنولوجيا والإنترنت متقدم جداً ========== (22 كلمة)
+    // ========== التكنولوجيا والإنترنت ========== (25 كلمة)
     { id: 6401, word: "artificial intelligence", arabic: "ذكاء اصطناعي", pronunciation: "آرفيشال إنتليجنس", example: "AI technology.", exampleArabic: "تقنية الذكاء الاصطناعي", category: "تكنولوجيا" },
     { id: 6402, word: "machine learning", arabic: "تعلم آلة", pronunciation: "ماشين ليرنينغ", example: "Machine learning algorithms.", exampleArabic: "خوارزميات تعلم الآلة", category: "تكنولوجيا" },
     { id: 6403, word: "virtual reality", arabic: "واقع افتراضي", pronunciation: "فيرتشوال رياليتي", example: "VR experience.", exampleArabic: "تجربة واقع افتراضي", category: "تكنولوجيا" },
@@ -364,8 +400,92 @@ const ADVANCED_WORDS = [
     { id: 6419, word: "latency", arabic: "زمن وصول", pronunciation: "ليتنزي", example: "Low latency.", exampleArabic: "زمن وصول منخفض", category: "تكنولوجيا" },
     { id: 6420, word: "interface", arabic: "واجهة", pronunciation: "إنترفيس", example: "User interface.", exampleArabic: "واجهة مستخدم", category: "تكنولوجيا" },
     { id: 6421, word: "protocol", arabic: "بروتوكول", pronunciation: "بروتوكول", example: "Network protocol.", exampleArabic: "بروتوكول شبكة", category: "تكنولوجيا" },
-    { id: 6422, word: "encryption", arabic: "تشفير", pronunciation: "إنكريبشن", example: "End-to-end encryption.", exampleArabic: "تشفير من طرف لطرف", category: "تكنولوجيا" }
+    { id: 6422, word: "encryption", arabic: "تشفير", pronunciation: "إنكريبشن", example: "End-to-end encryption.", exampleArabic: "تشفير من طرف لطرف", category: "تكنولوجيا" },
+    { id: 6423, word: "software", arabic: "برمجيات", pronunciation: "سوفتوير", example: "Computer software.", exampleArabic: "برمجيات كمبيوتر", category: "تكنولوجيا" },
+    { id: 6424, word: "hardware", arabic: "عتاد", pronunciation: "هاردوير", example: "Computer hardware.", exampleArabic: "عتاد كمبيوتر", category: "تكنولوجيا" },
+    { id: 6425, word: "application", arabic: "تطبيق", pronunciation: "أبليكايشن", example: "Mobile application.", exampleArabic: "تطبيق جوال", category: "تكنولوجيا" },
+
+    // ========== البيئة والطبيعة ========== (25 كلمة) - فئة جديدة
+    { id: 6501, word: "environment", arabic: "بيئة", pronunciation: "إنفايرونمنت", example: "Protect the environment.", exampleArabic: "احمِ البيئة", category: "بيئة" },
+    { id: 6502, word: "ecosystem", arabic: "نظام بيئي", pronunciation: "إيكوسيستم", example: "Marine ecosystem.", exampleArabic: "نظام بيئي بحري", category: "بيئة" },
+    { id: 6503, word: "biodiversity", arabic: "تنوع حيوي", pronunciation: "بايو دايفيرسيتي", example: "Rich biodiversity.", exampleArabic: "تنوع حيوي غني", category: "بيئة" },
+    { id: 6504, word: "conservation", arabic: "حماية", pronunciation: "كونسيرفيشن", example: "Wildlife conservation.", exampleArabic: "حماية الحياة البرية", category: "بيئة" },
+    { id: 6505, word: "sustainable", arabic: "مستدام", pronunciation: "ساستينابل", example: "Sustainable development.", exampleArabic: "تنمية مستدامة", category: "بيئة" },
+    { id: 6506, word: "renewable", arabic: "متجدد", pronunciation: "رينيوابل", example: "Renewable energy.", exampleArabic: "طاقة متجددة", category: "بيئة" },
+    { id: 6507, word: "solar", arabic: "شمسي", pronunciation: "سولار", example: "Solar power.", exampleArabic: "طاقة شمسية", category: "بيئة" },
+    { id: 6508, word: "wind", arabic: "رياح", pronunciation: "ويند", example: "Wind energy.", exampleArabic: "طاقة رياح", category: "بيئة" },
+    { id: 6509, word: "pollution", arabic: "تلوث", pronunciation: "بولوشن", example: "Air pollution.", exampleArabic: "تلوث هواء", category: "بيئة" },
+    { id: 6510, word: "emission", arabic: "انبعاث", pronunciation: "إميشين", example: "Carbon emissions.", exampleArabic: "انبعاثات كربون", category: "بيئة" },
+    { id: 6511, word: "recycle", arabic: "يعيد تدوير", pronunciation: "ريسايكل", example: "Recycle plastic.", exampleArabic: "أعد تدوير البلاستيك", category: "بيئة" },
+    { id: 6512, word: "waste", arabic: "نفايات", pronunciation: "ويست", example: "Reduce waste.", exampleArabic: "قلل النفايات", category: "بيئة" },
+    { id: 6513, word: "climate", arabic: "مناخ", pronunciation: "كلايميت", example: "Climate change.", exampleArabic: "تغير المناخ", category: "بيئة" },
+    { id: 6514, word: "global warming", arabic: "احتباس حراري", pronunciation: "غلوبال وورمينغ", example: "Combat global warming.", exampleArabic: "حارب الاحتباس الحراري", category: "بيئة" },
+    { id: 6515, word: "ozone", arabic: "أوزون", pronunciation: "أوزون", example: "Ozone layer.", exampleArabic: "طبقة الأوزون", category: "بيئة" },
+    { id: 6516, word: "deforestation", arabic: "إزالة غابات", pronunciation: "دي فورستيشن", example: "Stop deforestation.", exampleArabic: "أوقف إزالة الغابات", category: "بيئة" },
+    { id: 6517, word: "endangered", arabic: "مهدد بالانقراض", pronunciation: "إيندينجرد", example: "Endangered species.", exampleArabic: "أنواع مهددة بالانقراض", category: "بيئة" },
+    { id: 6518, word: "extinct", arabic: "منقرض", pronunciation: "إكستينكت", example: "Extinct animals.", exampleArabic: "حيوانات منقرضة", category: "بيئة" },
+    { id: 6519, word: "habitat", arabic: "موطن", pronunciation: "هابيتات", example: "Natural habitat.", exampleArabic: "موطن طبيعي", category: "بيئة" },
+    { id: 6520, word: "wildlife", arabic: "حياة برية", pronunciation: "وايلدلايف", example: "Protect wildlife.", exampleArabic: "احمِ الحياة البرية", category: "بيئة" },
+    { id: 6521, word: "forest", arabic: "غابة", pronunciation: "فورست", example: "Rain forest.", exampleArabic: "غابة مطيرة", category: "بيئة" },
+    { id: 6522, word: "ocean", arabic: "محيط", pronunciation: "أوشن", example: "Pacific Ocean.", exampleArabic: "المحيط الهادئ", category: "بيئة" },
+    { id: 6523, word: "atmosphere", arabic: "غلاف جوي", pronunciation: "أتوموسفير", example: "Earth's atmosphere.", exampleArabic: "الغلاف الجوي للأرض", category: "بيئة" },
+    { id: 6524, word: "ecology", arabic: "علم البيئة", pronunciation: "إيكولوجي", example: "Study ecology.", exampleArabic: "ادرس علم البيئة", category: "بيئة" },
+    { id: 6525, word: "greenhouse", arabic: "دفيئة", pronunciation: "جرين هاوس", example: "Greenhouse effect.", exampleArabic: "تأثير الدفيئة", category: "بيئة" },
+
+    // ========== الرياضة واللياقة ========== (25 كلمة) - فئة جديدة
+    { id: 6601, word: "athlete", arabic: "رياضي", pronunciation: "أثليت", example: "Professional athlete.", exampleArabic: "رياضي محترف", category: "رياضة" },
+    { id: 6602, word: "tournament", arabic: "بطولة", pronunciation: "تورنامنت", example: "Tennis tournament.", exampleArabic: "بطولة تنس", category: "رياضة" },
+    { id: 6603, word: "championship", arabic: "بطولة", pronunciation: "تشامبيونشيب", example: "World championship.", exampleArabic: "بطولة العالم", category: "رياضة" },
+    { id: 6604, word: "competition", arabic: "منافسة", pronunciation: "كومبيتيشن", example: "Fierce competition.", exampleArabic: "منافسة شرسة", category: "رياضة" },
+    { id: 6605, word: "opponent", arabic: "خصم", pronunciation: "أوبوننت", example: "Defeat opponent.", exampleArabic: "اهزم الخصم", category: "رياضة" },
+    { id: 6606, word: "stadium", arabic: "ملعب", pronunciation: "ستاديوم", example: "Football stadium.", exampleArabic: "ملعب كرة قدم", category: "رياضة" },
+    { id: 6607, word: "gym", arabic: "نادي رياضي", pronunciation: "جيم", example: "Go to the gym.", exampleArabic: "اذهب للنادي الرياضي", category: "رياضة" },
+    { id: 6608, word: "workout", arabic: "تمرين", pronunciation: "ورك أوت", example: "Daily workout.", exampleArabic: "تمرين يومي", category: "رياضة" },
+    { id: 6609, word: "fitness", arabic: "لياقة", pronunciation: "فيتنس", example: "Fitness center.", exampleArabic: "مركز لياقة", category: "رياضة" },
+    { id: 6610, word: "endurance", arabic: "تحمل", pronunciation: "إينديورانس", example: "Build endurance.", exampleArabic: "ابنِ التحمل", category: "رياضة" },
+    { id: 6611, word: "strength", arabic: "قوة", pronunciation: "سترينغث", example: "Physical strength.", exampleArabic: "قوة بدنية", category: "رياضة" },
+    { id: 6612, word: "flexibility", arabic: "مرونة", pronunciation: "فليكس بيليتي", example: "Improve flexibility.", exampleArabic: "حسّن المرونة", category: "رياضة" },
+    { id: 6613, word: "stamina", arabic: "قدرة تحمل", pronunciation: "ستامينا", example: "Increase stamina.", exampleArabic: "زد القدرة على التحمل", category: "رياضة" },
+    { id: 6614, word: "coach", arabic: "مدرب", pronunciation: "كوتش", example: "Team coach.", exampleArabic: "مدرب الفريق", category: "رياضة" },
+    { id: 6615, word: "referee", arabic: "حكم", pronunciation: "ريفيري", example: "Football referee.", exampleArabic: "حكم كرة قدم", category: "رياضة" },
+    { id: 6616, word: "score", arabic: "نتيجة", pronunciation: "سكور", example: "Final score.", exampleArabic: "النتيجة النهائية", category: "رياضة" },
+    { id: 6617, word: "goal", arabic: "هدف", pronunciation: "جول", example: "Score a goal.", exampleArabic: "سجل هدفاً", category: "رياضة" },
+    { id: 6618, word: "medal", arabic: "ميدالية", pronunciation: "ميدال", example: "Gold medal.", exampleArabic: "ميدالية ذهبية", category: "رياضة" },
+    { id: 6619, word: "victory", arabic: "انتصار", pronunciation: "فيكتوري", example: "Celebrate victory.", exampleArabic: "احتفل بالانتصار", category: "رياضة" },
+    { id: 6620, word: "defeat", arabic: "هزيمة", pronunciation: "ديفيت", example: "Accept defeat.", exampleArabic: "تقبل الهزيمة", category: "رياضة" },
+    { id: 6621, word: "marathon", arabic: "ماراثون", pronunciation: "ماراثون", example: "Run marathon.", exampleArabic: "اركض ماراثون", category: "رياضة" },
+    { id: 6622, word: "sprint", arabic: "ركض سريع", pronunciation: "سبرينت", example: "Short sprint.", exampleArabic: "ركض سريع قصير", category: "رياضة" },
+    { id: 6623, word: "swimming", arabic: "سباحة", pronunciation: "سويمينغ", example: "Swimming pool.", exampleArabic: "حمام سباحة", category: "رياضة" },
+    { id: 6624, word: "cycling", arabic: "ركوب دراجات", pronunciation: "سايكلينغ", example: "Mountain cycling.", exampleArabic: "ركوب دراجات جبلية", category: "رياضة" },
+    { id: 6625, word: "yoga", arabic: "يوغا", pronunciation: "يوغا", example: "Practice yoga.", exampleArabic: "مارس اليوغا", category: "رياضة" },
+
+    // ========== الفن والثقافة ========== (25 كلمة) - فئة جديدة
+    { id: 6701, word: "art", arabic: "فن", pronunciation: "آرت", example: "Modern art.", exampleArabic: "فن حديث", category: "فن" },
+    { id: 6702, word: "culture", arabic: "ثقافة", pronunciation: "كلتشر", example: "Local culture.", exampleArabic: "ثقافة محلية", category: "فن" },
+    { id: 6703, word: "heritage", arabic: "تراث", pronunciation: "هيريتيدج", example: "Cultural heritage.", exampleArabic: "تراث ثقافي", category: "فن" },
+    { id: 6704, word: "tradition", arabic: "تقليد", pronunciation: "تراديشن", example: "Family tradition.", exampleArabic: "تقليد عائلي", category: "فن" },
+    { id: 6705, word: "custom", arabic: "عادة", pronunciation: "كاستم", example: "Local customs.", exampleArabic: "عادات محلية", category: "فن" },
+    { id: 6706, word: "festival", arabic: "مهرجان", pronunciation: "فيستيفال", example: "Music festival.", exampleArabic: "مهرجان موسيقي", category: "فن" },
+    { id: 6707, word: "ceremony", arabic: "حفل", pronunciation: "سيريموني", example: "Opening ceremony.", exampleArabic: "حفل افتتاح", category: "فن" },
+    { id: 6708, word: "performance", arabic: "أداء", pronunciation: "بيرفورمانس", example: "Live performance.", exampleArabic: "أداء حي", category: "فن" },
+    { id: 6709, word: "exhibition", arabic: "معرض", pronunciation: "إكزيبيشن", example: "Art exhibition.", exampleArabic: "معرض فني", category: "فن" },
+    { id: 6710, word: "museum", arabic: "متحف", pronunciation: "ميوزيام", example: "History museum.", exampleArabic: "متحف تاريخي", category: "فن" },
+    { id: 6711, word: "gallery", arabic: "جاليري", pronunciation: "جاليري", example: "Art gallery.", exampleArabic: "جاليري فني", category: "فن" },
+    { id: 6712, word: "sculpture", arabic: "نحت", pronunciation: "سكلبتشر", example: "Marble sculpture.", exampleArabic: "نحت رخامي", category: "فن" },
+    { id: 6713, word: "painting", arabic: "لوحة", pronunciation: "بينتينغ", example: "Oil painting.", exampleArabic: "لوحة زيتية", category: "فن" },
+    { id: 6714, word: "drawing", arabic: "رسم", pronunciation: "درونغ", example: "Pencil drawing.", exampleArabic: "رسم بقلم الرصاص", category: "فن" },
+    { id: 6715, word: "photography", arabic: "تصوير", pronunciation: "فوتوغرافي", example: "Nature photography.", exampleArabic: "تصوير طبيعي", category: "فن" },
+    { id: 6716, word: "literature", arabic: "أدب", pronunciation: "ليتراتشر", example: "English literature.", exampleArabic: "أدب إنجليزي", category: "فن" },
+    { id: 6717, word: "poetry", arabic: "شعر", pronunciation: "بويتري", example: "Write poetry.", exampleArabic: "اكتب شعراً", category: "فن" },
+    { id: 6718, word: "novel", arabic: "رواية", pronunciation: "نوفل", example: "Read a novel.", exampleArabic: "اقرأ رواية", category: "فن" },
+    { id: 6719, word: "music", arabic: "موسيقى", pronunciation: "ميوزيك", example: "Classical music.", exampleArabic: "موسيقى كلاسيكية", category: "فن" },
+    { id: 6720, word: "instrument", arabic: "آلة", pronunciation: "إنسترومنت", example: "Musical instrument.", exampleArabic: "آلة موسيقية", category: "فن" },
+    { id: 6721, word: "theater", arabic: "مسرح", pronunciation: "ثياتر", example: "Go to theater.", exampleArabic: "اذهب إلى المسرح", category: "فن" },
+    { id: 6722, word: "cinema", arabic: "سينما", pronunciation: "سينيما", example: "French cinema.", exampleArabic: "سينما فرنسية", category: "فن" },
+    { id: 6723, word: "dance", arabic: "رقص", pronunciation: "دانس", example: "Traditional dance.", exampleArabic: "رقص تقليدي", category: "فن" },
+    { id: 6724, word: "opera", arabic: "أوبرا", pronunciation: "أوبرا", example: "Opera house.", exampleArabic: "دار أوبرا", category: "فن" },
+    { id: 6725, word: "orchestra", arabic: "أوركسترا", pronunciation: "أوركيسترا", example: "Symphony orchestra.", exampleArabic: "أوركسترا سيمفونية", category: "فن" }
 ];
 
 // التحقق من التحميل
-console.log('✅ advanced-data.js loaded with', ADVANCED_WORDS.length, 'words');
+console.log('✅ advanced-data.js loaded with', ADVANCED_WORDS.length, 'words (500 كلمة متقدمة)');
