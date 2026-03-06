@@ -539,7 +539,6 @@
                 <li><a href="stories.html">القصص</a></li>
                 <li><a href="tenses.html">الأزمنة</a></li>
                 <li><a href="quiz.html">الاختبارات</a></li>
-                <li><a href="download.html">تحميل التطبيق</a></li>
             </ul>
             <div class="nav-right">
                 <div class="theme-toggle">
@@ -753,7 +752,7 @@
             document.getElementById('searchInput').addEventListener('input', e => {
                 if (viewingSaved || viewingLearned) exitSpecialView();
                 currentSearchQuery = e.target.value;
-                if (!currentSearchQuery || currentSearchQuery.length >= 2) applyFilters();
+                applyFilters();
             });
 
             window.addEventListener('scroll', () => {
@@ -894,7 +893,7 @@
         function applyFilters() {
             let words = currentLevel === 'all' ? getAllWords() : (WORDS_DATA[currentLevel] || []);
             if (currentCategory !== 'all') words = words.filter(w => w.category === currentCategory);
-            if (currentSearchQuery.length >= 2) {
+            if (currentSearchQuery.length >= 1) {
                 const q = currentSearchQuery.toLowerCase();
                 words = words.filter(w => w.word.toLowerCase().includes(q) || w.arabic.includes(q));
             }
