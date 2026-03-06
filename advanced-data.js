@@ -485,7 +485,62 @@ const ADVANCED_WORDS = [
     { id: 6723, word: "dance", arabic: "رقص", pronunciation: "دانس", example: "Traditional dance.", exampleArabic: "رقص تقليدي", category: "فن" },
     { id: 6724, word: "opera", arabic: "أوبرا", pronunciation: "أوبرا", example: "Opera house.", exampleArabic: "دار أوبرا", category: "فن" },
     { id: 6725, word: "orchestra", arabic: "أوركسترا", pronunciation: "أوركيسترا", example: "Symphony orchestra.", exampleArabic: "أوركسترا سيمفونية", category: "فن" }
+
+// ========== القانون والعدالة ========== (25 كلمة) - تصنيف جديد
+    { id: 6801, word: "law", arabic: "قانون", pronunciation: "لو", example: "Obey the law.", exampleArabic: "أطع القانون", category: "قانون" },
+    { id: 6802, word: "justice", arabic: "عدالة", pronunciation: "جاستس", example: "Justice for all.", exampleArabic: "العدالة للجميع", category: "قانون" },
+    { id: 6803, word: "rights", arabic: "حقوق", pronunciation: "رايتس", example: "Human rights.", exampleArabic: "حقوق الإنسان", category: "قانون" },
+    { id: 6804, word: "freedom", arabic: "حرية", pronunciation: "فريدوم", example: "Freedom of speech.", exampleArabic: "حرية التعبير", category: "قانون" },
+    { id: 6805, word: "court", arabic: "محكمة", pronunciation: "كورت", example: "The court is in session.", exampleArabic: "المحكمة منعقدة", category: "قانون" },
+    { id: 6806, word: "judge", arabic: "قاضي", pronunciation: "جادج", example: "The judge made a decision.", exampleArabic: "القاضي اتخذ قراراً", category: "قانون" },
+    { id: 6807, word: "lawyer", arabic: "محامي", pronunciation: "لويير", example: "The lawyer defended him.", exampleArabic: "المحامي دافع عنه", category: "قانون" },
+    { id: 6808, word: "jury", arabic: "هيئة محلفين", pronunciation: "جوري", example: "The jury reached a verdict.", exampleArabic: "هيئة المحلفين توصلت إلى حكم", category: "قانون" },
+    { id: 6809, word: "trial", arabic: "محاكمة", pronunciation: "ترايال", example: "The trial lasted a week.", exampleArabic: "المحاكمة استمرت أسبوعاً", category: "قانون" },
+    { id: 6810, word: "evidence", arabic: "دليل", pronunciation: "إيفيدنس", example: "The evidence was clear.", exampleArabic: "الدليل كان واضحاً", category: "قانون" },
+    { id: 6811, word: "witness", arabic: "شاهد", pronunciation: "ويتنس", example: "The witness testified.", exampleArabic: "الشاهد أدلى بشهادته", category: "قانون" },
+    { id: 6812, word: "verdict", arabic: "حكم", pronunciation: "فيرديكت", example: "The verdict is guilty.", exampleArabic: "الحكم مذنب", category: "قانون" },
+    { id: 6813, word: "guilty", arabic: "مذنب", pronunciation: "جيلتي", example: "He was found guilty.", exampleArabic: "تم العثور عليه مذنباً", category: "قانون" },
+    { id: 6814, word: "innocent", arabic: "بريء", pronunciation: "إينوسنت", example: "She is innocent.", exampleArabic: "هي بريئة", category: "قانون" },
+    { id: 6815, word: "crime", arabic: "جريمة", pronunciation: "كرايم", example: "Crime is decreasing.", exampleArabic: "الجريمة في تناقص", category: "قانون" },
+    { id: 6816, word: "criminal", arabic: "مجرم", pronunciation: "كرايمنل", example: "The criminal was arrested.", exampleArabic: "المجرم تم اعتقاله", category: "قانون" },
+    { id: 6817, word: "punishment", arabic: "عقاب", pronunciation: "بانيشمنت", example: "The punishment fits the crime.", exampleArabic: "العقاب يناسب الجريمة", category: "قانون" },
+    { id: 6818, word: "sentence", arabic: "حكم بالسجن", pronunciation: "سينتنز", example: "He received a life sentence.", exampleArabic: "تلقى حكماً بالسجن مدى الحياة", category: "قانون" },
+    { id: 6819, word: "prison", arabic: "سجن", pronunciation: "بريزن", example: "He was sent to prison.", exampleArabic: "تم إرساله إلى السجن", category: "قانون" },
+    { id: 6820, word: "appeal", arabic: "استئناف", pronunciation: "أبيل", example: "They filed an appeal.", exampleArabic: "قدموا استئنافاً", category: "قانون" },
+    { id: 6821, word: "legal", arabic: "قانوني", pronunciation: "ليغال", example: "Legal advice.", exampleArabic: "نصيحة قانونية", category: "قانون" },
+    { id: 6822, word: "illegal", arabic: "غير قانوني", pronunciation: "إليغال", example: "It's illegal to steal.", exampleArabic: "السرقة غير قانونية", category: "قانون" },
+    { id: 6823, word: "contract", arabic: "عقد", pronunciation: "كونتراكت", example: "Sign the contract.", exampleArabic: "وقع العقد", category: "قانون" },
+    { id: 6824, word: "agreement", arabic: "اتفاقية", pronunciation: "أغريمنت", example: "They reached an agreement.", exampleArabic: "توصلوا إلى اتفاقية", category: "قانون" },
+    { id: 6825, word: "testimony", arabic: "شهادة", pronunciation: "تستيموني", example: "Her testimony was convincing.", exampleArabic: "شهادتها كانت مقنعة", category: "قانون" },
+    
+// ========== المال والاقتصاد ========== (25 كلمة) - تصنيف جديد
+    { id: 6901, word: "economy", arabic: "اقتصاد", pronunciation: "إيكونومي", example: "The economy is growing.", exampleArabic: "الاقتصاد ينمو", category: "اقتصاد" },
+    { id: 6902, word: "market", arabic: "سوق", pronunciation: "ماركت", example: "Stock market.", exampleArabic: "سوق الأسهم", category: "اقتصاد" },
+    { id: 6903, word: "stock", arabic: "سهم", pronunciation: "ستوك", example: "He bought stocks.", exampleArabic: "اشترى أسهماً", category: "اقتصاد" },
+    { id: 6904, word: "share", arabic: "سهم", pronunciation: "شير", example: "Company shares.", exampleArabic: "أسهم الشركة", category: "اقتصاد" },
+    { id: 6905, word: "bond", arabic: "سند", pronunciation: "بوند", example: "Government bonds.", exampleArabic: "سندات حكومية", category: "اقتصاد" },
+    { id: 6906, word: "inflation", arabic: "تضخم", pronunciation: "إنفلايشن", example: "Inflation is rising.", exampleArabic: "التضخم في ارتفاع", category: "اقتصاد" },
+    { id: 6907, word: "recession", arabic: "ركود", pronunciation: "ريسيشن", example: "Economic recession.", exampleArabic: "ركود اقتصادي", category: "اقتصاد" },
+    { id: 6908, word: "growth", arabic: "نمو", pronunciation: "جروث", example: "Economic growth.", exampleArabic: "نمو اقتصادي", category: "اقتصاد" },
+    { id: 6909, word: "GDP", arabic: "ناتج محلي إجمالي", pronunciation: "جي دي بي", example: "GDP increased.", exampleArabic: "الناتج المحلي الإجمالي زاد", category: "اقتصاد" },
+    { id: 6910, word: "capital", arabic: "رأس مال", pronunciation: "كابيتل", example: "Startup capital.", exampleArabic: "رأس مال الشركات الناشئة", category: "اقتصاد" },
+    { id: 6911, word: "asset", arabic: "أصل", pronunciation: "آسيت", example: "Company assets.", exampleArabic: "أصول الشركة", category: "اقتصاد" },
+    { id: 6912, word: "liability", arabic: "التزام", pronunciation: "لايابيليتي", example: "Financial liabilities.", exampleArabic: "التزامات مالية", category: "اقتصاد" },
+    { id: 6913, word: "dividend", arabic: "أرباح", pronunciation: "ديفيدند", example: "Shareholders receive dividends.", exampleArabic: "المساهمون يحصلون على أرباح", category: "اقتصاد" },
+    { id: 6914, word: "interest", arabic: "فائدة", pronunciation: "إنترست", example: "Interest rate.", exampleArabic: "سعر الفائدة", category: "اقتصاد" },
+    { id: 6915, word: "loan", arabic: "قرض", pronunciation: "لون", example: "Bank loan.", exampleArabic: "قرض بنكي", category: "اقتصاد" },
+    { id: 6916, word: "mortgage", arabic: "رهن", pronunciation: "مورغيج", example: "Home mortgage.", exampleArabic: "رهن منزلي", category: "اقتصاد" },
+    { id: 6917, word: "credit", arabic: "ائتمان", pronunciation: "كريديت", example: "Credit score.", exampleArabic: "درجة الائتمان", category: "اقتصاد" },
+    { id: 6918, word: "debt", arabic: "دين", pronunciation: "ديت", example: "National debt.", exampleArabic: "الدين الوطني", category: "اقتصاد" },
+    { id: 6919, word: "bankrupt", arabic: "مفلس", pronunciation: "بانكروبت", example: "The company went bankrupt.", exampleArabic: "الشركة أفلست", category: "اقتصاد" },
+    { id: 6920, word: "investor", arabic: "مستثمر", pronunciation: "إنفيستور", example: "Foreign investors.", exampleArabic: "مستثمرون أجانب", category: "اقتصاد" },
+    { id: 6921, word: "portfolio", arabic: "محفظة", pronunciation: "بورت فوليو", example: "Investment portfolio.", exampleArabic: "محفظة استثمارية", category: "اقتصاد" },
+    { id: 6922, word: "wealth", arabic: "ثروة", pronunciation: "ويلث", example: "Accumulate wealth.", exampleArabic: "جمع الثروة", category: "اقتصاد" },
+    { id: 6923, word: "poverty", arabic: "فقر", pronunciation: "بوفيرتي", example: "Fight poverty.", exampleArabic: "محاربة الفقر", category: "اقتصاد" },
+    { id: 6924, word: "taxation", arabic: "ضرائب", pronunciation: "تاكسيشن", example: "Taxation system.", exampleArabic: "نظام الضرائب", category: "اقتصاد" },
+    { id: 6925, word: "budget", arabic: "ميزانية", pronunciation: "باجت", example: "Government budget.", exampleArabic: "الميزانية الحكومية", category: "اقتصاد" }, 
+
 ];
 
 // التحقق من التحميل
-console.log('✅ advanced-data.js loaded with', ADVANCED_WORDS.length, 'words (500 كلمة متقدمة)');
+console.log('✅ advanced-data.js loaded with', ADVANCED_WORDS.length, 'words (500 كلمة متقدمة)');        
