@@ -1,25 +1,29 @@
-const CACHE_NAME = 'cine-lingua-v2';
+importScripts('https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+  apiKey: "AIzaSyDSSNRMVpKv4B92DwZ87vqFEyvQx7vWNaA",
+  authDomain: "cinelingua-32f98.firebaseapp.com",
+  projectId: "cinelingua-32f98",
+  storageBucket: "cinelingua-32f98.firebasestorage.app",
+  messagingSenderId: "346573960366",
+  appId: "1:346573960366:web:a1e4af94d40998df10a93f"
+});
+
+const messaging = firebase.messaging();
+
+const CACHE_NAME = 'cine-lingua-v3';
 const urlsToCache = [
   'https://riad325r-maker.github.io/cine-lingua.-/',
-  '/index.html',
-  '/lessons.html',
-  '/stories.html',
-  '/tenses.html',
-  '/quiz.html',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap',
-  'https://unpkg.com/aos@2.3.1/dist/aos.css',
-  'https://unpkg.com/aos@2.3.1/dist/aos.js'
+  '/index.html', '/lessons.html', '/stories.html', '/tenses.html', '/quiz.html'
 ];
 
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return Promise.allSettled(
-        urlsToCache.map(url => cache.add(url).catch(() => {}))
-      );
-    })
+    caches.open(CACHE_NAME).then(cache =>
+      Promise.allSettled(urlsToCache.map(url => cache.add(url).catch(() => {})))
+    )
   );
 });
 
@@ -44,27 +48,19 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// ===== Push Notifications =====
-self.addEventListener('push', event => {
-  let data = {
-    title: 'CineLingua 🎓',
-    body: 'لديك تذكير جديد!',
-    icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png'
-  };
-  try { if (event.data) data = { ...data, ...event.data.json() }; } catch (e) {}
-
-  event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: data.icon,
-      badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
-      dir: 'rtl', lang: 'ar',
-      vibrate: [200, 100, 200],
-      tag: 'cinelingua-notif',
-      renotify: true,
-      data: { url: 'https://riad325r-maker.github.io/cine-lingua.-/' }
-    })
-  );
+// إشعارات Firebase في الخلفية
+messaging.onBackgroundMessage(payload => {
+  const { title, body, icon } = payload.notification || {};
+  self.registration.showNotification(title || 'CineLingua 🎓', {
+    body: body || 'لديك رسالة جديدة!',
+    icon: icon || 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+    badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+    dir: 'rtl', lang: 'ar',
+    vibrate: [200, 100, 200],
+    tag: 'firebase-notif',
+    renotify: true,
+    data: { url: 'https://riad325r-maker.github.io/cine-lingua.-/' }
+  });
 });
 
 self.addEventListener('notificationclick', event => {
