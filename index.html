@@ -469,23 +469,35 @@
         let deferredPrompt;
         const installBanner = document.getElementById('installBanner');
 
-        if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) {
-            const bannerSnoozed = localStorage.getItem('installBannerSnoozed');
-            const bannerInstalled = localStorage.getItem('installBannerSeen');
-            const bannerExpired = bannerSnoozed && (Date.now() - parseInt(bannerSnoozed)) >= 86400000;
-            if (!bannerInstalled && (!bannerSnoozed || bannerExpired)) {
-                if (bannerExpired) localStorage.removeItem('installBannerSnoozed');
-                setTimeout(() => installBanner.classList.add('show'), 1000);
-            } else {
-                setTimeout(showNotifPrompt, 1000);
-            }
-        } else {
-            setTimeout(showNotifPrompt, 1000);
-        }
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const bannerSnoozed  = localStorage.getItem('installBannerSnoozed');
+        const bannerInstalled = localStorage.getItem('installBannerSeen');
+        const bannerExpired  = bannerSnoozed && (Date.now() - parseInt(bannerSnoozed)) >= 86400000;
+        const showBanner     = !isStandalone && !bannerInstalled && (!bannerSnoozed || bannerExpired);
+
+        if (bannerExpired) localStorage.removeItem('installBannerSnoozed');
+
+        // اعترض حدث التثبيت لو جاء
         window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredPrompt = e;
-            if (!localStorage.getItem('installBannerSeen')) installBanner.classList.add('show');
+            e.preventDefault();
+            deferredPrompt = e;
         });
+
+        // بعد ثانية: اعرض البانر لو المستخدم ما شافه، وإلا اعرض الإشعارات
+        setTimeout(() => {
+            if (showBanner) {
+                installBanner.classList.add('show');
+                // بعد 8 ثواني لو ما تفاعل يعرض الإشعارات تلقائياً
+                setTimeout(() => {
+                    if (installBanner.classList.contains('show')) {
+                        installBanner.classList.remove('show');
+                        showNotifPrompt();
+                    }
+                }, 8000);
+            } else {
+                showNotifPrompt();
+            }
+        }, 1000);
         document.getElementById('installBtn').addEventListener('click', async () => {
             if (!deferredPrompt) return;
             deferredPrompt.prompt();
