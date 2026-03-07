@@ -613,6 +613,9 @@
         <p>© 2026 CineLingua — جميع الحقوق محفوظة</p>
     </footer>
 
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 900, once: true, offset: 60 });
@@ -772,6 +775,7 @@
                         dir: 'rtl', lang: 'ar', vibrate: [200, 100, 200], tag: 'welcome'
                     });
                 });
+                await getFCMToken();
                 scheduleDailyReminder();
             }
         });
@@ -816,15 +820,64 @@
             }
         }
 
-        // ===== SERVICE WORKER =====
+        // ===== FIREBASE + SERVICE WORKER =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSSNRMVpKv4B92DwZ87vqFEyvQx7vWNaA",
+            authDomain: "cinelingua-32f98.firebaseapp.com",
+            projectId: "cinelingua-32f98",
+            storageBucket: "cinelingua-32f98.firebasestorage.app",
+            messagingSenderId: "346573960366",
+            appId: "1:346573960366:web:a1e4af94d40998df10a93f"
+        };
+
+        const VAPID_KEY = "BHfOJAyXpko7DSkwokCXZT7IP5fGnJ4N9ldztEDmwLSn9QIKlvsx7tzfJV3X_fMDVjPTCfZmGAx2RN27Bharjkk";
+
+        let messaging = null;
+
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => {
-                        console.log('✅ SW registered:', reg.scope);
-                        if (Notification.permission === 'granted') scheduleDailyReminder();
-                    })
-                    .catch(err => console.log('❌ SW failed:', err));
+            window.addEventListener('load', async () => {
+                try {
+                    const reg = await navigator.serviceWorker.register('sw.js');
+                    console.log('✅ SW registered:', reg.scope);
+
+                    // تهيئة Firebase Messaging
+                    firebase.initializeApp(firebaseConfig);
+                    messaging = firebase.messaging();
+
+                    if (Notification.permission === 'granted') {
+                        await getFCMToken();
+                        scheduleDailyReminder();
+                    }
+                } catch(err) {
+                    console.log('❌ SW failed:', err);
+                }
+            });
+        }
+
+        async function getFCMToken() {
+            try {
+                const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+                if (token) {
+                    console.log('✅ FCM Token:', token);
+                    localStorage.setItem('fcmToken', token);
+                }
+            } catch(err) {
+                console.log('❌ FCM Token error:', err);
+            }
+        }
+
+        // إشعارات Firebase في المقدمة
+        if (messaging) {
+            messaging.onMessage(payload => {
+                const { title, body } = payload.notification || {};
+                navigator.serviceWorker.ready.then(reg => {
+                    reg.showNotification(title || 'CineLingua 🎓', {
+                        body: body || '',
+                        icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                        badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                        dir: 'rtl', lang: 'ar', vibrate: [200, 100, 200]
+                    });
+                });
             });
         }
     </script>
