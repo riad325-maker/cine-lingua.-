@@ -373,10 +373,9 @@
                 if (token) {
                     localStorage.setItem('fcmToken', token);
                     console.log('✅ FCM Token:', token);
-                    // اشترك في topic all-users
+                    // اشترك في topic all-users بدون مفتاح
                     await fetch(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/all-users`, {
-                        method: 'POST',
-                        headers: { 'Authorization': 'key=569970499890' }
+                        method: 'POST'
                     }).catch(() => {});
                 }
             } catch(e) { console.log('FCM token error:', e); }
@@ -645,4 +644,4 @@
         }
     </script>
 </body>
-</html>
+                                                                                                                                                          </html>
