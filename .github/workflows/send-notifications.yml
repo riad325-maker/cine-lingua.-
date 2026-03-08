@@ -1,0 +1,13 @@
+name: Send Scheduled Notifications
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Workflow
+        run: echo "✅ Workflow is working!"
