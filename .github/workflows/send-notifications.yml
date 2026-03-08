@@ -24,5 +24,5 @@ jobs:
 
       - name: Send notification
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-      run: node .github/scripts/send-notification.js
+         FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node .github/scripts/send-notification.js
