@@ -556,8 +556,9 @@
                     .then(reg => {
                         console.log('✅ SW registered:', reg.scope);
                         initFirebase();
+                        // احفظ الـ token دائماً إذا الإذن ممنوح
                         if (Notification.permission === 'granted') {
-                            getFCMToken();
+                            setTimeout(() => getFCMToken(), 2000);
                             scheduleReminders();
                         }
                     })
