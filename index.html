@@ -346,11 +346,24 @@
         const VAPID_KEY = "BCf33TmM6clsgVH480Qxh0K0NY1PrTAAFIQwO1MOS4g2vMXuqrAicgl2cu2UFYLEYTgrQlgSS95vwydvrISXfXA";
         let messaging = null;
 
+        // تهيئة Firebase فوراً
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+        async function testFirestore() {
+            document.getElementById('debug-msg').textContent = 'Testing...';
+            try {
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+                const db = firebase.firestore();
+                await db.collection('fcmTokens').doc('test-device').set({ savedAt: new Date().toISOString() });
+                document.getElementById('debug-msg').textContent = '✅ Firestore works! Getting FCM token...';
+                await getFCMToken();
+            } catch(e) {
+                document.getElementById('debug-msg').textContent = '❌ ' + e.message;
+            }
+        }
+
         function initFirebase() {
             try {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
                 messaging = firebase.messaging();
                 messaging.onMessage(payload => {
                     const { title, body, image } = payload.notification;
