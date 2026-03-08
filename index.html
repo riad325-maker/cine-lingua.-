@@ -523,7 +523,6 @@
         });
 
         // ===== INSTALL BANNER =====
-        // ===== INSTALL BANNER =====
 let deferredPrompt;
 const installBanner = document.getElementById('installBanner');
 let bannerAutoHideTimer = null;
@@ -546,19 +545,22 @@ function isAppInstalled() {
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    console.log('beforeinstallprompt event fired');
     
     // فقط إذا التطبيق غير مثبت نظهر البانر
     if (!isAppInstalled()) {
-        // نتأكد إنه ما انعرض قبل في هذه الجلسة
-        if (!sessionStorage.getItem('install_banner_shown')) {
-            showInstallBanner();
-        }
+        showInstallBanner();
     }
 });
 
 function showInstallBanner() {
+    // نتأكد إنه ما انعرض قبل في هذه الجلسة أو إذا التطبيق مثبت
+    if (isAppInstalled()) return;
+    if (sessionStorage.getItem('install_banner_shown')) return;
+    
     installBanner.classList.add('show');
     sessionStorage.setItem('install_banner_shown', 'true');
+    console.log('Install banner shown');
     
     // إخفاء تلقائي بعد 8 ثواني
     bannerAutoHideTimer = setTimeout(() => {
@@ -569,20 +571,67 @@ function showInstallBanner() {
     }, 8000);
 }
 
+// دالة لعرض البانر يدوياً إذا ما اشتغل beforeinstallprompt
+function tryShowInstallBanner() {
+    // إذا التطبيق مثبت، لا نظهر البانر
+    if (isAppInstalled()) {
+        console.log('App installed - no banner');
+        return false;
+    }
+    
+    // إذا البانر انعرض قبل في هالجلسة، لا نعرضه
+    if (sessionStorage.getItem('install_banner_shown')) {
+        console.log('Banner already shown this session');
+        return false;
+    }
+    
+    // نتأكد أن المتصفح يدعم التثبيت
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    if (!isStandalone) {
+        // للمتصفحات التي تدعم beforeinstallprompt
+        if (deferredPrompt) {
+            showInstallBanner();
+            return true;
+        }
+        
+        // لأجهزة iOS - نظهر البانر مع تعليمات مختلفة
+        if (isIOS) {
+            // نقدر نعدل البانر عشان يناسب iOS
+            document.querySelector('.install-content p').textContent = 'اضغط على مشاركة ثم أضف إلى الشاشة الرئيسية';
+            showInstallBanner();
+            return true;
+        }
+        
+        // إذا ما في beforeinstallprompt (زي بعض المتصفحات)، نظهر البانر بعد 3 ثواني
+        setTimeout(() => {
+            if (!sessionStorage.getItem('install_banner_shown') && !isAppInstalled()) {
+                showInstallBanner();
+            }
+        }, 3000);
+    }
+    
+    return false;
+}
+
 document.getElementById('installBtn').addEventListener('click', async () => {
     if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer);
     
+    // إذا في beforeinstallprompt (لأندرويد)
     if (deferredPrompt) {
         deferredPrompt.prompt();
         const choiceResult = await deferredPrompt.userChoice;
         
         if (choiceResult.outcome === 'accepted') {
             console.log('User accepted the install prompt');
-            // نسجل أن التطبيق تم تثبيته
             localStorage.setItem('app_installed', 'true');
         }
         
         deferredPrompt = null;
+    } else {
+        // إذا ما في beforeinstallprompt (زي iOS)، نوجه المستخدم للتعليمات
+        alert('لتثبيت التطبيق:\n١. اضغط على زر المشاركة (📤)\n٢. اختر "أضف إلى الشاشة الرئيسية"');
     }
     
     installBanner.classList.remove('show');
@@ -599,31 +648,27 @@ document.getElementById('installClose').addEventListener('click', () => {
 window.addEventListener('appinstalled', () => {
     if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer);
     installBanner.classList.remove('show');
-    // نسجل أن التطبيق تم تثبيته
     localStorage.setItem('app_installed', 'true');
+    console.log('App installed successfully');
     setTimeout(showNotifPrompt, 1000);
 });
 
-// عند تحميل الصفحة، نتحقق من حالة التثبيت
+// عند تحميل الصفحة
 window.addEventListener('load', () => {
-    // التحقق إذا كان التطبيق مثبتاً
-    if (isAppInstalled()) {
-        console.log('App is installed - hiding banner permanently');
-        installBanner.classList.remove('show');
-        // نخفي البانر للأبد
-        localStorage.setItem('app_installed', 'true');
-        // نعرض طلب الإشعارات مباشرة
-        setTimeout(showNotifPrompt, 1000);
-    } else {
-        console.log('App not installed');
-        // إذا التطبيق مو مثبت، بنتظر beforeinstallprompt
-        // لكن نتأكد ما نظهر البانر إذا سبق وانعرض
-        if (sessionStorage.getItem('install_banner_shown')) {
-            // إذا انعرض قبل، نعرض الإشعارات مباشرة
+    // نعطي وقت للـ beforeinstallprompt عشان يشتغل
+    setTimeout(() => {
+        // نحاول نعرض البانر إذا ما اشتغل قبل
+        const bannerShown = tryShowInstallBanner();
+        
+        // إذا ما ظهر البانر، نعرض طلب الإشعارات مباشرة
+        if (!bannerShown && !isAppInstalled()) {
+            console.log('No banner shown, showing notification prompt');
+            setTimeout(showNotifPrompt, 1000);
+        } else if (isAppInstalled()) {
+            // إذا التطبيق مثبت، نعرض الإشعارات
             setTimeout(showNotifPrompt, 1000);
         }
-        // غير كذا، بنتظر beforeinstallprompt يشتغل
-    }
+    }, 2000); // ننتظر ثانيتين عشان beforeinstallprompt يشتغل
 
     // Service Worker + Firebase
     if ('serviceWorker' in navigator) {
@@ -632,7 +677,6 @@ window.addEventListener('load', () => {
                 console.log('✅ SW registered:', reg.scope);
                 initFirebase();
                 
-                // التحقق من الإذن وحفظ التوكن تلقائياً
                 setTimeout(() => {
                     checkPermissionAndGetToken();
                 }, 3000);
