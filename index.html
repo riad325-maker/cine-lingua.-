@@ -376,7 +376,6 @@
             }
             
             try {
-                // التحقق من وجود الإذن
                 if (Notification.permission !== 'granted') {
                     console.log('Notification permission not granted');
                     return;
@@ -384,9 +383,8 @@
 
                 const token = await messaging.getToken({ vapidKey: VAPID_KEY });
                 if (token) {
-                    console.log('✅ FCM Token obtained:', token.substring(0, 20) + '...');
+                    console.log('✅ FCM Token obtained');
                     
-                    // حفظ التوكن في Firestore
                     try {
                         const db = firebase.firestore();
                         await db.collection('fcmTokens').doc(token).set({
@@ -396,30 +394,20 @@
                             userAgent: navigator.userAgent,
                             platform: navigator.platform
                         }, { merge: true });
-                        console.log('✅ Token saved to Firestore successfully');
+                        console.log('✅ Token saved to Firestore');
                     } catch (e) {
                         console.log('Error saving to Firestore:', e);
                     }
-                } else {
-                    console.log('No token available');
                 }
             } catch(e) { 
                 console.log('Error getting FCM token:', e); 
             }
         }
 
-        // دالة للتحقق من الإذن وحفظ التوكن
         function checkPermissionAndGetToken() {
-            if (!('Notification' in window)) {
-                console.log('This browser does not support notifications');
-                return;
-            }
-
+            if (!('Notification' in window)) return;
             if (Notification.permission === 'granted') {
-                console.log('Permission granted, getting token...');
                 setTimeout(() => getAndSaveFCMToken(), 2000);
-            } else {
-                console.log('Permission not granted yet');
             }
         }
 
@@ -467,129 +455,167 @@
         }
         loadProgress();
 
+        // ===== NOTIF FUNCTIONS =====
+        function showOverlay()  { document.getElementById('notifOverlay').classList.add('show'); }
+        function hideOverlay()  { document.getElementById('notifOverlay').classList.remove('show'); }
+
+        function showNotifPrompt() {
+            if (!('Notification' in window)) return;
+            if (Notification.permission === 'granted') return;
+            if (Notification.permission === 'denied') {
+                showOverlay();
+                document.getElementById('notifBlocked').classList.add('show');
+                return;
+            }
+            showOverlay();
+            document.getElementById('notifPrompt').classList.add('show');
+        }
+
+        function hideNotifPrompt() {
+            document.getElementById('notifPrompt').classList.remove('show');
+            hideOverlay();
+        }
+
+        document.getElementById('allowNotif').addEventListener('click', async () => {
+            if (Notification.permission === 'denied') {
+                hideNotifPrompt();
+                showOverlay();
+                document.getElementById('notifBlocked').classList.add('show');
+                return;
+            }
+            hideNotifPrompt();
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                sendWelcomeNotif();
+                scheduleReminders();
+                getAndSaveFCMToken();
+            } else if (permission === 'denied') {
+                showOverlay();
+                document.getElementById('notifBlocked').classList.add('show');
+            }
+        });
+
+        document.getElementById('denyNotif').addEventListener('click', hideNotifPrompt);
+
+        document.getElementById('notifOverlay').addEventListener('click', () => {
+            hideNotifPrompt();
+            document.getElementById('notifBlocked').classList.remove('show');
+        });
+
+        document.getElementById('notifBlockedClose').addEventListener('click', () => {
+            document.getElementById('notifBlocked').classList.remove('show');
+            hideOverlay();
+        });
+
         // ===== INSTALL BANNER =====
-let deferredPrompt;
-const installBanner = document.getElementById('installBanner');
-let bannerAutoHideTimer = null;
+        let deferredPrompt;
+        const installBanner = document.getElementById('installBanner');
+        let bannerAutoHideTimer = null;
 
-// دالة للتحقق إذا كان التطبيق مثبتاً
-function isAppInstalled() {
-    // الطريقة الأولى: التحقق من display-mode
-    if (window.matchMedia('(display-mode: standalone)').matches) return true;
-    // الطريقة الثانية: لأجهزة iOS
-    if (window.navigator.standalone === true) return true;
-    // الطريقة الثالثة: للتطبيقات المثبتة عبر TWA
-    if (document.referrer.includes('android-app://')) return true;
-    
-    // التحقق من localStorage إذا سبق وتم التثبيت
-    if (localStorage.getItem('app_installed') === 'true') return true;
-    
-    return false;
-}
-
-// نسجل beforeinstallprompt لو حصل
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    console.log('beforeinstallprompt event fired');
-});
-
-// دالة عرض البانر
-function showInstallBanner() {
-    // إذا التطبيق مثبت → لا نظهر البانر
-    if (isAppInstalled()) {
-        console.log('App installed, banner hidden');
-        return;
-    }
-    
-    // إذا البانر انعرض قبل في هذه الجلسة → لا نعرضه مرة ثانية
-    if (sessionStorage.getItem('install_banner_shown')) {
-        console.log('Banner already shown this session');
-        return;
-    }
-    
-    // عرض البانر
-    installBanner.classList.add('show');
-    sessionStorage.setItem('install_banner_shown', 'true');
-    console.log('Install banner shown');
-    
-    // إخفاء تلقائي بعد 8 ثواني
-    bannerAutoHideTimer = setTimeout(() => {
-        if (installBanner.classList.contains('show')) {
-            installBanner.classList.remove('show');
-            showNotifPrompt();
+        function isAppInstalled() {
+            if (window.matchMedia('(display-mode: standalone)').matches) return true;
+            if (window.navigator.standalone === true) return true;
+            if (document.referrer.includes('android-app://')) return true;
+            if (localStorage.getItem('app_installed') === 'true') return true;
+            return false;
         }
-    }, 8000);
-}
 
-document.getElementById('installBtn').addEventListener('click', async () => {
-    if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer);
-    
-    if (deferredPrompt) {
-        // للأجهزة التي تدعم beforeinstallprompt (أندرويد)
-        deferredPrompt.prompt();
-        const choiceResult = await deferredPrompt.userChoice;
-        
-        if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the install prompt');
-            localStorage.setItem('app_installed', 'true');
-        }
-        
-        deferredPrompt = null;
-    } else {
-        // للأجهزة التي لا تدعم beforeinstallprompt (مثل iOS)
-        // نعرض رسالة توجيهية مناسبة
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-            alert('لتثبيت التطبيق على iOS:\n١. اضغط على زر المشاركة (📤)\n٢. اختر "أضف إلى الشاشة الرئيسية"');
-        } else {
-            alert('يمكنك تثبيت التطبيق من خلال قائمة المتصفح');
-        }
-    }
-    
-    installBanner.classList.remove('show');
-    setTimeout(showNotifPrompt, 1000);
-});
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('beforeinstallprompt event fired');
+        });
 
-document.getElementById('installClose').addEventListener('click', () => {
-    if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer);
-    installBanner.classList.remove('show');
-    setTimeout(showNotifPrompt, 1000);
-});
-
-// حدث عند تثبيت التطبيق بنجاح
-window.addEventListener('appinstalled', () => {
-    if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer);
-    installBanner.classList.remove('show');
-    localStorage.setItem('app_installed', 'true');
-    console.log('App installed successfully');
-    setTimeout(showNotifPrompt, 1000);
-});
-
-// عند تحميل الصفحة
-window.addEventListener('load', () => {
-    // نعطي البانر وقت كافي للظهور بعد 1.5 ثانية
-    setTimeout(() => {
-        showInstallBanner();
-    }, 1500);
-
-    // Service Worker + Firebase
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-            .then(reg => {
-                console.log('✅ SW registered:', reg.scope);
-                initFirebase();
-                
-                setTimeout(() => {
-                    checkPermissionAndGetToken();
-                }, 3000);
-                
-                if (Notification.permission === 'granted') {
-                    scheduleReminders();
+        function showInstallBanner() {
+            if (isAppInstalled()) {
+                console.log('App installed, banner hidden');
+                return;
+            }
+            
+            if (sessionStorage.getItem('install_banner_shown')) {
+                console.log('Banner already shown this session');
+                return;
+            }
+            
+            installBanner.classList.add('show');
+            sessionStorage.setItem('install_banner_shown', 'true');
+            console.log('Install banner shown');
+            
+            bannerAutoHideTimer = setTimeout(() => {
+                if (installBanner.classList.contains('show')) {
+                    installBanner.classList.remove('show');
+                    showNotifPrompt();
                 }
-            })
-            .catch(err => console.log('❌ SW failed:', err));
-    }
-});
+            }, 8000);
+        }
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer);
+            
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const choiceResult = await deferredPrompt.userChoice;
+                
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                    localStorage.setItem('app_installed', 'true');
+                }
+                
+                deferredPrompt = null;
+            } else {
+                if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                    alert('لتثبيت التطبيق على iOS:\n١. اضغط على زر المشاركة (📤)\n٢. اختر "أضف إلى الشاشة الرئيسية"');
+                } else {
+                    alert('يمكنك تثبيت التطبيق من خلال قائمة المتصفح');
+                }
+            }
+            
+            installBanner.classList.remove('show');
+            showNotifPrompt(); // الإشعارات تجي على طول بدون تأخير
+        });
+
+        document.getElementById('installClose').addEventListener('click', () => {
+            if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer);
+            installBanner.classList.remove('show');
+            showNotifPrompt(); // الإشعارات تجي على طول بدون تأخير
+        });
+
+        window.addEventListener('appinstalled', () => {
+            if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer);
+            installBanner.classList.remove('show');
+            localStorage.setItem('app_installed', 'true');
+            console.log('App installed successfully');
+            showNotifPrompt(); // الإشعارات تجي على طول بدون تأخير
+        });
+
+        // عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (!isAppInstalled()) {
+                    showInstallBanner();
+                } else {
+                    showNotifPrompt(); // إذا التطبيق مثبت، الإشعارات تجي على طول
+                }
+            }, 1500);
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => {
+                        console.log('✅ SW registered:', reg.scope);
+                        initFirebase();
+                        
+                        setTimeout(() => {
+                            checkPermissionAndGetToken();
+                        }, 3000);
+                        
+                        if (Notification.permission === 'granted') {
+                            scheduleReminders();
+                        }
+                    })
+                    .catch(err => console.log('❌ SW failed:', err));
+            }
+        });
+
         // ===== NOTIFICATIONS =====
         async function getNotifData() {
             try {
@@ -650,7 +676,6 @@ window.addEventListener('load', () => {
             const yesterday = new Date(now - 86400000).toDateString();
 
             reminders.forEach((r, i) => {
-                // تجاهل الإشعار لو enabled = false
                 if (r.enabled === false) {
                     localStorage.removeItem(`notif_sent_${i}_${today}`);
                     localStorage.removeItem(`notif_sent_${i}_${yesterday}`);
@@ -681,7 +706,6 @@ window.addEventListener('load', () => {
             });
         }
 
-        // التحقق من حفظ التوكن عند تحميل الصفحة إذا كان الإذن موجوداً
         window.addEventListener('load', function() {
             if (Notification.permission === 'granted') {
                 setTimeout(getAndSaveFCMToken, 4000);
@@ -689,4 +713,4 @@ window.addEventListener('load', () => {
         });
     </script>
 </body>
-            </html>
+</html>
