@@ -373,9 +373,10 @@
                 if (token) {
                     localStorage.setItem('fcmToken', token);
                     console.log('✅ FCM Token:', token);
-                    // اشترك في topic all-users بدون مفتاح
+                    // اشترك في topic all-users
                     await fetch(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/all-users`, {
-                        method: 'POST'
+                        method: 'POST',
+                        headers: { 'Authorization': 'key=569970499890' }
                     }).catch(() => {});
                 }
             } catch(e) { console.log('FCM token error:', e); }
@@ -516,11 +517,13 @@
 
         // ===== منطق الظهور الرئيسي =====
         window.addEventListener('load', () => {
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                                  window.navigator.standalone === true ||
+                                  document.referrer.includes('android-app://');
 
             setTimeout(() => {
                 if (!isStandalone) {
-                    // التطبيق مو محمل — اعرض البانر في كل مرة
+                    // التطبيق مو محمل — اعرض البانر
                     installBanner.classList.add('show');
                     // إخفاء تلقائي بعد 8 ثواني
                     bannerAutoHideTimer = setTimeout(() => {
@@ -530,7 +533,8 @@
                         }
                     }, 8000);
                 } else {
-                    // التطبيق محمل — اعرض الإشعارات مباشرة
+                    // التطبيق محمل — لا تعرض البانر أبداً
+                    installBanner.classList.remove('show');
                     showNotifPrompt();
                 }
             }, 1000);
@@ -644,4 +648,4 @@
         }
     </script>
 </body>
-                                                                                                                                                          </html>
+</html>
