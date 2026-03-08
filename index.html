@@ -504,7 +504,15 @@
                     body: 'سنذكّرك يومياً بدرسك. ابدأ تعلمك الآن!',
                     icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
                     badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
-                    dir: 'rtl', lang: 'ar', vibrate: [200, 100, 200], tag: 'welcome'
+                    image: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                    dir: 'rtl', lang: 'ar',
+                    vibrate: [200, 100, 200, 100, 200],
+                    tag: 'welcome',
+                    renotify: true,
+                    actions: [
+                        { action: 'open',  title: '📚 تعلم الآن' },
+                        { action: 'close', title: 'لاحقاً' }
+                    ]
                 });
             });
         }
@@ -542,6 +550,13 @@
             const yesterday = new Date(now - 86400000).toDateString();
 
             reminders.forEach((r, i) => {
+                // تجاهل الإشعار لو enabled = false
+                if (r.enabled === false) {
+                    localStorage.removeItem(`notif_sent_${i}_${today}`);
+                    localStorage.removeItem(`notif_sent_${i}_${yesterday}`);
+                    return;
+                }
+
                 const key = `notif_sent_${i}_${today}`;
                 if (h === r.hour && m === (r.minute || 0) && !localStorage.getItem(key)) {
                     localStorage.setItem(key, '1');
@@ -550,7 +565,15 @@
                             body: r.body,
                             icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
                             badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
-                            dir: 'rtl', lang: 'ar', vibrate: [200, 100, 200], tag: 'reminder-' + i
+                            image: r.image || 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                            dir: 'rtl', lang: 'ar',
+                            vibrate: [200, 100, 200, 100, 200],
+                            tag: 'reminder-' + i,
+                            renotify: true,
+                            actions: [
+                                { action: 'open',  title: '📚 تعلم الآن' },
+                                { action: 'close', title: 'لاحقاً' }
+                            ]
                         });
                     });
                 }
