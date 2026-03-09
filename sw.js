@@ -1,6 +1,7 @@
 importScripts('https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js');
 
+// ===== FIREBASE INIT =====
 firebase.initializeApp({
     apiKey: "AIzaSyBUqx2f4jmg-XSshWA_AcDSMPcttPPBs_E",
     authDomain: "cinelingua-d4c2b.firebaseapp.com",
@@ -11,7 +12,9 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+const CACHE_NAME = 'cinelingua-v2'; // حدثنا الإصدار عشان يخزن الصفحات الجديدة
 
+// ===== FIREBASE BACKGROUND MESSAGING =====
 messaging.onBackgroundMessage(payload => {
     const { title, body, image } = payload.notification;
     self.registration.showNotification(title, {
@@ -30,6 +33,7 @@ messaging.onBackgroundMessage(payload => {
     });
 });
 
+// ===== NOTIFICATION CLICK =====
 self.addEventListener('notificationclick', event => {
     event.notification.close();
     if (event.action === 'close') return;
@@ -44,18 +48,94 @@ self.addEventListener('notificationclick', event => {
     );
 });
 
-// ===== إضافة كود BACKGROUND SYNC =====
-// هذا الكود يخلي التطبيق يشتغل في الخلفية حتى لو مقفول
+// ===== INSTALL EVENT - CACHE ALL PAGES =====
+self.addEventListener('install', (event) => {
+    console.log('✅ Service Worker installing...');
+    self.skipWaiting();
+    
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll([
+                '/',
+                '/index.html',
+                '/lessons.html',
+                '/stories.html',
+                '/tenses.html',
+                '/quiz.html',
+                '/download.html',
+                '/offline.html',
+                '/manifest.json',
+                'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap',
+                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
+            ]).catch(error => {
+                console.log('⚠️ Some files failed to cache:', error);
+            });
+        })
+    );
+});
 
+// ===== ACTIVATE EVENT - CLEAN OLD CACHES =====
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        (async () => {
+            await self.clients.claim();
+            
+            const cacheKeys = await caches.keys();
+            const oldCaches = cacheKeys.filter(key => key !== CACHE_NAME);
+            await Promise.all(oldCaches.map(key => caches.delete(key)));
+            
+            if ('periodicSync' in self.registration) {
+                try {
+                    await self.registration.periodicSync.register('cinelingua-sync', {
+                        minInterval: 60 * 60 * 1000
+                    });
+                    console.log('✅ Periodic sync registered');
+                } catch (error) {
+                    console.log('❌ Periodic sync not supported:', error);
+                }
+            }
+        })()
+    );
+});
+
+// ===== FETCH EVENT - SERVE FROM CACHE =====
+self.addEventListener('fetch', (event) => {
+    if (event.request.method !== 'GET') return;
+    
+    event.respondWith(
+        caches.match(event.request)
+            .then((cachedResponse) => {
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                
+                return fetch(event.request).then((networkResponse) => {
+                    if (networkResponse && networkResponse.status === 200) {
+                        const responseToCache = networkResponse.clone();
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put(event.request, responseToCache);
+                        });
+                    }
+                    return networkResponse;
+                });
+            })
+            .catch(() => {
+                if (event.request.mode === 'navigate') {
+                    return caches.match('/offline.html');
+                }
+            })
+    );
+});
+
+// ===== PERIODIC SYNC EVENT =====
 self.addEventListener('periodicsync', (event) => {
     if (event.tag === 'cinelingua-sync') {
         event.waitUntil(
             (async () => {
-                console.log('🔄 CineLingua شغال في الخلفية!');
+                console.log('🔄 Background sync running...');
                 
-                // هنا نقدر نحدث البيانات أو نرسل إشعارات
                 try {
-                    // جيب كل العملاء المفتوحين
                     const clients = await self.clients.matchAll();
                     clients.forEach(client => {
                         client.postMessage({
@@ -64,57 +144,30 @@ self.addEventListener('periodicsync', (event) => {
                         });
                     });
                     
-                    // اختياري: نحدث البيانات من السيرفر
-                    // await updateContent();
-                    
+                    await updateContent();
                 } catch (error) {
-                    console.log('خطأ في background sync:', error);
+                    console.log('Background sync error:', error);
                 }
             })()
         );
     }
 });
 
-// تسجيل الـ periodic sync عند تفعيل السيرفس وركر
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        (async () => {
-            // نمسك السيرفس وركر القديم
-            await self.clients.claim();
-            
-            if ('periodicSync' in self.registration) {
-                try {
-                    // نسجل طلب تشغيل كل ساعة
-                    await self.registration.periodicSync.register('cinelingua-sync', {
-                        minInterval: 60 * 60 * 1000 // نطلب كل ساعة (المتصفح يقرر)
-                    });
-                    console.log('✅ CineLingua مسجل للعمل في الخلفية');
-                } catch (error) {
-                    console.log('❌ Periodic sync not supported:', error);
-                }
-            } else {
-                console.log('⚠️ Periodic sync غير مدعوم في هذا المتصفح');
-            }
-        })()
-    );
-});
-
-// وظيفة اختيارية لتحديث المحتوى
+// ===== UPDATE CONTENT =====
 async function updateContent() {
     try {
-        const response = await fetch('https://api.cinelingua.com/updates');
+        const response = await fetch('/notifications.json');
         const data = await response.json();
         
-        // لو في تحديث جديد، نرسل إشعار
-        if (data.hasUpdate) {
-            self.registration.showNotification('📚 تحديث جديد!', {
-                body: data.message,
+        if (data.update?.enabled) {
+            self.registration.showNotification(data.update.title || '📚 تحديث جديد!', {
+                body: data.update.body || 'تمت إضافة محتوى جديد',
                 icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
                 badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
                 tag: 'content-update'
             });
         }
     } catch (error) {
-        console.log('فشل تحديث المحتوى:', error);
+        console.log('Update failed:', error);
     }
-}
+                                               }
