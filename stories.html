@@ -32,7 +32,7 @@
         .nav-menu { display: flex; gap: 0.25rem; list-style: none; }
         .nav-menu a { text-decoration: none; color: var(--text-secondary); font-weight: 500; padding: 0.5rem 0.9rem; border-radius: 0.6rem; transition: all 0.2s; font-size: 0.9rem; }
         .nav-menu a:hover, .nav-menu a.active { color: var(--primary); background: rgba(99,102,241,0.08); }
-        .nav-right { display: flex; align-items: center; }
+        .nav-right { display: flex; align-items: center; gap: 0.75rem; }
         .theme-toggle { display: flex; background: var(--bg-secondary); padding: 0.2rem; border-radius: 2rem; }
         .theme-btn { padding: 0.4rem 0.8rem; border: none; background: transparent; border-radius: 2rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; font-size: 0.85rem; }
         .theme-btn.active { background: var(--primary); color: white; }
@@ -187,27 +187,112 @@
             .options-grid { grid-template-columns: 1fr; }
             .modal-hero { height: 190px; }
         }
+        /* ===== SETTINGS BUTTON ===== */
+        .settings-btn { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 2px 10px rgba(99,102,241,0.4); flex-shrink: 0; }
+        .settings-btn:hover { transform: rotate(90deg) scale(1.1); box-shadow: 0 4px 18px rgba(99,102,241,0.55); }
+        /* ===== SETTINGS PANEL ===== */
+        .settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9990; display: none; backdrop-filter: blur(4px); }
+        .settings-overlay.show { display: block; }
+        .settings-panel { position: fixed; top: 0; right: 0; z-index: 9991; width: 300px; max-width: 92vw; height: 100vh; background: var(--bg-card); display: flex; flex-direction: column; transform: translateX(110%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); overflow: hidden; }
+        .settings-panel.show { transform: translateX(0); }
+        .settings-header { padding: 1.4rem 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .settings-header-left { display: flex; align-items: center; gap: 0.85rem; }
+        .settings-header-icon { width: 40px; height: 40px; border-radius: 0.65rem; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .settings-header-title { font-size: 1.05rem; font-weight: 800; }
+        .settings-header-sub { font-size: 0.72rem; opacity: 0.75; margin-top: 1px; }
+        .settings-close { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: all 0.2s; }
+        .settings-close:hover { background: rgba(255,255,255,0.35); transform: rotate(90deg); }
+        .settings-body { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.4rem; }
+        .settings-section { display: flex; flex-direction: column; gap: 0.65rem; }
+        .settings-section-title { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); }
+        .settings-section-title i { color: var(--primary); }
+        .settings-theme-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+        .settings-theme-btn { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.85rem 0.5rem; border-radius: 0.9rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); font-family: inherit; position: relative; transition: all 0.2s; }
+        .settings-theme-btn:hover { border-color: rgba(99,102,241,0.4); color: var(--primary); }
+        .settings-theme-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); color: var(--primary); }
+        .settings-theme-btn.active::after { content: '✓'; position: absolute; top: 6px; left: 8px; font-size: 0.65rem; font-weight: 800; width: 16px; height: 16px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 16px; text-align: center; }
+        .theme-preview { width: 100%; height: 48px; border-radius: 0.5rem; overflow: hidden; display: flex; flex-direction: column; gap: 3px; padding: 5px; border: 1px solid rgba(0,0,0,0.07); }
+        .theme-preview.light { background: #f8fafc; } .theme-preview.dark { background: #0f172a; }
+        .theme-preview .p-bar { height: 6px; border-radius: 3px; background: linear-gradient(90deg,#6366f1,#ec4899); }
+        .theme-preview .p-card { height: 7px; border-radius: 3px; }
+        .theme-preview.light .p-card { background: white; border: 1px solid #e2e8f0; } .theme-preview.dark .p-card { background: #1e293b; border: 1px solid #334155; }
+        .theme-preview .p-card.short { width: 65%; }
+        .settings-lang-row { display: flex; flex-direction: column; gap: 0.5rem; }
+        .settings-lang-btn { display: flex; align-items: center; gap: 0.85rem; padding: 0.9rem 1rem; border-radius: 0.85rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-family: inherit; width: 100%; color: var(--text-primary); transition: all 0.2s; }
+        .settings-lang-btn:hover { border-color: rgba(99,102,241,0.4); }
+        .settings-lang-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); }
+        .lang-flag { font-size: 1.4rem; flex-shrink: 0; } .lang-info { display: flex; flex-direction: column; flex: 1; gap: 1px; }
+        .lang-name { font-size: 0.9rem; font-weight: 700; } .lang-sub { font-size: 0.72rem; color: var(--text-secondary); }
+        .lang-check { color: var(--primary); font-size: 0.85rem; opacity: 0; transition: opacity 0.2s; }
+        .settings-lang-btn.active .lang-check { opacity: 1; }
+        .settings-notif-card { background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 0.9rem; overflow: hidden; }
+        .settings-notif-top { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
+        .settings-notif-label { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
+        .notif-badge { font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 2rem; }
+        .notif-badge.granted { background: rgba(34,197,94,0.12); color: #16a34a; } .notif-badge.denied { background: rgba(239,68,68,0.12); color: #dc2626; } .notif-badge.default { background: rgba(99,102,241,0.12); color: var(--primary); }
+        .notif-action-btn { width: 100%; padding: 0.85rem 1rem; border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .notif-action-btn:disabled { opacity: 0.5; cursor: not-allowed; background: var(--bg-secondary); color: var(--text-secondary); }
+        .settings-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.75rem; color: var(--text-secondary); flex-shrink: 0; }
+
     </style>
 </head>
 <body>
+
+    <!-- SETTINGS PANEL -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <div class="settings-header-left">
+                <div class="settings-header-icon"><i class="fas fa-sliders-h"></i></div>
+                <div><div class="settings-header-title" id="s-title">الإعدادات</div><div class="settings-header-sub">CineLingua</div></div>
+            </div>
+            <button class="settings-close" onclick="closeSettings()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="settings-body">
+            <div class="settings-section">
+                <div class="settings-section-title"><i class="fas fa-palette"></i> <span id="s-appearance">المظهر</span></div>
+                <div class="settings-theme-row">
+                    <button class="settings-theme-btn" id="btn-light" onclick="setTheme('light')"><div class="theme-preview light"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div><i class="fas fa-sun"></i> <span id="s-light">فاتح</span></button>
+                    <button class="settings-theme-btn" id="btn-dark" onclick="setTheme('dark')"><div class="theme-preview dark"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div><i class="fas fa-moon"></i> <span id="s-dark">داكن</span></button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-section-title"><i class="fas fa-globe"></i> <span id="s-lang">اللغة</span></div>
+                <div class="settings-lang-row">
+                    <button class="settings-lang-btn" id="lang-ar" onclick="setLang('ar')"><span class="lang-flag">🌙</span><div class="lang-info"><span class="lang-name">العربية</span><span class="lang-sub">Arabic</span></div><i class="fas fa-check lang-check"></i></button>
+                    <button class="settings-lang-btn" id="lang-en" onclick="setLang('en')"><span class="lang-flag">🌐</span><div class="lang-info"><span class="lang-name">English</span><span class="lang-sub">الإنجليزية</span></div><i class="fas fa-check lang-check"></i></button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-section-title"><i class="fas fa-bell"></i> <span id="s-notif">الإشعارات</span></div>
+                <div class="settings-notif-card">
+                    <div class="settings-notif-top"><span class="settings-notif-label" id="s-notif-status">حالة الإشعارات</span><span class="notif-badge default" id="notifBadge">غير محددة</span></div>
+                    <button class="notif-action-btn" id="notifActionBtn" onclick="requestNotifSettings()"><i class="fas fa-bell"></i> <span id="s-notif-btn">تفعيل الإشعارات</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="settings-footer">CineLingua • v2.0</div>
+    </div>
+
 
     <nav class="navbar">
         <div class="nav-container">
             <a class="logo" href="index.html"><i class="fas fa-film"></i> CineLingua</a>
             <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html">الرئيسية</a></li>
-                <li><a href="lessons.html">الكلمات</a></li>
-                <li><a href="stories.html" class="active">القصص</a></li>
-                <li><a href="tenses.html">الأزمنة</a></li>
-                <li><a href="quiz.html">الاختبارات</a></li>
-                <li><a href="download.html">تحميل التطبيق</a></li>
+                <li><a href="index.html" id="nav-home">الرئيسية</a></li>
+                <li><a href="lessons.html" id="nav-lessons">الكلمات</a></li>
+                <li><a href="stories.html" id="nav-stories" class="active">القصص</a></li>
+                <li><a href="tenses.html" id="nav-tenses">الأزمنة</a></li>
+                <li><a href="quiz.html" id="nav-quiz">الاختبارات</a></li>
+                <li><a href="download.html" id="nav-download">تحميل التطبيق</a></li>
             </ul>
             <div class="nav-right">
                 <div class="theme-toggle">
                     <button class="theme-btn active" onclick="setTheme('light')"><i class="fas fa-sun"></i></button>
                     <button class="theme-btn" onclick="setTheme('dark')"><i class="fas fa-moon"></i></button>
                 </div>
+                <button class="settings-btn" onclick="openSettings()"><i class="fas fa-cog"></i></button>
             </div>
         </div>
     </nav>
@@ -563,6 +648,38 @@
             setTimeout(() => { t.style.animation='toastOut 0.3s ease forwards'; setTimeout(()=>t.remove(),300); }, 2200);
         }
 
+        // ===== I18N =====
+        const i18n = {
+            ar: { 'nav-home':'الرئيسية','nav-lessons':'الكلمات','nav-stories':'القصص','nav-tenses':'الأزمنة','nav-quiz':'الاختبارات','nav-download':'تحميل التطبيق','s-title':'الإعدادات','s-appearance':'المظهر','s-light':'فاتح','s-dark':'داكن','s-lang':'اللغة','s-notif':'الإشعارات','s-notif-status':'حالة الإشعارات','s-notif-btn':'تفعيل الإشعارات','notif-granted':'مفعّلة ✓','notif-denied':'محظورة','notif-default':'غير محددة','page-title':'القصص القصيرة','footer-txt':'© 2026 CineLingua — جميع الحقوق محفوظة' },
+            en: { 'nav-home':'Home','nav-lessons':'Words','nav-stories':'Stories','nav-tenses':'Tenses','nav-quiz':'Quiz','nav-download':'Download App','s-title':'Settings','s-appearance':'Appearance','s-light':'Light','s-dark':'Dark','s-lang':'Language','s-notif':'Notifications','s-notif-status':'Notification Status','s-notif-btn':'Enable Notifications','notif-granted':'Enabled ✓','notif-denied':'Blocked','notif-default':'Not Set','page-title':'Short Stories','footer-txt':'© 2026 CineLingua — All Rights Reserved' }
+        };
+        let currentLang = localStorage.getItem('cl-lang') || 'ar';
+        function tr(k) { return i18n[currentLang][k] || i18n['ar'][k] || k; }
+        function applyLang() {
+            const lang = currentLang;
+            document.documentElement.lang = lang; document.documentElement.dir = lang==='ar'?'rtl':'ltr';
+            Object.keys(i18n[lang]).forEach(id => { const el=document.getElementById(id); if(el) el.innerHTML=i18n[lang][id]; });
+            document.getElementById('lang-ar')?.classList.toggle('active', lang==='ar');
+            document.getElementById('lang-en')?.classList.toggle('active', lang==='en');
+        }
+        function setLang(lang) { currentLang=lang; localStorage.setItem('cl-lang',lang); applyLang(); }
+
+        // ===== SETTINGS =====
+        function openSettings() { document.getElementById('settingsOverlay').classList.add('show'); document.getElementById('settingsPanel').classList.add('show'); refreshNotifBadge(); }
+        function closeSettings() { document.getElementById('settingsOverlay').classList.remove('show'); document.getElementById('settingsPanel').classList.remove('show'); }
+        function refreshNotifBadge() {
+            const perm = Notification.permission, badge = document.getElementById('notifBadge'), btn = document.getElementById('notifActionBtn');
+            badge.className = 'notif-badge ' + perm;
+            badge.textContent = perm==='granted' ? tr('notif-granted') : perm==='denied' ? tr('notif-denied') : tr('notif-default');
+            if (perm==='granted') { btn.disabled=true; document.getElementById('s-notif-btn').textContent=tr('notif-granted'); }
+            else if (perm==='denied') { btn.disabled=true; document.getElementById('s-notif-btn').textContent=tr('notif-denied'); }
+            else { btn.disabled=false; document.getElementById('s-notif-btn').textContent=tr('s-notif-btn'); }
+        }
+        async function requestNotifSettings() {
+            const r = await Notification.requestPermission(); refreshNotifBadge();
+            if (r==='granted' && 'serviceWorker' in navigator) navigator.serviceWorker.ready.then(reg => reg.showNotification('CineLingua 🎓', { body: currentLang==='ar'?'تم تفعيل الإشعارات! 🔔':'Notifications enabled! 🔔', icon:'https://i.postimg.cc/J4xdc62M/20260305-233826.png', vibrate:[200,100,200] }));
+        }
+
         function toggleMenu() { document.getElementById('navMenu').classList.toggle('show'); }
         document.querySelectorAll('.nav-menu a').forEach(a =>
             a.addEventListener('click', () => document.getElementById('navMenu').classList.remove('show'))
@@ -577,8 +694,11 @@
                     (theme==='dark'  && b.innerHTML.includes('moon'))
                 );
             });
+            document.getElementById('btn-light')?.classList.toggle('active', theme==='light');
+            document.getElementById('btn-dark')?.classList.toggle('active', theme==='dark');
         };
         setTheme(localStorage.getItem('theme') || 'light');
+        applyLang();
     </script>
 </body>
 </html>
