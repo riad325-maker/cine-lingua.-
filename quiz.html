@@ -1842,7 +1842,7 @@ const QUIZ_DATA = {
   }
 };
 
-        // ===== QUIZZES DEFINITION =====
+        // ===== QUIZZES DEFINITION =====        
         const QUIZZES = [
             { id:1, title:'A1 — مبتدئ مطلق', level:'a1', levelAr:'A1', levelIcon:'fa-seedling',
               cefrDesc:'التحيات · الأرقام · الألوان · الكلمات الأساسية',
@@ -1893,6 +1893,7 @@ const QUIZ_DATA = {
         let currentQIndex    = 0;
         let userAnswers      = {};
         let timer            = null;
+        let autoAdvanceTimer = null; // متغير جديد لتوقيت الانتقال التلقائي
         let timeLeft         = 0;
 
         // ===== INIT =====
@@ -1995,6 +1996,8 @@ const QUIZ_DATA = {
 
         // ===== CLOSE MODAL =====
         function closeModal() {
+            // إلغاء أي مؤقت تلقائي عند الإغلاق
+            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
             document.getElementById('quizModal').classList.remove('active');
             document.body.style.overflow = '';
             if (timer) { clearInterval(timer); timer = null; }
@@ -2009,6 +2012,9 @@ const QUIZ_DATA = {
 
         // ===== RENDER QUESTION =====
         function renderQuestion() {
+            // إلغاء أي مؤقت تلقائي قديم قبل عرض سؤال جديد
+            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+
             const q     = currentQuiz.questions[currentQIndex];
             const total = currentQuiz.questions.length;
             const pct   = Math.round((currentQIndex / total) * 100);
@@ -2099,15 +2105,15 @@ const QUIZ_DATA = {
                 </div>
 
                 <div class="quiz-nav">
-                    <button class="nav-btn nav-prev" onclick="prevQuestion()" ${currentQIndex===0?'disabled':''}>
-                        <i class="fas fa-chevron-right"></i> السابق
-                    </button>
+                    <!-- تم إخفاء زر السابق نهائياً -->
+                    <!-- <button class="nav-btn nav-prev" onclick="prevQuestion()" ${currentQIndex===0?'disabled':''}> ... </button> -->
+                    <div></div> <!-- هذا عنصر فارغ للحفاظ على التوازن -->
                     <button class="nav-skip" onclick="skipQuestion()">تخطي</button>
                     ${isLast
                         ? `<button class="nav-btn nav-next" onclick="submitQuiz()"
                             style="background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 12px rgba(16,185,129,0.3)">
                             إنهاء <i class="fas fa-flag-checkered"></i></button>`
-                        : `<button class="nav-btn nav-next" id="nextBtn" onclick="nextQuestion()">
+                        : `<button class="nav-btn nav-next" id="nextBtn" onclick="manualNextQuestion()">
                             التالي <i class="fas fa-chevron-left"></i></button>`}
                 </div>`;
 
@@ -2117,37 +2123,47 @@ const QUIZ_DATA = {
         // ===== ANSWER SELECTION =====
         function selectMCQ(idx, el) {
             const list = document.getElementById('optionsList');
+            // منع الاختيار إذا كان السؤال مقفلاً (تمت الإجابة عليه)
             if (!list || list.classList.contains('locked')) return;
+
+            // حفظ الإجابة
             userAnswers[currentQIndex] = idx;
-            list.querySelectorAll('.option-item').forEach(o => {
-                o.classList.remove('selected');
-                o.querySelector('.option-letter').style.cssText = '';
-            });
-            el.classList.add('selected');
+
+            // إظهار الحل الصحيح والخطأ
+            const q = currentQuiz.questions[currentQIndex];
+            revealMCQ(q);
         }
 
         function selectTF(val, el) {
             const wrap = document.getElementById('tfOptions');
             if (!wrap || wrap.classList.contains('locked')) return;
+
             userAnswers[currentQIndex] = val;
-            wrap.querySelectorAll('.tf-option').forEach(b => b.classList.remove('selected'));
-            el.classList.add('selected');
+
+            const q = currentQuiz.questions[currentQIndex];
+            revealTF(q);
         }
 
         function checkFill() {
             const inp = document.getElementById('fillInput');
             const btn = document.querySelector('.fill-check');
             if (!inp || inp.disabled) return;
+
             const val = inp.value.trim().toLowerCase();
             const q   = currentQuiz.questions[currentQIndex];
             const correct = (q.answer || '').toLowerCase().trim();
+
             userAnswers[currentQIndex] = val;
+
             const isRight = val === correct;
             inp.classList.add(isRight ? 'correct' : 'wrong');
             inp.disabled = true;
             if (btn) btn.disabled = true;
-            showFeedback(isRight, q.options ? q.options[q.correct] : q.answer);
+            showFeedback(isRight, q.answer); // نمرر الإجابة الصحيحة
             showExplanation(q.explanation);
+
+            // بدء مؤقت الانتقال التلقائي بعد عرض التغذية الراجعة
+            startAutoAdvance();
         }
 
         // ===== FEEDBACK & EXPLANATION =====
@@ -2190,28 +2206,62 @@ const QUIZ_DATA = {
         }
 
         function autoAdvance() {
+            // هذه الدالة تستدعى عندما ينتهي الوقت
             if (currentQIndex < currentQuiz.questions.length - 1) { currentQIndex++; renderQuestion(); }
             else submitQuiz();
         }
 
+        // ===== NEW: START AUTO ADVANCE TIMER =====
+        function startAutoAdvance() {
+            // إلغاء أي مؤقت سابق
+            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+
+            // تعيين مؤقت جديد للانتقال بعد 3 ثوانٍ
+            autoAdvanceTimer = setTimeout(() => {
+                autoAdvanceTimer = null; // تنظيف المتغير
+                if (currentQIndex < currentQuiz.questions.length - 1) {
+                    // إذا لم يكن السؤال الأخير، انتقل إلى التالي
+                    currentQIndex++;
+                    renderQuestion();
+                } else {
+                    // إذا كان السؤال الأخير، أنهِ الاختبار
+                    submitQuiz();
+                }
+            }, 3000); // 3000 ميلي ثانية = 3 ثوانٍ
+        }
+
         // ===== NAVIGATION =====
-        function nextQuestion() {
+        function manualNextQuestion() {
+            // هذا الزر الآن يستدعي هذه الدالة بدلاً من nextQuestion
             const q = currentQuiz.questions[currentQIndex];
+
+            // التحقق من وجود إجابة
             if (userAnswers[currentQIndex] === undefined) {
-                showToast('اختر إجابة أو اضغط تخطي', 'warn'); return;
+                showToast('اختر إجابة أو اضغط تخطي', 'warn');
+                return;
             }
-            // Reveal correct answer for MCQ/TF before moving
-            if (q.type === 'mcq') revealMCQ(q);
-            else if (q.type === 'tf') revealTF(q);
 
-            setTimeout(() => { currentQIndex++; renderQuestion(); }, 800);
+            // إلغاء أي مؤقت تلقائي كان سيبدأ (لكن في حالتنا لن يكون موجوداً لأن المستخدم ضغط يدوياً)
+            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+
+            // الانتقال إلى السؤال التالي فوراً (لأن المستخدم ضغط على الزر)
+            // يجب أولاً التأكد من عرض التغذية الراجعة (لكنها ستكون معروضة بالفعل)
+            // ثم الانتقال للسؤال التالي
+            currentQIndex++;
+            renderQuestion();
         }
 
-        function prevQuestion() {
-            if (currentQIndex > 0) { currentQIndex--; renderQuestion(); }
-        }
+        // دالة nextQuestion القديمة لم تعد مستخدمة، لكن سنبقيها أو نغير اسمها.
+        // يمكننا حذفها أو إعادة تسميتها.
+        // سأقوم بتعطيلها لمنع الاستخدام الخاطئ.
+        // function nextQuestion() { } // تم تعطيلها
+
+        function prevQuestion() { /* تم إخفاء الزر، لذا هذه الدالة لن تستخدم */ }
 
         function skipQuestion() {
+            // إلغاء أي مؤقت تلقائي قبل التخطي
+            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+
             if (currentQIndex < currentQuiz.questions.length - 1) { currentQIndex++; renderQuestion(); }
             else submitQuiz();
         }
@@ -2219,33 +2269,54 @@ const QUIZ_DATA = {
         function revealMCQ(q) {
             const list = document.getElementById('optionsList');
             if (!list) return;
+
+            // قفل القائمة لمنع أي تعديل
             list.classList.add('locked');
+
+            // تطبيق الألوان (صح/خطأ) على الخيارات
             list.querySelectorAll('.option-item').forEach((o, i) => {
-                if (i === q.correct) { o.classList.add('correct'); o.querySelector('.option-feedback-icon').className = 'fas fa-check option-feedback-icon'; }
-                else if (userAnswers[currentQIndex] === i) { o.classList.add('wrong'); o.querySelector('.option-feedback-icon').className = 'fas fa-times option-feedback-icon'; }
+                if (i === q.correct) {
+                    o.classList.add('correct');
+                    o.querySelector('.option-feedback-icon').className = 'fas fa-check option-feedback-icon';
+                } else if (userAnswers[currentQIndex] === i) {
+                    o.classList.add('wrong');
+                    o.querySelector('.option-feedback-icon').className = 'fas fa-times option-feedback-icon';
+                }
             });
+
             const isRight = userAnswers[currentQIndex] === q.correct;
             showFeedback(isRight, q.options[q.correct]);
             showExplanation(q.explanation);
+
+            // بدء مؤقت الانتقال التلقائي
+            startAutoAdvance();
         }
 
         function revealTF(q) {
             const wrap = document.getElementById('tfOptions');
             if (!wrap) return;
+
             wrap.classList.add('locked');
+
             wrap.querySelectorAll('.tf-option').forEach(b => {
                 const isTrue = b.textContent.includes('صحيح');
                 if (isTrue === q.correct) b.classList.add('correct');
                 else if (userAnswers[currentQIndex] === isTrue && isTrue !== q.correct) b.classList.add('wrong');
             });
+
             const isRight = userAnswers[currentQIndex] === q.correct;
             showFeedback(isRight, q.correct ? 'صحيح ✓' : 'خطأ ✗');
             showExplanation(q.explanation);
+
+            // بدء مؤقت الانتقال التلقائي
+            startAutoAdvance();
         }
 
         // ===== SUBMIT =====
         function submitQuiz() {
             clearInterval(timer);
+            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; } // إلغاء المؤقت إذا كان موجوداً
+
             const total = currentQuiz.questions.length;
             let correct = 0, wrong = 0, skipped = 0;
             currentQuiz.questions.forEach((q, i) => {
@@ -2413,4 +2484,4 @@ const QUIZ_DATA = {
         setTheme(localStorage.getItem('theme') || 'light');
     </script>
 </body>
-</html>
+    </html>
