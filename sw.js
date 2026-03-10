@@ -14,7 +14,7 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // ✅ نظام الإصدار الذكي - غير الرقم ده كل ما ترفع تحديث جديد للموقع
-const CACHE_VERSION = 'v3';  // ⚠️ مهم: غير الرقم ده (v3) لأي رقم تاني لو حبيت تجبر تحديث شامل
+const CACHE_VERSION = '1.0.1';  // ⚠️ مهم: غير الرقم ده (v3) لأي رقم تاني لو حبيت تجبر تحديث شامل
 const CACHE_NAME = `cinelingua-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `cinelingua-dynamic-${CACHE_VERSION}`;
 
