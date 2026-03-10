@@ -14,7 +14,7 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // ✅ نظام الإصدار الذكي - غير الرقم ده كل ما ترفع تحديث جديد للموقع
-const CACHE_VERSION = '1.0.1';  // ⚠️ مهم: غير الرقم ده (v3) لأي رقم تاني لو حبيت تجبر تحديث شامل
+const CACHE_VERSION = '2.0.0';  // ⚠️ مهم: غير الرقم ده لأي رقم تاني لو حبيت تجبر تحديث شامل
 const CACHE_NAME = `cinelingua-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `cinelingua-dynamic-${CACHE_VERSION}`;
 
@@ -29,6 +29,11 @@ const STATIC_ASSETS = [
     '/download.html',
     '/offline.html',
     '/manifest.json',
+    '/style.css',
+    '/translation.js',
+    '/settings.js',
+    '/theme.js',
+    '/notifications.json',
     'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
     'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
