@@ -669,8 +669,8 @@
             <div class="settings-section">
                 <div class="settings-section-title"><i class="fas fa-globe"></i> <span id="s-lang">اللغة</span></div>
                 <div class="settings-lang-row">
-                    <button class="settings-lang-btn" id="lang-ar" onclick="setLang('ar')"><span class="lang-flag">🌙</span><div class="lang-info"><span class="lang-name">العربية</span><span class="lang-sub">Arabic</span></div><i class="fas fa-check lang-check"></i></button>
-                    <button class="settings-lang-btn" id="lang-en" onclick="setLang('en')"><span class="lang-flag">🌐</span><div class="lang-info"><span class="lang-name">English</span><span class="lang-sub">الإنجليزية</span></div><i class="fas fa-check lang-check"></i></button>
+                    <button class="settings-lang-btn" id="lang-ar" onclick="setLang('ar')"><span class="lang-flag"></span><div class="lang-info"><span class="lang-name">العربية</span><span class="lang-sub">Arabic</span></div><i class="fas fa-check lang-check"></i></button>
+                    <button class="settings-lang-btn" id="lang-en" onclick="setLang('en')"><span class="lang-flag"></span><div class="lang-info"><span class="lang-name">English</span><span class="lang-sub">الإنجليزية</span></div><i class="fas fa-check lang-check"></i></button>
                 </div>
             </div>
             <div class="settings-section">
@@ -681,7 +681,7 @@
                 </div>
             </div>
         </div>
-        <div class="settings-footer">CineLingua • v2.0</div>
+        <div class="settings-footer">CineLingua •</div>
     </div>
 
     <!-- NAVBAR -->
@@ -2579,7 +2579,7 @@ const QUIZ_DATA = {
         }
         async function requestNotifSettings() {
             const r = await Notification.requestPermission(); refreshNotifBadge();
-            if (r==='granted' && 'serviceWorker' in navigator) navigator.serviceWorker.ready.then(reg => reg.showNotification('CineLingua 🎓', { body: currentLang==='ar'?'تم تفعيل الإشعارات! 🔔':'Notifications enabled! 🔔', icon:'https://i.postimg.cc/J4xdc62M/20260305-233826.png', vibrate:[200,100,200] }));
+            if (r==='granted') { if (typeof window.saveFCMTokenAfterPermission==='function') setTimeout(window.saveFCMTokenAfterPermission,2000); navigator.serviceWorker.ready.then(reg => reg.showNotification('CineLingua 🎓', { body: currentLang==='ar'?'تم تفعيل الإشعارات! 🔔':'Notifications enabled! 🔔', icon:'https://i.postimg.cc/J4xdc62M/20260305-233826.png', vibrate:[200,100,200] })); }
         }
 
         function toggleMenu() { document.getElementById('navMenu').classList.toggle('show'); }
@@ -2621,14 +2621,14 @@ const QUIZ_DATA = {
     <script>
     (function() {
         const _fbConfig = {
-            apiKey: "AIzaSyBUqx2f4jmg-XSshWA_AcDSMPcttPPBs_E",
-            authDomain: "cinelingua-d4c2b.firebaseapp.com",
-            projectId: "cinelingua-d4c2b",
-            storageBucket: "cinelingua-d4c2b.firebasestorage.app",
-            messagingSenderId: "569970499890",
-            appId: "1:569970499890:web:9cf03df25e37745d44f72b"
+            apiKey: "AIzaSyCvi0VCJv3j6p8ICT1f97TePwDXAazmQMw",
+            authDomain: "cinelingua-fe7f1.firebaseapp.com",
+            projectId: "cinelingua-fe7f1",
+            storageBucket: "cinelingua-fe7f1.firebasestorage.app",
+            messagingSenderId: "157697610841",
+            appId: "1:157697610841:web:c76f046d1af6eaa544f72b"
         };
-        const VAPID = "BCf33TmM6clsgVH480Qxh0K0NY1PrTAAFIQwO1MOS4g2vMXuqrAicgl2cu2UFYLEYTgrQlgSS95vwydvrISXfXA";
+        const VAPID = "BLRwJpw7gMvb5-pZVmo_zw0el29GABJhFAYMWMso3mcMHU_mQsOLnuL5x7YfRoQ_ujItpTuslqg_LM56Mdom5v4";
         if (!firebase.apps.length) firebase.initializeApp(_fbConfig);
         let _msg = null;
         try { _msg = firebase.messaging(); } catch(e) {}
