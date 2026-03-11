@@ -1,98 +1,62 @@
 const admin = require('firebase-admin');
 const fs = require('fs');
 
-// ===== 🔍 DEBUG SECTION =====
-console.log('🚀 ===== STARTING DEBUG =====');
-console.log('1. Checking environment variables...');
-console.log('FIREBASE_SERVICE_ACCOUNT exists:', !!process.env.FIREBASE_SERVICE_ACCOUNT);
-console.log('FIREBASE_SERVICE_ACCOUNT length:', process.env.FIREBASE_SERVICE_ACCOUNT?.length || 0);
+console.log('🚀 ===== STARTING =====');
 
 if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
     console.error('❌ FIREBASE_SERVICE_ACCOUNT is missing!');
     process.exit(1);
 }
 
-console.log('2. Raw value first 50 chars:', process.env.FIREBASE_SERVICE_ACCOUNT.substring(0, 50));
-
 let serviceAccount;
 try {
-    console.log('3. Attempting to clean and parse...');
-    const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-    const cleaned = raw.trim().replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
-    console.log('Cleaned first 50 chars:', cleaned.substring(0, 50));
-    
-    // ✅ فك التشفير من Base64 إلى JSON حقيقي
-    console.log('4. Decoding from Base64...');
-    const decoded = Buffer.from(cleaned, 'base64').toString('utf8');
-    console.log('Decoded first 50 chars:', decoded.substring(0, 50));
-    
-    // ✅ الآن نحول النص المفكوك إلى JSON
+    const raw = process.env.FIREBASE_SERVICE_ACCOUNT.trim().replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
+    const decoded = Buffer.from(raw, 'base64').toString('utf8');
     serviceAccount = JSON.parse(decoded);
-    console.log('✅ Parse successful!');
-    console.log('Project ID:', serviceAccount.project_id);
-    console.log('Client Email:', serviceAccount.client_email);
-    console.log('Has private_key:', !!serviceAccount.private_key);
-    
     if (serviceAccount.private_key) {
-        // Fix private key formatting
         serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
-        console.log('✅ Private key formatted');
     }
+    console.log('✅ Service account parsed');
+    console.log('Project ID:', serviceAccount.project_id);
 } catch(e) {
     console.error('❌ Parse error:', e.message);
-    console.error('Error name:', e.name);
-    if (e instanceof SyntaxError) {
-        console.error('This is a JSON syntax error - check your secret value');
-        console.error('Common issues: missing quotes, extra commas, or invalid characters');
-    }
     process.exit(1);
 }
-console.log('🎯 ===== DEBUG FINISHED =====\n');
 
-// ===== 2. قراءة ملف الإشعارات =====
+// قراءة ملف الإشعارات
 let notifications;
 try {
-    console.log('📁 Checking notifications.json...');
     if (!fs.existsSync('notifications.json')) {
-        console.error('❌ notifications.json file not found!');
+        console.error('❌ notifications.json not found!');
         process.exit(1);
     }
     notifications = JSON.parse(fs.readFileSync('notifications.json', 'utf8'));
-    console.log('✅ Notifications file loaded');
-    console.log(`📊 Found ${notifications.reminders?.length || 0} reminders`);
+    console.log('✅ notifications.json loaded');
 } catch(e) {
     console.error('❌ Failed to read notifications.json:', e.message);
     process.exit(1);
 }
 
-// ===== 3. تهيئة Firebase =====
+// تهيئة Firebase
 try {
-    console.log('🔥 Initializing Firebase...');
     admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-    const db = admin.firestore();
-    console.log('✅ Firebase initialized successfully');
+    console.log('✅ Firebase initialized');
 } catch(e) {
-    console.error('❌ Firebase initialization failed:', e.message);
+    console.error('❌ Firebase init failed:', e.message);
     process.exit(1);
 }
 
-// ===== 4. الحصول على الوقت الحالي (توقيت السيرفر) =====
 const now = new Date();
 const hour = now.getHours();
 const minute = now.getMinutes();
-console.log(`⏰ Server time: ${hour}:${minute} (${now.toString()})`);
+console.log(`⏰ Server time: ${hour}:${minute}`);
 
-// ===== 5. جلب جميع التوكنات من Firestore =====
 async function getAllTokens() {
     try {
-        console.log('📱 Fetching tokens from Firestore...');
         const db = admin.firestore();
         const snapshot = await db.collection('fcmTokens').get();
         const tokens = snapshot.docs.map(doc => doc.data().token).filter(Boolean);
-        console.log(`📱 Found ${tokens.length} tokens in Firestore`);
-        if (tokens.length > 0) {
-            console.log('Sample token:', tokens[0].substring(0, 30) + '...');
-        }
+        console.log(`📱 Found ${tokens.length} tokens`);
         return tokens;
     } catch(e) {
         console.error('❌ Error fetching tokens:', e.message);
@@ -100,16 +64,10 @@ async function getAllTokens() {
     }
 }
 
-// ===== 6. إرسال الإشعارات للمستخدمين =====
 async function sendToTokens(tokens, title, body, image) {
-    if (tokens.length === 0) {
-        console.log('⚠️ No tokens found to send');
-        return;
-    }
+    if (!tokens.length) { console.log('⚠️ No tokens'); return; }
 
-    console.log(`📤 Sending notification to ${tokens.length} device(s)...`);
-    console.log(`📢 Title: "${title}"`);
-    console.log(`📝 Body: "${body}"`);
+    console.log(`📤 Sending to ${tokens.length} device(s): "${title}"`);
 
     const messages = tokens.map(token => ({
         token,
@@ -131,95 +89,63 @@ async function sendToTokens(tokens, title, body, image) {
         }
     }));
 
-    // إرسال على دفعات (كل دفعة 500 جهاز)
     const batchSize = 500;
-    let totalSent = 0;
-    let totalFailed = 0;
+    let totalSent = 0, totalFailed = 0;
 
     for (let i = 0; i < messages.length; i += batchSize) {
         const batch = messages.slice(i, i + batchSize);
-        console.log(`📦 Sending batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(messages.length/batchSize)} (${batch.length} devices)...`);
-        
         try {
             const res = await admin.messaging().sendEach(batch);
-            console.log(`✅ Batch sent: ${res.successCount} successful, ${res.failureCount} failed`);
             totalSent += res.successCount;
             totalFailed += res.failureCount;
+            console.log(`✅ Batch: ${res.successCount} ok, ${res.failureCount} failed`);
 
-            // احذف الـ tokens الفاشلة (الأجهزة غير النشطة)
+            // احذف التوكنات الفاشلة
             for (let j = 0; j < res.responses.length; j++) {
                 if (!res.responses[j].success) {
-                    const failedToken = batch[j].token;
                     try {
-                        const db = admin.firestore();
-                        await db.collection('fcmTokens').doc(failedToken).delete();
-                        console.log(`🗑️ Removed invalid token: ${failedToken.substring(0, 20)}...`);
-                    } catch(e) {
-                        console.log('⚠️ Could not delete token:', e.message);
-                    }
+                        await admin.firestore().collection('fcmTokens').doc(batch[j].token).delete();
+                    } catch(e) {}
                 }
             }
         } catch(e) {
-            console.error('❌ Error sending batch:', e.message);
+            console.error('❌ Batch error:', e.message);
         }
     }
-
-    console.log(`📊 Summary: ✅ ${totalSent} successful, ❌ ${totalFailed} failed`);
-    if (totalSent > 0) {
-        console.log('🎉 Notifications sent successfully!');
-    }
+    console.log(`📊 Total: ✅ ${totalSent} sent, ❌ ${totalFailed} failed`);
 }
 
-// ===== 7. الدالة الرئيسية =====
 async function main() {
-    console.log('🚀 Starting notification process...');
-    
     const tokens = await getAllTokens();
-    
-    // التحقق من وجود إشعار تحديث
-    if (notifications.update && notifications.update.enabled) {
+
+    // إشعار تحديث
+    if (notifications.update?.enabled) {
         console.log('📢 Sending update notification...');
         await sendToTokens(tokens, notifications.update.title, notifications.update.body, notifications.update.image);
         return;
     }
 
-    // البحث عن إشعار مطابق للوقت الحالي
+    // إشعارات مجدولة
     let sent = false;
-    if (notifications.reminders && Array.isArray(notifications.reminders)) {
-        for (const reminder of notifications.reminders) {
-            if (!reminder.enabled) continue;
-            
-            // مقارنة الساعة والدقيقة مع الوقت الحالي
-            if (reminder.hour === hour && (reminder.minute || 0) === minute) {
-                console.log(`📢 Time matched! Sending: ${reminder.title}`);
-                await sendToTokens(tokens, reminder.title, reminder.body, reminder.image);
-                sent = true;
-            }
+    for (const reminder of (notifications.reminders || [])) {
+        if (!reminder.enabled) continue;
+        if (reminder.hour === hour && (reminder.minute || 0) === minute) {
+            console.log(`📢 Sending: ${reminder.title}`);
+            await sendToTokens(tokens, reminder.title, reminder.body, reminder.image);
+            sent = true;
         }
-    } else {
-        console.log('⚠️ No reminders array found in notifications.json');
     }
 
     if (!sent) {
-        console.log(`ℹ️ No reminders match current time (${hour}:${minute})`);
-        
-        // للتجربة: إرسال قسري إذا طلبنا FORCE_SEND
+        console.log(`ℹ️ No reminders match ${hour}:${minute}`);
         if (process.env.FORCE_SEND === 'true') {
-            console.log('🧪 FORCE_SEND is true - sending test notification...');
+            console.log('🧪 FORCE_SEND — sending test...');
             const first = notifications.reminders?.find(r => r.enabled);
-            if (first) {
-                await sendToTokens(tokens, first.title, first.body, first.image);
-            } else {
-                console.log('⚠️ No enabled reminders found for force send');
-            }
+            if (first) await sendToTokens(tokens, first.title, first.body, first.image);
         }
     }
-    
-    console.log('✅ Notification process completed');
+
+    console.log('✅ Done');
 }
 
-// ===== 8. تشغيل الدالة الرئيسية =====
-main().catch(e => { 
-    console.error('❌ Fatal error:', e); 
-    process.exit(1); 
-});
+main().catch(e => { console.error('❌ Fatal:', e); process.exit(1); });
