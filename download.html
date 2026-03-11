@@ -199,7 +199,7 @@
                 </div>
             </div>
         </div>
-        <div class="settings-footer">CineLingua • v2.0</div>
+        <div class="settings-footer">CineLingua •</div>
     </div>
 
     <!-- NAVBAR -->
@@ -341,7 +341,7 @@
         function openSettings() {
             const overlay = document.getElementById('settingsOverlay');
             const panel   = document.getElementById('settingsPanel');
-            if (!overlay || !panel) { alert('خطأ: العناصر مو موجودة'); return; }
+            if (!overlay || !panel) return;
             overlay.classList.add('show');
             panel.classList.add('show');
             refreshNotifBadge();
@@ -369,7 +369,7 @@
                 if (typeof window.saveFCMTokenAfterPermission === 'function') setTimeout(window.saveFCMTokenAfterPermission, 2000);
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.ready.then(reg => reg.showNotification('CineLingua 🎓', {
-                        body: currentLang === 'ar' ? 'تم تفعيل الإشعارات! 🔔' : 'Notifications enabled! 🔔',
+                        body: 'تم تفعيل الإشعارات! 🔔',
                         icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
                         vibrate: [200, 100, 200]
                     }));
@@ -436,25 +436,30 @@
     <script>
     (function() {
         const _cfg = {
-            apiKey: "AIzaSyBUqx2f4jmg-XSshWA_AcDSMPcttPPBs_E",
-            authDomain: "cinelingua-d4c2b.firebaseapp.com",
-            projectId: "cinelingua-d4c2b",
-            storageBucket: "cinelingua-d4c2b.firebasestorage.app",
-            messagingSenderId: "569970499890",
-            appId: "1:569970499890:web:9cf03df25e37745d44f72b"
+            apiKey: "AIzaSyCvi0VCJv3j6p8ICT1f97TePwDXAazmQMw",
+            authDomain: "cinelingua-fe7f1.firebaseapp.com",
+            projectId: "cinelingua-fe7f1",
+            storageBucket: "cinelingua-fe7f1.firebasestorage.app",
+            messagingSenderId: "157697610841",
+            appId: "1:157697610841:web:c76f046d1af6eaa544f72b"
         };
-        const VAPID = "BCf33TmM6clsgVH480Qxh0K0NY1PrTAAFIQwO1MOS4g2vMXuqrAicgl2cu2UFYLEYTgrQlgSS95vwydvrISXfXA";
+        const VAPID = "BLRwJpw7gMvb5-pZVmo_zw0el29GABJhFAYMWMso3mcMHU_mQsOLnuL5x7YfRoQ_ujItpTuslqg_LM56Mdom5v4";
         if (!firebase.apps.length) firebase.initializeApp(_cfg);
         let _msg = null;
-        try { _msg = firebase.messaging(); } catch(e) {}
+        try { _msg = firebase.messaging(); console.log('✅ Firebase messaging OK'); } catch(e) { console.log('❌ Firebase messaging error:', e.message); }
         async function _saveToken() {
             try {
-                if (!_msg || Notification.permission !== 'granted') return;
+                if (!_msg) { console.log('❌ _msg is null'); return; }
+                if (Notification.permission !== 'granted') { console.log('❌ permission:', Notification.permission); return; }
+                console.log('⏳ Getting FCM token...');
                 const token = await _msg.getToken({ vapidKey: VAPID });
-                if (!token) return;
+                if (!token) { console.log('❌ token is empty'); return; }
+                console.log('✅ Token:', token.substring(0,20) + '...');
                 await firebase.firestore().collection('fcmTokens').doc(token).set({
                     token, page: window.location.pathname,
                     lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                console.log('✅ Token saved to Firestore!');
                 }, { merge: true });
             } catch(e) {}
         }
