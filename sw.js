@@ -14,7 +14,7 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // ===== VERSION =====
-const CACHE_VERSION = '1.2.0'; // ⚠️ غيّر هذا الرقم عند كل تحديث
+const CACHE_VERSION = '1.1.1'; // ⚠️ غيّر هذا الرقم عند كل تحديث
 const CACHE_NAME    = `cinelingua-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `cinelingua-dynamic-${CACHE_VERSION}`;
 
