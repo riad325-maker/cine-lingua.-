@@ -1378,5 +1378,48 @@
         };
         setTheme(localStorage.getItem('theme') || 'light');
     </script>
+
+    <!-- Firebase - حفظ التوكن للإشعارات -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script>
+    (function() {
+        const _fbConfig = {
+            apiKey: "AIzaSyBUqx2f4jmg-XSshWA_AcDSMPcttPPBs_E",
+            authDomain: "cinelingua-d4c2b.firebaseapp.com",
+            projectId: "cinelingua-d4c2b",
+            storageBucket: "cinelingua-d4c2b.firebasestorage.app",
+            messagingSenderId: "569970499890",
+            appId: "1:569970499890:web:9cf03df25e37745d44f72b"
+        };
+        const VAPID = "BCf33TmM6clsgVH480Qxh0K0NY1PrTAAFIQwO1MOS4g2vMXuqrAicgl2cu2UFYLEYTgrQlgSS95vwydvrISXfXA";
+        if (!firebase.apps.length) firebase.initializeApp(_fbConfig);
+        let _msg = null;
+        try { _msg = firebase.messaging(); } catch(e) {}
+
+        async function _saveToken() {
+            try {
+                if (!_msg || Notification.permission !== "granted") return;
+                const token = await _msg.getToken({ vapidKey: VAPID });
+                if (!token) return;
+                const db = firebase.firestore();
+                await db.collection("fcmTokens").doc(token).set({
+                    token,
+                    page: window.location.pathname,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                console.log("✅ FCM Token saved");
+            } catch(e) { console.log("FCM:", e.message); }
+        }
+
+        window.addEventListener("load", () => {
+            if (Notification.permission === "granted") setTimeout(_saveToken, 3000);
+        });
+
+        window.saveFCMTokenAfterPermission = _saveToken;
+    })();
+    </script>
+
 </body>
 </html>
