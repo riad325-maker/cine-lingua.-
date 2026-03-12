@@ -639,7 +639,7 @@
                 </div>
             </div>
         </div>
-        <div class="settings-footer">CineLingua</div>
+        <div class="settings-footer">CineLingua • v2.0</div>
     </div>
 
     <!-- NAVBAR -->
@@ -1401,7 +1401,7 @@
         async function _saveToken() {
             try {
                 if (!_msg || Notification.permission !== "granted") return;
-                const token = await _msg.getToken({ vapidKey: VAPID });
+                const token = await _msg.getToken({ vapidKey: VAPID, serviceWorkerRegistration: swRegistration || undefined });
                 if (!token) return;
                 const db = firebase.firestore();
                 await db.collection("fcmTokens").doc(token).set({
