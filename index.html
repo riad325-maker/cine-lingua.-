@@ -636,20 +636,20 @@
     let swRegistration = null;
 
     async function getAndSaveFCMToken() {
-        if (!messaging) { alert('❌ messaging = null'); return; }
+        if (!messaging) return;
         try {
-            if (Notification.permission !== 'granted') { alert('❌ permission = ' + Notification.permission); return; }
-            alert('⏳ جاري جلب التوكن...');
-            const reg = swRegistration || await navigator.serviceWorker.ready;
+            if (Notification.permission !== 'granted') return;
+            
+            const reg = swRegistration || window.swRegistration || await navigator.serviceWorker.ready;
             const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-            if (!token) { alert('❌ token فارغ'); return; }
-            alert('✅ Token: ' + token.substring(0, 30) + '...\n⏳ جاري الحفظ في Firestore...');
+            if (!token) return;
+            
             try {
                 const db = firebase.firestore();
                 await db.collection('fcmTokens').doc(token).set({ token, createdAt: firebase.firestore.FieldValue.serverTimestamp(), lastSeen: firebase.firestore.FieldValue.serverTimestamp(), userAgent: navigator.userAgent, platform: navigator.platform }, { merge: true });
-                alert('✅ تم الحفظ في Firestore!');
-            } catch(e) { alert('❌ خطأ Firestore: ' + e.message); }
-        } catch(e) { alert('❌ خطأ عام: ' + e.message); }
+                
+            } catch(e) {}
+        } catch(e) {}
     }
 
     AOS.init({ duration: 900, once: true, offset: 60 });
