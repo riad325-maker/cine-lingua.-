@@ -2,7 +2,7 @@
   "reminders": [
     {
       "hour": 5,
-      "minute": 25,
+      "minute": 0,
       "title": "صباح النور",
       "body": "ابدأ يومك بجلسة إنجليزية خفيفة ☀️",
       "enabled": true
