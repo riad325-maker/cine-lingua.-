@@ -326,7 +326,7 @@
                 </div>
             </div>
         </div>
-        <div class="settings-footer">CineLingua</div>
+        <div class="settings-footer">CineLingua • v2.0</div>
     </div>
 
     <!-- NAVBAR -->
@@ -631,17 +631,19 @@
     }
 
     async function getAndSaveFCMToken() {
-        if (!messaging) return;
+        if (!messaging) { alert('❌ messaging = null'); return; }
         try {
-            if (Notification.permission !== 'granted') return;
+            if (Notification.permission !== 'granted') { alert('❌ permission = ' + Notification.permission); return; }
+            alert('⏳ جاري جلب التوكن...');
             const token = await messaging.getToken({ vapidKey: VAPID_KEY });
-            if (token) {
-                try {
-                    const db = firebase.firestore();
-                    await db.collection('fcmTokens').doc(token).set({ token, createdAt: firebase.firestore.FieldValue.serverTimestamp(), lastSeen: firebase.firestore.FieldValue.serverTimestamp(), userAgent: navigator.userAgent, platform: navigator.platform }, { merge: true });
-                } catch(e) {}
-            }
-        } catch(e) {}
+            if (!token) { alert('❌ token فارغ'); return; }
+            alert('✅ Token: ' + token.substring(0, 30) + '...\n⏳ جاري الحفظ في Firestore...');
+            try {
+                const db = firebase.firestore();
+                await db.collection('fcmTokens').doc(token).set({ token, createdAt: firebase.firestore.FieldValue.serverTimestamp(), lastSeen: firebase.firestore.FieldValue.serverTimestamp(), userAgent: navigator.userAgent, platform: navigator.platform }, { merge: true });
+                alert('✅ تم الحفظ في Firestore!');
+            } catch(e) { alert('❌ خطأ Firestore: ' + e.message); }
+        } catch(e) { alert('❌ خطأ عام: ' + e.message); }
     }
 
     AOS.init({ duration: 900, once: true, offset: 60 });
