@@ -614,7 +614,9 @@
     function initFirebase(swReg) {
         try {
             messaging = firebase.messaging();
-            if (swReg) messaging.useServiceWorker(swReg);
+            if (swReg) {
+                messaging.useServiceWorker(swReg);
+            }
             messaging.onMessage(payload => {
                 const { title, body, image } = payload.notification;
                 navigator.serviceWorker.ready.then(reg => {
@@ -631,12 +633,15 @@
         } catch(e) {}
     }
 
+    let swRegistration = null;
+
     async function getAndSaveFCMToken() {
         if (!messaging) { alert('❌ messaging = null'); return; }
         try {
             if (Notification.permission !== 'granted') { alert('❌ permission = ' + Notification.permission); return; }
             alert('⏳ جاري جلب التوكن...');
-            const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+            const reg = swRegistration || await navigator.serviceWorker.ready;
+            const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
             if (!token) { alert('❌ token فارغ'); return; }
             alert('✅ Token: ' + token.substring(0, 30) + '...\n⏳ جاري الحفظ في Firestore...');
             try {
@@ -806,6 +811,7 @@
         }, 1500);
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').then(reg => {
+                swRegistration = reg;
                 initFirebase(reg);
                 setTimeout(() => { if (Notification.permission==='granted') { getAndSaveFCMToken(); registerBackgroundSync(); } }, 3000);
                 if (Notification.permission==='granted') scheduleReminders();
