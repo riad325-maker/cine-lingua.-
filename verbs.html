@@ -164,9 +164,122 @@
             .verbs-grid { grid-template-columns: 1fr; }
             .pagination-controls { flex-direction: column; }
         }
+
+        /* ===== SETTINGS BUTTON ===== */
+        .settings-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none; color: white; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 2px 10px rgba(99,102,241,0.4); flex-shrink: 0;
+        }
+        .settings-btn:hover { transform: rotate(90deg) scale(1.1); }
+        .settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9990; display: none; backdrop-filter: blur(4px); }
+        .settings-overlay.show { display: block; }
+        .settings-panel { position: fixed; top: 0; right: 0; z-index: 9991; width: 300px; max-width: 92vw; height: 100vh; background: var(--bg-card); display: flex; flex-direction: column; transform: translateX(110%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); overflow: hidden; }
+        .settings-panel.show { transform: translateX(0); }
+        .settings-header { padding: 1.4rem 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .settings-header-left { display: flex; align-items: center; gap: 0.85rem; }
+        .settings-header-icon { width: 40px; height: 40px; border-radius: 0.65rem; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .settings-header-title { font-size: 1.05rem; font-weight: 800; }
+        .settings-header-sub { font-size: 0.72rem; opacity: 0.75; margin-top: 1px; }
+        .settings-close { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: all 0.2s; }
+        .settings-close:hover { background: rgba(255,255,255,0.35); transform: rotate(90deg); }
+        .settings-body { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.4rem; }
+        .settings-section { display: flex; flex-direction: column; gap: 0.65rem; }
+        .settings-section-title { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); }
+        .settings-section-title i { color: var(--primary); }
+        .settings-theme-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+        .settings-theme-btn { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.85rem 0.5rem; border-radius: 0.9rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); font-family: inherit; position: relative; transition: all 0.2s; }
+        .settings-theme-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); color: var(--primary); }
+        .theme-preview { width: 100%; height: 48px; border-radius: 0.5rem; overflow: hidden; display: flex; flex-direction: column; gap: 3px; padding: 5px; }
+        .theme-preview.light { background: #f8fafc; }
+        .theme-preview.dark  { background: #0f172a; }
+        .theme-preview .p-bar { height: 6px; border-radius: 3px; background: linear-gradient(90deg,#6366f1,#ec4899); }
+        .theme-preview .p-card { height: 7px; border-radius: 3px; }
+        .theme-preview.light .p-card { background: white; border: 1px solid #e2e8f0; }
+        .theme-preview.dark  .p-card { background: #1e293b; }
+        .theme-preview .p-card.short { width: 65%; }
+        .settings-lang-row { display: flex; flex-direction: column; gap: 0.5rem; }
+        .settings-lang-btn { display: flex; align-items: center; gap: 0.85rem; padding: 0.9rem 1rem; border-radius: 0.85rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-family: inherit; width: 100%; color: var(--text-primary); transition: all 0.2s; }
+        .settings-lang-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); }
+        .lang-flag { font-size: 1.4rem; flex-shrink: 0; }
+        .lang-info { display: flex; flex-direction: column; flex: 1; gap: 1px; }
+        .lang-name { font-size: 0.9rem; font-weight: 700; }
+        .lang-sub  { font-size: 0.72rem; color: var(--text-secondary); }
+        .lang-check { color: var(--primary); font-size: 0.85rem; opacity: 0; transition: opacity 0.2s; }
+        .settings-lang-btn.active .lang-check { opacity: 1; }
+        .settings-notif-card { background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 0.9rem; overflow: hidden; }
+        .settings-notif-top { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
+        .settings-notif-label { font-size: 0.88rem; font-weight: 600; }
+        .notif-badge { font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 2rem; }
+        .notif-badge.granted { background: rgba(34,197,94,0.12); color: #16a34a; }
+        .notif-badge.denied  { background: rgba(239,68,68,0.12);  color: #dc2626; }
+        .notif-badge.default { background: rgba(99,102,241,0.12); color: var(--primary); }
+        .notif-action-btn { width: 100%; padding: 0.85rem 1rem; border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .notif-action-btn:disabled { opacity: 0.5; cursor: not-allowed; background: var(--bg-secondary); color: var(--text-secondary); }
+        .settings-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.75rem; color: var(--text-secondary); flex-shrink: 0; }
     </style>
 </head>
 <body>
+    <!-- SETTINGS -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <div class="settings-header-left">
+                <div class="settings-header-icon"><i class="fas fa-sliders-h"></i></div>
+                <div>
+                    <div class="settings-header-title" id="settings-header-title-el">الإعدادات</div>
+                    <div class="settings-header-sub">CineLingua</div>
+                </div>
+            </div>
+            <button class="settings-close" onclick="closeSettings()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="settings-body">
+            <div class="settings-section">
+                <div class="settings-section-title"><i class="fas fa-palette"></i> المظهر</div>
+                <div class="settings-theme-row">
+                    <button class="settings-theme-btn" id="btn-light" onclick="setTheme('light')">
+                        <div class="theme-preview light"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div>
+                        <i class="fas fa-sun"></i> فاتح
+                    </button>
+                    <button class="settings-theme-btn" id="btn-dark" onclick="setTheme('dark')">
+                        <div class="theme-preview dark"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div>
+                        <i class="fas fa-moon"></i> داكن
+                    </button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-section-title"><i class="fas fa-globe"></i> اللغة</div>
+                <div class="settings-lang-row">
+                    <button class="settings-lang-btn" id="lang-ar" onclick="setLang('ar')">
+                        <span class="lang-flag">🇸🇦</span>
+                        <div class="lang-info"><span class="lang-name">العربية</span><span class="lang-sub">Arabic</span></div>
+                        <i class="fas fa-check lang-check"></i>
+                    </button>
+                    <button class="settings-lang-btn" id="lang-en" onclick="setLang('en')">
+                        <span class="lang-flag">🇬🇧</span>
+                        <div class="lang-info"><span class="lang-name">English</span><span class="lang-sub">الإنجليزية</span></div>
+                        <i class="fas fa-check lang-check"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-section-title"><i class="fas fa-bell"></i> الإشعارات</div>
+                <div class="settings-notif-card">
+                    <div class="settings-notif-top">
+                        <span class="settings-notif-label">حالة الإشعارات</span>
+                        <span class="notif-badge default" id="notifBadge">غير محددة</span>
+                    </div>
+                    <button class="notif-action-btn" id="notifActionBtn" onclick="requestNotif()">
+                        <i class="fas fa-bell"></i> <span id="notifBtnText">تفعيل الإشعارات</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="settings-footer">CineLingua • v2.0</div>
+    </div>
 
     <!-- NAVBAR -->
     <nav class="navbar">
@@ -174,20 +287,21 @@
             <a class="logo" href="index.html"><i class="fas fa-film"></i> CineLingua</a>
             <button class="menu-toggle" onclick="document.getElementById('navMenu').classList.toggle('show')"><i class="fas fa-bars"></i></button>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html">الرئيسية</a></li>
-                <li><a href="lessons.html">الكلمات</a></li>
-                <li><a href="stories.html">القصص</a></li>
-                <li><a href="tenses.html">الأزمنة</a></li>
-                <li><a href="quiz.html">الاختبارات</a></li>
-                <li><a href="verbs.html" class="active">الأفعال</a></li>
-                <li><a href="grammar.html">الجرامر</a></li>
-                <li><a href="download.html">تحميل</a></li>
+                <li><a href="index.html" id="nav-home-lnk">الرئيسية</a></li>
+                <li><a href="lessons.html" id="nav-lessons-lnk">الكلمات</a></li>
+                <li><a href="stories.html" id="nav-stories-lnk">القصص</a></li>
+                <li><a href="tenses.html" id="nav-tenses-lnk">الأزمنة</a></li>
+                <li><a href="quiz.html" id="nav-quiz-lnk">الاختبارات</a></li>
+                <li><a href="verbs.html" class="active" id="nav-verbs-lnk">الأفعال</a></li>
+                <li><a href="grammar.html" id="nav-grammar-lnk">الجرامر</a></li>
+                <li><a href="download.html" id="nav-download-lnk">تحميل</a></li>
             </ul>
             <div class="nav-right">
                 <div class="theme-toggle">
                     <button class="theme-btn active" onclick="setTheme('light')"><i class="fas fa-sun"></i></button>
                     <button class="theme-btn" onclick="setTheme('dark')"><i class="fas fa-moon"></i></button>
                 </div>
+                <button class="settings-btn" onclick="openSettings()"><i class="fas fa-cog"></i></button>
             </div>
         </div>
     </nav>
@@ -196,10 +310,10 @@
 
         <!-- PAGE HEADER -->
         <div class="page-header">
-            <h1>تصاريف الأفعال</h1>
+            <h1 id="page-title-el">تصاريف الأفعال</h1>
             <div class="header-actions">
                 <div class="quick-stats">
-                    <div class="quick-stat"><i class="fas fa-language"></i><span><span class="qs-val" id="totalCount">0</span> فعل</span></div>
+                    <div class="quick-stat"><i class="fas fa-language"></i><span><span class="qs-val" id="totalCount">0</span> <span id="lbl-total-el">فعل</span></span></div>
                     <div class="quick-stat"><i class="fas fa-check-circle"></i><span><span class="qs-val" id="learnedCount">0</span> مكتملة</span></div>
                     <div class="quick-stat"><i class="fas fa-bookmark"></i><span><span class="qs-val" id="savedCount">0</span> محفوظة</span></div>
                 </div>
@@ -208,11 +322,11 @@
 
         <!-- DAILY VERB -->
         <div class="daily-banner" id="dailyBanner">
-            <span class="daily-tag">فعل اليوم</span>
+            <span class="daily-tag" id="daily-tag-el">فعل اليوم</span>
             <span class="daily-v1" id="dailyV1">—</span>
             <span class="daily-ar" id="dailyAr"></span>
-            <button class="daily-verb-btn" onclick="playVerb(dailyVerb.v1)"><i class="fas fa-volume-up"></i> استمع</button>
-            <button class="daily-verb-btn" onclick="learnDailyVerb()"><i class="fas fa-check"></i> تعلمتها</button>
+            <button class="daily-verb-btn" id="daily-listen-btn" onclick="playVerb(dailyVerb.v1)"><i class="fas fa-volume-up"></i> استمع</button>
+            <button class="daily-verb-btn" id="daily-learned-btn" onclick="learnDailyVerb()"><i class="fas fa-check"></i> تعلمتها</button>
         </div>
 
         <!-- SEARCH -->
@@ -225,20 +339,20 @@
         <div class="filters-container">
             <div class="filter-row">
                 <div class="filter-group">
-                    <span class="filter-label">النوع:</span>
+                    <span class="filter-label" id="lbl-type-el">النوع:</span>
                     <div class="filter-tabs">
-                        <button class="filter-tab active" onclick="setFilter('all',this)">الكل</button>
-                        <button class="filter-tab" onclick="setFilter('irregular',this)">⚡ شاذة</button>
-                        <button class="filter-tab" onclick="setFilter('regular',this)">✅ منتظمة</button>
+                        <button class="filter-tab active" id="ft-all-el" onclick="setFilter('all',this)">الكل</button>
+                        <button class="filter-tab" id="ft-irr-el" onclick="setFilter('irregular',this)">⚡ شاذة</button>
+                        <button class="filter-tab" id="ft-reg-el" onclick="setFilter('regular',this)">✅ منتظمة</button>
                     </div>
                 </div>
                 <div class="action-btns-row">
                     <button class="saved-btn" onclick="showSaved()">
-                        <i class="fas fa-bookmark"></i> المحفوظات
+                        <i class="fas fa-bookmark"></i> <span id="saved-list-btn-txt">المحفوظات</span>
                         <span class="saved-badge" id="savedBadge">0</span>
                     </button>
                     <button class="saved-btn green" onclick="showLearned()">
-                        <i class="fas fa-check-circle"></i> المكتملة
+                        <i class="fas fa-check-circle"></i> <span id="learned-list-btn-txt">المكتملة</span>
                         <span class="saved-badge" id="learnedBadge">0</span>
                     </button>
                 </div>
@@ -251,9 +365,9 @@
         <!-- PAGINATION -->
         <div class="pagination-container" id="paginationContainer">
             <div class="pagination-controls">
-                <button class="page-btn" onclick="changePage('prev')" id="prevBtn" disabled><i class="fas fa-chevron-right"></i> السابق</button>
+                <button class="page-btn" onclick="changePage('prev')" id="prevBtn" disabled><span id="prev-btn-txt"><i class="fas fa-chevron-right"></i> السابق</span></button>
                 <div class="page-numbers" id="pageNumbers"></div>
-                <button class="page-btn" onclick="changePage('next')" id="nextBtn">التالي <i class="fas fa-chevron-left"></i></button>
+                <button class="page-btn" onclick="changePage('next')" id="nextBtn"><span id="next-btn-txt">التالي <i class="fas fa-chevron-left"></i></span></button>
             </div>
             <div class="page-info" id="pageInfo"></div>
         </div>
@@ -267,6 +381,180 @@
 
     <script src="verbs-data.js"></script>
     <script>
+
+        // ===== SETTINGS =====
+        let currentLang = localStorage.getItem('cl-lang') || 'ar';
+
+        const i18n = {
+            ar: {
+                'page-title': 'تصاريف الأفعال',
+                'search-placeholder': 'ابحث عن فعل...',
+                'daily-tag': 'فعل اليوم',
+                'btn-listen': 'استمع', 'btn-listen-slow': 'بطيء',
+                'btn-save': 'حفظ', 'btn-saved': 'محفوظة',
+                'btn-learn': 'تعلمتها', 'btn-learned': 'مكتملة',
+                'lbl-total': 'فعل', 'lbl-learned': 'مكتملة', 'lbl-saved': 'محفوظة',
+                'filter-all': 'الكل', 'filter-irregular': '⚡ شاذة', 'filter-regular': '✅ منتظمة',
+                'btn-saved-list': 'المحفوظات', 'btn-learned-list': 'المكتملة',
+                'btn-prev': 'السابق', 'btn-next': 'التالي',
+                'lbl-type': 'النوع:',
+                'daily-listen': 'استمع', 'daily-learned': 'تعلمتها',
+                'empty-saved-h': 'لا توجد أفعال محفوظة', 'empty-saved-p': 'اضغط حفظ على أي فعل',
+                'empty-learned-h': 'لم تكمل أي فعل بعد', 'empty-learned-p': 'اضغط تعلمتها لتتبع تقدمك',
+                'no-results': 'لا توجد أفعال مطابقة', 'btn-back': 'رجوع',
+                'form-v1': 'V1 — مضارع', 'form-v2': 'V2 — ماضي', 'form-v3': 'V3 — تصريف ثالث',
+                'irregular-lbl': '⚡ شاذ', 'learned-lbl': '✓ تعلمتها',
+                'nav-home':'الرئيسية','nav-lessons':'الكلمات','nav-stories':'القصص',
+                'nav-tenses':'الأزمنة','nav-quiz':'الاختبارات','nav-verbs':'الأفعال',
+                'nav-grammar':'الجرامر','nav-download':'تحميل',
+                'settings-title':'الإعدادات','s-appearance':'المظهر','s-light':'فاتح','s-dark':'داكن',
+                's-lang':'اللغة','s-notif':'الإشعارات','s-notif-status':'حالة الإشعارات',
+                'notif-granted':'مفعّلة ✓','notif-denied':'محظورة','notif-default':'غير محددة','notif-btn':'تفعيل الإشعارات',
+                'toast-saved':'تم حفظ الفعل ✓','toast-unsaved':'تم إلغاء الحفظ',
+                'toast-learned':'أضيف للمكتملة! 🎉','toast-unlearned':'تم إلغاء التعلم',
+                'toast-daily':'تعلمت فعل اليوم! 🎉',
+            },
+            en: {
+                'page-title': 'Verb Conjugations',
+                'search-placeholder': 'Search for a verb...',
+                'daily-tag': 'Verb of the Day',
+                'btn-listen': 'Listen', 'btn-listen-slow': 'Slow',
+                'btn-save': 'Save', 'btn-saved': 'Saved',
+                'btn-learn': 'Learned', 'btn-learned': 'Done',
+                'lbl-total': 'Verbs', 'lbl-learned': 'Completed', 'lbl-saved': 'Saved',
+                'filter-all': 'All', 'filter-irregular': '⚡ Irregular', 'filter-regular': '✅ Regular',
+                'btn-saved-list': 'Saved', 'btn-learned-list': 'Completed',
+                'btn-prev': 'Prev', 'btn-next': 'Next',
+                'lbl-type': 'Type:',
+                'daily-listen': 'Listen', 'daily-learned': 'Learned It',
+                'empty-saved-h': 'No saved verbs', 'empty-saved-p': 'Press "Save" on any verb',
+                'empty-learned-h': 'No completed verbs yet', 'empty-learned-p': 'Press "Learned" to track progress',
+                'no-results': 'No matching verbs found', 'btn-back': 'Back',
+                'form-v1': 'V1 — Present', 'form-v2': 'V2 — Past', 'form-v3': 'V3 — Participle',
+                'irregular-lbl': '⚡ Irregular', 'learned-lbl': '✓ Learned',
+                'nav-home':'Home','nav-lessons':'Words','nav-stories':'Stories',
+                'nav-tenses':'Tenses','nav-quiz':'Quiz','nav-verbs':'Verbs',
+                'nav-grammar':'Grammar','nav-download':'Download',
+                'settings-title':'Settings','s-appearance':'Appearance','s-light':'Light','s-dark':'Dark',
+                's-lang':'Language','s-notif':'Notifications','s-notif-status':'Notification Status',
+                'notif-granted':'Enabled ✓','notif-denied':'Blocked','notif-default':'Not Set','notif-btn':'Enable Notifications',
+                'toast-saved':'Verb saved ✓','toast-unsaved':'Removed from saved',
+                'toast-learned':'Added to completed! 🎉','toast-unlearned':'Removed from completed',
+                'toast-daily':'You learned today\'s verb! 🎉',
+            }
+        };
+
+        function t(key) { return i18n[currentLang]?.[key] || i18n['ar']?.[key] || key; }
+
+        function applyTranslations() {
+            const lang = currentLang;
+            // dir + lang
+            document.documentElement.lang = lang;
+            document.documentElement.dir  = lang === 'ar' ? 'rtl' : 'ltr';
+            // static elements by id
+            const map = {
+                'page-title-el':      t('page-title'),
+                'daily-tag-el':       t('daily-tag'),
+                'daily-listen-btn':   `<i class="fas fa-volume-up"></i> ${t('daily-listen')}`,
+                'daily-learned-btn':  `<i class="fas fa-check"></i> ${t('daily-learned')}`,
+                'lbl-total-el':       t('lbl-total'),
+                'lbl-learned-el':     t('lbl-learned'),
+                'lbl-saved-el':       t('lbl-saved'),
+                'lbl-type-el':        t('lbl-type'),
+                'ft-all-el':          t('filter-all'),
+                'ft-irr-el':          t('filter-irregular'),
+                'ft-reg-el':          t('filter-regular'),
+                'saved-list-btn-txt': t('btn-saved-list'),
+                'learned-list-btn-txt': t('btn-learned-list'),
+                'prev-btn-txt':       `<i class="fas fa-chevron-right"></i> ${t('btn-prev')}`,
+                'next-btn-txt':       `${t('btn-next')} <i class="fas fa-chevron-left"></i>`,
+                'settings-header-title-el': t('settings-title'),
+                's-appearance-el':    t('s-appearance'),
+                's-light-el':         t('s-light'),
+                's-dark-el':          t('s-dark'),
+                's-lang-el':          t('s-lang'),
+                's-notif-el':         t('s-notif'),
+                's-notif-status-el':  t('s-notif-status'),
+            };
+            Object.entries(map).forEach(([id, val]) => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = val;
+            });
+            // search placeholder
+            const si = document.getElementById('searchInput');
+            if (si) si.placeholder = t('search-placeholder');
+            // nav links
+            const navMap = {
+                'nav-home-lnk': t('nav-home'), 'nav-lessons-lnk': t('nav-lessons'),
+                'nav-stories-lnk': t('nav-stories'), 'nav-tenses-lnk': t('nav-tenses'),
+                'nav-quiz-lnk': t('nav-quiz'), 'nav-verbs-lnk': t('nav-verbs'),
+                'nav-grammar-lnk': t('nav-grammar'), 'nav-download-lnk': t('nav-download'),
+            };
+            Object.entries(navMap).forEach(([id, val]) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = val;
+            });
+            // lang buttons
+            document.getElementById('lang-ar')?.classList.toggle('active', lang === 'ar');
+            document.getElementById('lang-en')?.classList.toggle('active', lang === 'en');
+            // update daily arabic
+            const dailyArEl = document.getElementById('dailyAr'); if(dailyArEl && dailyVerb) dailyArEl.textContent = lang==='en' ? '' : dailyVerb.ar;
+            // re-render cards with new labels
+            renderPage();
+            refreshNotifBadge();
+        }
+
+        function openSettings() {
+            document.getElementById('settingsOverlay').classList.add('show');
+            document.getElementById('settingsPanel').classList.add('show');
+            refreshNotifBadge();
+        }
+        function closeSettings() {
+            document.getElementById('settingsOverlay').classList.remove('show');
+            document.getElementById('settingsPanel').classList.remove('show');
+        }
+        function refreshNotifBadge() {
+            const perm  = Notification.permission;
+            const badge = document.getElementById('notifBadge');
+            const btn   = document.getElementById('notifActionBtn');
+            const txt   = document.getElementById('notifBtnText');
+            badge.className   = 'notif-badge ' + perm;
+            badge.textContent = perm==='granted' ? t('notif-granted') : perm==='denied' ? t('notif-denied') : t('notif-default');
+            if (perm === 'granted') { btn.disabled=true; txt.textContent=t('notif-granted'); }
+            else if (perm === 'denied') { btn.disabled=true; txt.textContent=t('notif-denied'); }
+            else { btn.disabled=false; txt.textContent=t('notif-btn'); }
+        }
+        async function requestNotif() {
+            const result = await Notification.requestPermission();
+            refreshNotifBadge();
+            if (result === 'granted') {
+                navigator.serviceWorker.ready.then(reg => {
+                    reg.showNotification('CineLingua 🎓', {
+                        body: currentLang==='ar' ? 'تم تفعيل الإشعارات! 🔔' : 'Notifications enabled! 🔔',
+                        icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png', vibrate:[200,100,200]
+                    });
+                });
+            }
+        }
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('cl-lang', lang);
+            applyTranslations();
+        }
+        function applyLangInit() { applyTranslations(); }
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            document.querySelectorAll('.theme-btn').forEach(b => {
+                b.classList.toggle('active',
+                    (theme==='light' && b.innerHTML.includes('sun')) ||
+                    (theme==='dark'  && b.innerHTML.includes('moon'))
+                );
+            });
+            document.getElementById('btn-light')?.classList.toggle('active', theme==='light');
+            document.getElementById('btn-dark')?.classList.toggle('active',  theme==='dark');
+        }
+
         // STATE
         let savedVerbs   = JSON.parse(localStorage.getItem('savedVerbs'))   || [];
         let learnedVerbs = JSON.parse(localStorage.getItem('learnedVerbs')) || [];
@@ -301,12 +589,12 @@
         function setDailyVerb() {
             dailyVerb = VERBS_DATA[Math.floor(Date.now()/86400000) % VERBS_DATA.length];
             document.getElementById('dailyV1').textContent = dailyVerb.v1;
-            document.getElementById('dailyAr').textContent = dailyVerb.ar;
+            const dailyArEl = document.getElementById('dailyAr'); if(dailyArEl){ dailyArEl.textContent = currentLang==='en' ? '' : dailyVerb.ar; }
         }
 
         function learnDailyVerb() {
             markLearned(dailyVerb.id);
-            showToast('تعلمت فعل اليوم! 🎉', 'success');
+            showToast(t('toast-daily'), 'success');
         }
 
         // FILTER
@@ -334,8 +622,10 @@
 
         function renderPage() {
             const grid = document.getElementById('verbsGrid');
+            const isEN = currentLang === 'en';
+
             if (!displayData.length) {
-                grid.innerHTML = `<div class="no-results"><i class="fas fa-search" style="font-size:2rem;margin-bottom:0.5rem;display:block;"></i>لا توجد أفعال مطابقة</div>`;
+                grid.innerHTML = `<div class="no-results"><i class="fas fa-search" style="font-size:2rem;margin-bottom:0.5rem;display:block;"></i>${t('no-results')}</div>`;
                 document.getElementById('paginationContainer').style.display = 'none';
                 return;
             }
@@ -347,48 +637,51 @@
             grid.innerHTML = page.map(v => {
                 const isSaved   = savedVerbs.includes(v.id);
                 const isLearned = learnedVerbs.includes(v.id);
-                const ew = (v.v1||'').replace(/'/g,"\\'");
+                const ew = (v.v1||'').replace(/'/g, "\\'");
                 const isIrr = v.type === 'irregular';
                 return `<div class="verb-card ${isSaved?'saved':''} ${isLearned?'learned':''}">
-                    ${isIrr ? '<span class="irregular-ribbon">⚡ شاذ</span>' : ''}
-                    <span class="learned-ribbon">✓ تعلمتها</span>
+                    ${isIrr ? `<span class="irregular-ribbon">${t('irregular-lbl')}</span>` : ''}
+                    <span class="learned-ribbon">${t('learned-lbl')}</span>
                     <div class="verb-header">
                         <span class="verb-v1">${v.v1}</span>
-                        <span class="verb-arabic">${v.ar}</span>
+                        ${!isEN ? `<span class="verb-arabic">${v.ar}</span>` : ''}
                     </div>
                     <div class="verb-forms">
                         <div class="verb-form-chip form-v1">
-                            <span class="form-label">V1 — مضارع</span>
+                            <span class="form-label">${t('form-v1')}</span>
                             <span class="form-value">${v.v1}</span>
                         </div>
                         <div class="verb-form-chip form-v2">
-                            <span class="form-label">V2 — ماضي</span>
+                            <span class="form-label">${t('form-v2')}</span>
                             <span class="form-value">${v.v2}</span>
                         </div>
                         <div class="verb-form-chip form-v3">
-                            <span class="form-label">V3 — تصريف ثالث</span>
+                            <span class="form-label">${t('form-v3')}</span>
                             <span class="form-value">${v.v3}</span>
                         </div>
                     </div>
                     <div class="verb-example">
                         <div class="en">"${v.ex}"</div>
-                        <div class="ar-ex">${v.exAr}</div>
+                        ${!isEN ? `<div class="ar-ex">${v.exAr}</div>` : ''}
                     </div>
                     <div class="verb-actions">
-                        <button class="action-btn listen" onclick="playVerb('${ew}')"><i class="fas fa-volume-up"></i> استمع</button>
-                        <button class="action-btn listen-slow" onclick="playVerb('${ew}',0.5)"><i class="fas fa-ear-listen"></i> بطيء</button>
+                        <button class="action-btn listen" onclick="playVerb('${ew}')"><i class="fas fa-volume-up"></i> ${t('btn-listen')}</button>
+                        <button class="action-btn listen-slow" onclick="playVerb('${ew}',0.5)"><i class="fas fa-ear-listen"></i> ${t('btn-listen-slow')}</button>
                         <button class="action-btn save-btn ${isSaved?'saved':''}" onclick="toggleSave(${v.id})">
-                            <i class="fas fa-bookmark"></i> ${isSaved?'محفوظة':'حفظ'}
+                            <i class="fas fa-bookmark"></i> ${isSaved?t('btn-saved'):t('btn-save')}
                         </button>
                         <button class="action-btn learn-btn ${isLearned?'learned':''}" onclick="markLearned(${v.id})">
                             <i class="fas fa-${isLearned?'check-circle':'graduation-cap'}"></i>
-                            ${isLearned?'مكتملة':'تعلمتها'}
+                            ${isLearned?t('btn-learned'):t('btn-learn')}
                         </button>
                     </div>
                 </div>`;
             }).join('');
 
-            document.getElementById('pageInfo').textContent = `عرض ${start+1}–${end} من ${displayData.length} فعل`;
+            const total = displayData.length;
+            document.getElementById('pageInfo').textContent = isEN
+                ? `Showing ${start+1}–${end} of ${total} verbs`
+                : `عرض ${start+1}–${end} من ${total} فعل`;
             updateCounts();
         }
 
@@ -414,7 +707,7 @@
             const was = savedVerbs.includes(id);
             savedVerbs = was ? savedVerbs.filter(x=>x!==id) : [...savedVerbs,id];
             localStorage.setItem('savedVerbs', JSON.stringify(savedVerbs));
-            showToast(was?'تم إلغاء الحفظ':'تم حفظ الفعل ✓', was?'warning':'success');
+            showToast(was?t('toast-unsaved'):t('toast-saved'), was?'warning':'success');
             viewingSaved ? showSaved() : renderPage();
         }
 
@@ -422,7 +715,7 @@
             const was = learnedVerbs.includes(id);
             learnedVerbs = was ? learnedVerbs.filter(x=>x!==id) : [...learnedVerbs,id];
             localStorage.setItem('learnedVerbs', JSON.stringify(learnedVerbs));
-            showToast(was?'تم إلغاء التعلم':'أضيف للمكتملة! 🎉', was?'info':'success');
+            showToast(was?t('toast-unlearned'):t('toast-learned'), was?'info':'success');
             viewingLearned ? showLearned() : renderPage();
         }
 
@@ -470,14 +763,6 @@
             setTimeout(()=>{el.style.animation='toastIn 0.3s ease reverse';setTimeout(()=>el.remove(),300);},2200);
         }
 
-        // THEME
-        function setTheme(t) {
-            document.documentElement.setAttribute('data-theme',t);
-            localStorage.setItem('theme',t);
-            document.querySelectorAll('.theme-btn').forEach(b=>{
-                b.classList.toggle('active',(t==='light'&&b.innerHTML.includes('sun'))||(t==='dark'&&b.innerHTML.includes('moon')));
-            });
-        }
         setTheme(localStorage.getItem('theme')||'light');
 
         // INIT
@@ -492,6 +777,7 @@
 
         setDailyVerb();
         applyFilters();
+        applyLangInit();
     </script>
 
     <!-- Firebase -->
