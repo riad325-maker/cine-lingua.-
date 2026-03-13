@@ -12,11 +12,9 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-const CACHE_VERSION = '1.3.0';
+const CACHE_VERSION = '1.3.1';
 const CACHE_NAME    = `cinelingua-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `cinelingua-dynamic-${CACHE_VERSION}`;
-
-// ✅ المسار الصحيح لـ GitHub Pages
 const BASE = '/cine-lingua.-';
 
 const STATIC_ASSETS = [
@@ -45,9 +43,11 @@ const STATIC_ASSETS = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
 ];
 
-// ===== FIREBASE BACKGROUND MESSAGING =====
+// ===== FCM BACKGROUND MESSAGES ONLY =====
+// الإشعارات تأتي فقط من GitHub Actions عبر FCM
 messaging.onBackgroundMessage(payload => {
-    const { title, body, image } = payload.notification;
+    const { title, body, image } = payload.notification || {};
+    if (!title) return;
     self.registration.showNotification(title, {
         body,
         icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
@@ -55,7 +55,7 @@ messaging.onBackgroundMessage(payload => {
         image: image || 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
         dir: 'rtl', lang: 'ar',
         vibrate: [200, 100, 200, 100, 200],
-        tag: 'cinelingua-notif',
+        tag: 'cinelingua-fcm',
         renotify: true,
         actions: [
             { action: 'open',  title: '📚 تعلم الآن' },
@@ -81,17 +81,15 @@ self.addEventListener('notificationclick', event => {
 
 // ===== INSTALL =====
 self.addEventListener('install', event => {
-    console.log(`✅ SW ${CACHE_VERSION} installing...`);
     self.skipWaiting();
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            console.log('📦 Caching all assets...');
-            return Promise.allSettled(
+        caches.open(CACHE_NAME).then(cache =>
+            Promise.allSettled(
                 STATIC_ASSETS.map(url =>
                     cache.add(url).catch(err => console.warn('⚠️ Failed:', url, err))
                 )
-            );
-        })
+            )
+        )
     );
 });
 
@@ -100,25 +98,13 @@ self.addEventListener('activate', event => {
     event.waitUntil(
         (async () => {
             await self.clients.claim();
-
             const keys = await caches.keys();
-            const old  = keys.filter(k =>
+            const old = keys.filter(k =>
                 k.startsWith('cinelingua-') && k !== CACHE_NAME && k !== DYNAMIC_CACHE
             );
             if (old.length) await Promise.all(old.map(k => caches.delete(k)));
-
-            console.log(`✅ SW ${CACHE_VERSION} activated!`);
-
             const allClients = await self.clients.matchAll({ includeUncontrolled: true });
             allClients.forEach(c => c.postMessage({ type: 'NEW_VERSION', version: CACHE_VERSION }));
-
-            if ('periodicSync' in self.registration) {
-                try {
-                    await self.registration.periodicSync.register('cinelingua-sync', {
-                        minInterval: 60 * 60 * 1000
-                    });
-                } catch (e) {}
-            }
         })()
     );
 });
@@ -126,17 +112,14 @@ self.addEventListener('activate', event => {
 // ===== FETCH =====
 self.addEventListener('fetch', event => {
     if (event.request.method !== 'GET') return;
-
     const url = event.request.url;
 
-    // HTML — Network First
     if (event.request.mode === 'navigate' || url.endsWith('.html')) {
         event.respondWith(
             fetch(event.request)
                 .then(res => {
-                    if (res && res.status === 200) {
+                    if (res && res.status === 200)
                         caches.open(CACHE_NAME).then(c => c.put(event.request, res.clone()));
-                    }
                     return res;
                 })
                 .catch(async () => {
@@ -147,7 +130,6 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // JS/CSS/Images — Cache First
     event.respondWith(
         caches.match(event.request).then(cached => {
             if (cached) {
@@ -155,9 +137,8 @@ self.addEventListener('fetch', event => {
                 return cached;
             }
             return fetch(event.request).then(res => {
-                if (res && res.status === 200) {
+                if (res && res.status === 200)
                     caches.open(DYNAMIC_CACHE).then(c => c.put(event.request, res.clone()));
-                }
                 return res;
             }).catch(() => {
                 if (url.endsWith('.html')) return caches.match(BASE + '/offline.html');
@@ -169,51 +150,9 @@ self.addEventListener('fetch', event => {
 
 function refreshInBackground(request) {
     fetch(request).then(res => {
-        if (res && res.status === 200) {
+        if (res && res.status === 200)
             caches.open(DYNAMIC_CACHE).then(c => c.put(request, res));
-        }
     }).catch(() => {});
-}
-
-// ===== PERIODIC SYNC =====
-self.addEventListener('periodicsync', event => {
-    if (event.tag === 'cinelingua-sync') {
-        event.waitUntil(checkForUpdates());
-    }
-});
-
-async function checkForUpdates() {
-    try {
-        const res = await fetch(BASE + '/notifications.json?t=' + Date.now(), { cache: 'no-store' });
-        if (!res || res.status !== 200) return;
-        const data = await res.clone().json();
-
-        if (data.update?.enabled) {
-            self.registration.showNotification(data.update.title || '📚 تحديث جديد!', {
-                body: data.update.body || 'تمت إضافة محتوى جديد',
-                icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
-                tag: 'content-update',
-                actions: [
-                    { action: 'refresh', title: '🔄 تحديث الآن' },
-                    { action: 'later',   title: '⏰ لاحقاً' }
-                ]
-            });
-        }
-
-        const cache = await caches.open(CACHE_NAME);
-        await Promise.allSettled(
-            STATIC_ASSETS
-                .filter(u => !u.startsWith('https://fonts') && !u.startsWith('https://cdnjs'))
-                .map(url =>
-                    fetch(url, { cache: 'no-store' })
-                        .then(r => { if (r && r.status === 200) cache.put(url, r); })
-                        .catch(() => {})
-                )
-        );
-        console.log('✅ Cache refreshed');
-    } catch (e) {
-        console.log('Update check failed:', e);
-    }
 }
 
 // ===== MESSAGE =====
