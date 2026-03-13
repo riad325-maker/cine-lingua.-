@@ -2,10 +2,11 @@ name: Send Scheduled Notifications
 
 on:
   schedule:
-    - cron: '0 6 * * *'
-    - cron: '0 11 * * *'
-    - cron: '0 16 * * *'
-    - cron: '0 19 * * *'
+    - cron: '0 6 * * *'    # 8 صباح مصر
+    - cron: '0 11 * * *'   # 1 ظهر مصر
+    - cron: '0 15 * * *'   # 5 مساء مصر
+    - cron: '0 19 * * *'   # 9 مساء مصر
+    - cron: '0 23 * * *'   # 1 صباح مصر
   workflow_dispatch:
 
 jobs:
