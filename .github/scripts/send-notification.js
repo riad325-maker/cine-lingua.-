@@ -82,6 +82,8 @@ async function sendToTokens(tokens, title, body, image) {
                 icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
                 badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
                 image: image || 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                tag: `cinelingua-${hour}`,
+                renotify: true,
                 dir: 'rtl',
                 vibrate: [200, 100, 200],
                 actions: [
