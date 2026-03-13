@@ -13,31 +13,23 @@ try {
     const raw = process.env.FIREBASE_SERVICE_ACCOUNT.trim().replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
     const decoded = Buffer.from(raw, 'base64').toString('utf8');
     serviceAccount = JSON.parse(decoded);
-    if (serviceAccount.private_key) {
+    if (serviceAccount.private_key)
         serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
-    }
-    console.log('✅ Service account parsed');
-    console.log('Project ID:', serviceAccount.project_id);
+    console.log('✅ Service account parsed, project:', serviceAccount.project_id);
 } catch(e) {
     console.error('❌ Parse error:', e.message);
     process.exit(1);
 }
 
-// قراءة ملف الإشعارات
 let notifications;
 try {
-    if (!fs.existsSync('notifications.json')) {
-        console.error('❌ notifications.json not found!');
-        process.exit(1);
-    }
     notifications = JSON.parse(fs.readFileSync('notifications.json', 'utf8'));
     console.log('✅ notifications.json loaded');
 } catch(e) {
-    console.error('❌ Failed to read notifications.json:', e.message);
+    console.error('❌ notifications.json error:', e.message);
     process.exit(1);
 }
 
-// تهيئة Firebase
 try {
     admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
     console.log('✅ Firebase initialized');
@@ -46,32 +38,34 @@ try {
     process.exit(1);
 }
 
-// ✅ الوقت بتوقيت مصر UTC+2
+// ✅ توقيت مصر (UTC+2) — يتكيف مع التوقيت الصيفي تلقائياً
 const now = new Date();
-const egyptOffset = 2; // UTC+2
-const egyptTime = new Date(now.getTime() + egyptOffset * 60 * 60 * 1000);
-const hour = egyptTime.getUTCHours();
-const minute = egyptTime.getUTCMinutes();
-console.log(`⏰ UTC time: ${now.getUTCHours()}:${now.getUTCMinutes()}`);
-console.log(`🇪🇬 Egypt time: ${hour}:${minute}`);
+const egyptTime = new Date(now.toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
+const hour   = egyptTime.getHours();
+const minute = egyptTime.getMinutes();
+console.log(`⏰ UTC: ${now.getUTCHours()}:${String(now.getUTCMinutes()).padStart(2,'0')}`);
+console.log(`🇪🇬 Egypt: ${hour}:${String(minute).padStart(2,'0')}`);
 
 async function getAllTokens() {
     try {
         const db = admin.firestore();
         const snapshot = await db.collection('fcmTokens').get();
         const tokens = snapshot.docs.map(doc => doc.data().token).filter(Boolean);
-        console.log(`📱 Found ${tokens.length} tokens`);
-        return tokens;
+        // إزالة التكرار
+        const unique = [...new Set(tokens)];
+        console.log(`📱 ${snapshot.docs.length} tokens → ${unique.length} unique`);
+        return unique;
     } catch(e) {
         console.error('❌ Error fetching tokens:', e.message);
         return [];
     }
 }
 
-async function sendToTokens(tokens, title, body, image) {
+async function sendToTokens(tokens, title, body, image, hour) {
     if (!tokens.length) { console.log('⚠️ No tokens'); return; }
+    console.log(`📤 Sending "${title}" to ${tokens.length} device(s)`);
 
-    console.log(`📤 Sending to ${tokens.length} device(s): "${title}"`);
+    const tag = `cinelingua-${hour}`;
 
     const messages = tokens.map(token => ({
         token,
@@ -79,20 +73,22 @@ async function sendToTokens(tokens, title, body, image) {
         webpush: {
             notification: {
                 title, body,
-                icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                icon:  'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
                 badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
                 image: image || 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
-                tag: `cinelingua-${hour}`,
-                renotify: true,
+                tag,         // ✅ نفس الـ tag = لا تكرار
+                renotify: false,
                 dir: 'rtl',
                 vibrate: [200, 100, 200],
                 actions: [
-                    { action: 'open', title: '📚 تعلم الآن' },
+                    { action: 'open',  title: '📚 تعلم الآن' },
                     { action: 'close', title: 'لاحقاً' }
                 ]
             },
             fcm_options: { link: 'https://riad325r-maker.github.io/cine-lingua.-/' }
-        }
+        },
+        // نرسل الـ hour كـ data للـ SW يستخدمه في الـ tag
+        data: { hour: String(hour) }
     }));
 
     const batchSize = 500;
@@ -102,15 +98,21 @@ async function sendToTokens(tokens, title, body, image) {
         const batch = messages.slice(i, i + batchSize);
         try {
             const res = await admin.messaging().sendEach(batch);
-            totalSent += res.successCount;
+            totalSent   += res.successCount;
             totalFailed += res.failureCount;
             console.log(`✅ Batch: ${res.successCount} ok, ${res.failureCount} failed`);
 
+            // احذف التوكنات الفاشلة
             for (let j = 0; j < res.responses.length; j++) {
                 if (!res.responses[j].success) {
-                    try {
-                        await admin.firestore().collection('fcmTokens').doc(batch[j].token).delete();
-                    } catch(e) {}
+                    const errCode = res.responses[j].error?.code;
+                    if (['messaging/invalid-registration-token',
+                         'messaging/registration-token-not-registered'].includes(errCode)) {
+                        try {
+                            await admin.firestore().collection('fcmTokens').doc(batch[j].token).delete();
+                            console.log('🗑️ Deleted invalid token');
+                        } catch(e) {}
+                    }
                 }
             }
         } catch(e) {
@@ -123,31 +125,33 @@ async function sendToTokens(tokens, title, body, image) {
 async function main() {
     const tokens = await getAllTokens();
 
-    // إشعار تحديث
+    // إشعار تحديث — أولوية قصوى
     if (notifications.update?.enabled) {
         console.log('📢 Sending update notification...');
-        await sendToTokens(tokens, notifications.update.title, notifications.update.body, notifications.update.image);
+        await sendToTokens(tokens,
+            notifications.update.title,
+            notifications.update.body,
+            notifications.update.image,
+            'update'
+        );
         return;
     }
 
-    // إشعارات مجدولة
+    // ✅ إشعارات مجدولة — يطابق الساعة فقط
     let sent = false;
     for (const reminder of (notifications.reminders || [])) {
         if (!reminder.enabled) continue;
-        if (reminder.hour === hour && (reminder.minute || 0) === minute) {
-            console.log(`📢 Sending: ${reminder.title}`);
-            await sendToTokens(tokens, reminder.title, reminder.body, reminder.image);
+        if (reminder.hour === hour) {
+            console.log(`📢 Matched hour ${hour} → "${reminder.title}"`);
+            await sendToTokens(tokens, reminder.title, reminder.body, reminder.image, hour);
             sent = true;
+            break; // أرسل واحد فقط لكل وقت
         }
     }
 
     if (!sent) {
-        console.log(`ℹ️ No reminders match Egypt time ${hour}:${minute}`);
-        if (process.env.FORCE_SEND === 'true') {
-            console.log('🧪 FORCE_SEND — sending first reminder...');
-            const first = notifications.reminders?.find(r => r.enabled);
-            if (first) await sendToTokens(tokens, first.title, first.body, first.image);
-        }
+        console.log(`ℹ️ No reminder matches Egypt hour ${hour} — skipping.`);
+        // ❌ حذفنا FORCE_SEND تماماً — لا إرسال إذا ما طابق
     }
 
     console.log('✅ Done');
