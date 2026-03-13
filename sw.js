@@ -12,7 +12,7 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-const CACHE_VERSION = '1.3.1';
+const CACHE_VERSION = '1.3.2';
 const CACHE_NAME    = `cinelingua-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `cinelingua-dynamic-${CACHE_VERSION}`;
 const BASE = '/cine-lingua.-';
@@ -27,10 +27,6 @@ const STATIC_ASSETS = [
     BASE + '/download.html',
     BASE + '/offline.html',
     BASE + '/manifest.json',
-    BASE + '/style.css',
-    BASE + '/translation.js',
-    BASE + '/settings.js',
-    BASE + '/theme.js',
     BASE + '/notifications.json',
     BASE + '/beginner-data.js',
     BASE + '/intermediate-data.js',
@@ -38,29 +34,41 @@ const STATIC_ASSETS = [
     BASE + '/stories-data.js',
     BASE + '/tenses-data.js',
     BASE + '/words-data.js',
+    BASE + '/verbs-data.js',
+    BASE + '/grammar-data.js',
     'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
     'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
 ];
 
-// ===== FCM BACKGROUND MESSAGES ONLY =====
-// الإشعارات تأتي فقط من GitHub Actions عبر FCM
+// ===== FCM BACKGROUND =====
+// FCM يعرض الإشعار — نمنع التكرار بـ tag
 messaging.onBackgroundMessage(payload => {
+    console.log('[SW] Background message:', payload);
     const { title, body, image } = payload.notification || {};
     if (!title) return;
-    self.registration.showNotification(title, {
-        body,
-        icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
-        badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
-        image: image || 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
-        dir: 'rtl', lang: 'ar',
-        vibrate: [200, 100, 200, 100, 200],
-        tag: 'cinelingua-fcm',
-        renotify: true,
-        actions: [
-            { action: 'open',  title: '📚 تعلم الآن' },
-            { action: 'close', title: 'لاحقاً' }
-        ]
+
+    const tag = `cinelingua-${payload.data?.hour || 'msg'}`;
+
+    self.registration.getNotifications({ tag }).then(existing => {
+        if (existing.length > 0) {
+            console.log('[SW] Blocked duplicate:', tag);
+            return;
+        }
+        self.registration.showNotification(title, {
+            body,
+            icon:  'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+            badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+            image: image || 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+            dir: 'rtl', lang: 'ar',
+            vibrate: [200, 100, 200, 100, 200],
+            tag,
+            renotify: false,
+            actions: [
+                { action: 'open',  title: '📚 تعلم الآن' },
+                { action: 'close', title: 'لاحقاً' }
+            ]
+        });
     });
 });
 
@@ -86,7 +94,7 @@ self.addEventListener('install', event => {
         caches.open(CACHE_NAME).then(cache =>
             Promise.allSettled(
                 STATIC_ASSETS.map(url =>
-                    cache.add(url).catch(err => console.warn('⚠️ Failed:', url, err))
+                    cache.add(url).catch(err => console.warn('Failed:', url, err))
                 )
             )
         )
@@ -95,18 +103,14 @@ self.addEventListener('install', event => {
 
 // ===== ACTIVATE =====
 self.addEventListener('activate', event => {
-    event.waitUntil(
-        (async () => {
-            await self.clients.claim();
-            const keys = await caches.keys();
-            const old = keys.filter(k =>
-                k.startsWith('cinelingua-') && k !== CACHE_NAME && k !== DYNAMIC_CACHE
-            );
-            if (old.length) await Promise.all(old.map(k => caches.delete(k)));
-            const allClients = await self.clients.matchAll({ includeUncontrolled: true });
-            allClients.forEach(c => c.postMessage({ type: 'NEW_VERSION', version: CACHE_VERSION }));
-        })()
-    );
+    event.waitUntil((async () => {
+        await self.clients.claim();
+        const keys = await caches.keys();
+        const old = keys.filter(k => k.startsWith('cinelingua-') && k !== CACHE_NAME && k !== DYNAMIC_CACHE);
+        if (old.length) await Promise.all(old.map(k => caches.delete(k)));
+        const allClients = await self.clients.matchAll({ includeUncontrolled: true });
+        allClients.forEach(c => c.postMessage({ type: 'NEW_VERSION', version: CACHE_VERSION }));
+    })());
 });
 
 // ===== FETCH =====
@@ -132,10 +136,7 @@ self.addEventListener('fetch', event => {
 
     event.respondWith(
         caches.match(event.request).then(cached => {
-            if (cached) {
-                refreshInBackground(event.request);
-                return cached;
-            }
+            if (cached) { refreshInBackground(event.request); return cached; }
             return fetch(event.request).then(res => {
                 if (res && res.status === 200)
                     caches.open(DYNAMIC_CACHE).then(c => c.put(event.request, res.clone()));
@@ -158,7 +159,5 @@ function refreshInBackground(request) {
 // ===== MESSAGE =====
 self.addEventListener('message', event => {
     if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
-    if (event.data?.type === 'CHECK_VERSION') {
-        event.ports[0]?.postMessage({ version: CACHE_VERSION });
-    }
+    if (event.data?.type === 'CHECK_VERSION') event.ports[0]?.postMessage({ version: CACHE_VERSION });
 });
