@@ -46,10 +46,14 @@ try {
     process.exit(1);
 }
 
+// ✅ الوقت بتوقيت مصر UTC+2
 const now = new Date();
-const hour = now.getHours();
-const minute = now.getMinutes();
-console.log(`⏰ Server time: ${hour}:${minute}`);
+const egyptOffset = 2; // UTC+2
+const egyptTime = new Date(now.getTime() + egyptOffset * 60 * 60 * 1000);
+const hour = egyptTime.getUTCHours();
+const minute = egyptTime.getUTCMinutes();
+console.log(`⏰ UTC time: ${now.getUTCHours()}:${now.getUTCMinutes()}`);
+console.log(`🇪🇬 Egypt time: ${hour}:${minute}`);
 
 async function getAllTokens() {
     try {
@@ -100,7 +104,6 @@ async function sendToTokens(tokens, title, body, image) {
             totalFailed += res.failureCount;
             console.log(`✅ Batch: ${res.successCount} ok, ${res.failureCount} failed`);
 
-            // احذف التوكنات الفاشلة
             for (let j = 0; j < res.responses.length; j++) {
                 if (!res.responses[j].success) {
                     try {
@@ -137,9 +140,9 @@ async function main() {
     }
 
     if (!sent) {
-        console.log(`ℹ️ No reminders match ${hour}:${minute}`);
+        console.log(`ℹ️ No reminders match Egypt time ${hour}:${minute}`);
         if (process.env.FORCE_SEND === 'true') {
-            console.log('🧪 FORCE_SEND — sending test...');
+            console.log('🧪 FORCE_SEND — sending first reminder...');
             const first = notifications.reminders?.find(r => r.enabled);
             if (first) await sendToTokens(tokens, first.title, first.body, first.image);
         }
