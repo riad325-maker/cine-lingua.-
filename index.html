@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineLingua | تعلم الإنجليزية بذكاء</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CineLingua">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/J4xdc62M/20260305-233826.png">
+    <meta property="og:title" content="CineLingua | تعلم الإنجليزية بذكاء">
+    <meta property="og:description" content="منصة تعليمية متكاملة">
+    <meta property="og:image" content="https://i.postimg.cc/J4xdc62M/20260305-233826.png">
+    <meta property="og:url" content="https://riad325r-maker.github.io/cine-lingua.-/">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #6366f1; --secondary: #ec4899;
+            --border: #e2e8f0; --shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.12);
+            --bg-primary: #f8fafc; --bg-card: #ffffff; --bg-secondary: #f1f5f9;
+            --text-primary: #0f172a; --text-secondary: #64748b;
+        }
+        [data-theme="dark"] {
+            --border: #334155; --bg-primary: #0f172a; --bg-card: #1e293b;
+            --bg-secondary: #334155; --text-primary: #f8fafc; --text-secondary: #cbd5e1;
+        }
+        body { background-color: var(--bg-primary); color: var(--text-primary); font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.3s, color 0.3s; }
+
+        /* ===== INSTALL BANNER ===== */
+        .install-banner { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 400px; margin: 0 auto; background: var(--bg-card); border-radius: 1rem; padding: 1rem; box-shadow: var(--shadow-lg); border: 2px solid var(--primary); display: none; align-items: center; gap: 1rem; z-index: 2000; animation: slideUp 0.3s ease; direction: rtl; }
+        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .install-banner.show { display: flex; }
+        .install-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; background: white; padding: 4px; border: 2px solid var(--border); }
+        .install-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
+        .install-content { flex-grow: 1; }
+        .install-content h4 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--text-primary); }
+        .install-content p { font-size: 0.85rem; color: var(--text-secondary); }
+        .install-close { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; padding: 0.5rem; }
+        .install-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 0.5rem 1rem; border-radius: 2rem; font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap; margin-left: 0.5rem; font-family: inherit; }
+
+        /* ===== NOTIF ===== */
+        .notif-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9997; display: none; backdrop-filter: blur(2px); }
+        .notif-overlay.show { display: block; }
+        @keyframes popIn { from { transform: translate(-50%,-50%) scale(0.85); opacity:0; } to { transform: translate(-50%,-50%) scale(1); opacity:1; } }
+        .notif-prompt { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.9); background: var(--bg-card); border-radius: 1.75rem; padding: 2.25rem 2rem; z-index: 9998; display: none; flex-direction: column; align-items: center; text-align: center; gap: 1.25rem; width: calc(100% - 3rem); max-width: 320px; box-shadow: 0 25px 60px rgba(0,0,0,0.25); direction: rtl; }
+        .notif-prompt.show { display: flex; animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+        .notif-prompt-icon { font-size: 3.5rem; line-height: 1; }
+        .notif-prompt-title { font-size: 1.15rem; font-weight: 800; color: var(--text-primary); }
+        .notif-prompt-sub { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+        .notif-allow-btn { width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 0.9rem; border-radius: 2rem; font-weight: 700; cursor: pointer; font-size: 1rem; font-family: inherit; box-shadow: 0 4px 15px rgba(99,102,241,0.4); }
+        .notif-deny-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.85rem; font-family: inherit; }
+        .notif-blocked { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.9); background: var(--bg-card); border-radius: 1.75rem; padding: 2rem 1.75rem; z-index: 9998; display: none; flex-direction: column; align-items: center; text-align: center; gap: 1rem; width: calc(100% - 3rem); max-width: 320px; box-shadow: 0 25px 60px rgba(0,0,0,0.25); direction: rtl; }
+        .notif-blocked.show { display: flex; animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+        .notif-blocked-icon { font-size: 3rem; }
+        .notif-blocked-title { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); }
+        .notif-blocked-steps { background: var(--bg-secondary); border-radius: 1rem; padding: 1rem; text-align: right; width: 100%; font-size: 0.82rem; color: var(--text-secondary); line-height: 2; }
+        .notif-blocked-steps b { color: var(--text-primary); }
+        .notif-blocked-close { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 0.8rem; border-radius: 2rem; font-weight: 700; cursor: pointer; font-size: 0.9rem; font-family: inherit; width: 100%; }
+
+        /* ===== NAVBAR ===== */
+        .navbar { background: var(--bg-card); box-shadow: 0 1px 0 var(--border); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0.9rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.45rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
+        .nav-menu { display: flex; gap: 0.25rem; list-style: none; }
+        .nav-menu a { text-decoration: none; color: var(--text-secondary); font-weight: 500; padding: 0.5rem 0.9rem; border-radius: 0.6rem; transition: all 0.2s; font-size: 0.9rem; }
+        .nav-menu a:hover, .nav-menu a.active { color: var(--primary); background: rgba(99,102,241,0.08); }
+        .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+        .theme-toggle { display: flex; background: var(--bg-secondary); padding: 0.2rem; border-radius: 2rem; }
+        .theme-btn { padding: 0.4rem 0.8rem; border: none; background: transparent; border-radius: 2rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; font-size: 0.85rem; }
+        .theme-btn.active { background: var(--primary); color: white; }
+        .menu-toggle { background: none; border: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; display: none; }
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-menu { display: none; position: absolute; top: 100%; right: 0; left: 0; background: var(--bg-card); flex-direction: column; padding: 0.75rem; gap: 0.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-bottom: 1px solid var(--border); }
+            .nav-menu.show { display: flex; }
+            .nav-menu a { padding: 0.75rem 1rem; display: block; }
+        }
+
+        /* ===== SETTINGS BUTTON ===== */
+        .settings-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none; color: white; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 2px 10px rgba(99,102,241,0.4); flex-shrink: 0;
+        }
+        .settings-btn:hover { transform: rotate(90deg) scale(1.1); box-shadow: 0 4px 18px rgba(99,102,241,0.55); }
+
+        /* ===== SETTINGS PANEL ===== */
+        .settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9990; display: none; backdrop-filter: blur(4px); }
+        .settings-overlay.show { display: block; }
+        .settings-panel { position: fixed; top: 0; right: 0; z-index: 9991; width: 300px; max-width: 92vw; height: 100vh; background: var(--bg-card); display: flex; flex-direction: column; transform: translateX(110%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); overflow: hidden; }
+        .settings-panel.show { transform: translateX(0); }
+        .settings-header { padding: 1.4rem 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .settings-header-left { display: flex; align-items: center; gap: 0.85rem; }
+        .settings-header-icon { width: 40px; height: 40px; border-radius: 0.65rem; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .settings-header-title { font-size: 1.05rem; font-weight: 800; }
+        .settings-header-sub { font-size: 0.72rem; opacity: 0.75; margin-top: 1px; }
+        .settings-close { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: all 0.2s; }
+        .settings-close:hover { background: rgba(255,255,255,0.35); transform: rotate(90deg); }
+        .settings-body { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.4rem; }
+        .settings-section { display: flex; flex-direction: column; gap: 0.65rem; }
+        .settings-section-title { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); }
+        .settings-section-title i { color: var(--primary); }
+
+        /* Theme row */
+        .settings-theme-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+        .settings-theme-btn { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.85rem 0.5rem; border-radius: 0.9rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); font-family: inherit; position: relative; transition: all 0.2s; }
+        .settings-theme-btn:hover { border-color: rgba(99,102,241,0.4); color: var(--primary); }
+        .settings-theme-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); color: var(--primary); }
+        .settings-theme-btn.active::after { content: '✓'; position: absolute; top: 6px; left: 8px; font-size: 0.65rem; font-weight: 800; width: 16px; height: 16px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 16px; text-align: center; }
+        .theme-preview { width: 100%; height: 48px; border-radius: 0.5rem; overflow: hidden; display: flex; flex-direction: column; gap: 3px; padding: 5px; border: 1px solid rgba(0,0,0,0.07); }
+        .theme-preview.light { background: #f8fafc; }
+        .theme-preview.dark { background: #0f172a; }
+        .theme-preview .p-bar { height: 6px; border-radius: 3px; background: linear-gradient(90deg,#6366f1,#ec4899); }
+        .theme-preview .p-card { height: 7px; border-radius: 3px; }
+        .theme-preview.light .p-card { background: white; border: 1px solid #e2e8f0; }
+        .theme-preview.dark .p-card { background: #1e293b; border: 1px solid #334155; }
+        .theme-preview .p-card.short { width: 65%; }
+
+        /* Lang row */
+        .settings-lang-row { display: flex; flex-direction: column; gap: 0.5rem; }
+        .settings-lang-btn { display: flex; align-items: center; gap: 0.85rem; padding: 0.9rem 1rem; border-radius: 0.85rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-family: inherit; width: 100%; color: var(--text-primary); transition: all 0.2s; }
+        .settings-lang-btn:hover { border-color: rgba(99,102,241,0.4); }
+        .settings-lang-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); }
+        .lang-flag { font-size: 1.4rem; flex-shrink: 0; }
+        .lang-info { display: flex; flex-direction: column; flex: 1; gap: 1px; }
+        .lang-name { font-size: 0.9rem; font-weight: 700; }
+        .lang-sub { font-size: 0.72rem; color: var(--text-secondary); }
+        .lang-check { color: var(--primary); font-size: 0.85rem; opacity: 0; transition: opacity 0.2s; }
+        .settings-lang-btn.active .lang-check { opacity: 1; }
+
+        /* Notif card */
+        .settings-notif-card { background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 0.9rem; overflow: hidden; }
+        .settings-notif-top { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
+        .settings-notif-label { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
+        .notif-badge { font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 2rem; }
+        .notif-badge.granted { background: rgba(34,197,94,0.12); color: #16a34a; }
+        .notif-badge.denied { background: rgba(239,68,68,0.12); color: #dc2626; }
+        .notif-badge.default { background: rgba(99,102,241,0.12); color: var(--primary); }
+        .notif-action-btn { width: 100%; padding: 0.85rem 1rem; border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: opacity 0.2s; }
+        .notif-action-btn:disabled { opacity: 0.5; cursor: not-allowed; background: var(--bg-secondary); color: var(--text-secondary); }
+
+        .settings-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.75rem; color: var(--text-secondary); flex-shrink: 0; }
+
+        /* ===== HERO ===== */
+        .hero { min-height: 82vh; display: flex; align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%); color: white; margin-top: 58px; padding: 4rem 2rem; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); pointer-events: none; }
+        .hero-content { position: relative; z-index: 1; max-width: 700px; }
+        .hero-label { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: white; padding: 0.4rem 1rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; margin-bottom: 1.5rem; backdrop-filter: blur(10px); }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 1rem; line-height: 1.2; }
+        .hero p { font-size: 1.1rem; max-width: 560px; margin: 0 auto 2rem; opacity: 0.88; line-height: 1.7; }
+        .hero-buttons { display: flex; gap: 0.85rem; justify-content: center; margin-bottom: 3rem; flex-wrap: wrap; }
+        .btn { padding: 0.75rem 1.8rem; border-radius: 3rem; text-decoration: none; font-weight: 700; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-family: inherit; }
+        .btn-primary { background: white; color: var(--primary); border: 2px solid white; }
+        .btn-outline { border: 2px solid rgba(255,255,255,0.6); color: white; background: transparent; }
+        .btn-outline:hover { background: rgba(255,255,255,0.15); }
+        .hero-stats { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; }
+        .hero-stat .stat-number { font-size: 2rem; font-weight: 800; display: block; line-height: 1; }
+        .hero-stat .stat-label { font-size: 0.85rem; opacity: 0.8; margin-top: 0.2rem; }
+
+        /* ===== PROGRESS BANNER ===== */
+        .progress-banner { max-width: 1200px; margin: 2rem auto 0; padding: 0 2rem; display: none; }
+        .progress-banner.show { display: block; }
+        .progress-card { background: linear-gradient(135deg, var(--primary), #7c3aed); border-radius: 1.25rem; padding: 1.5rem 2rem; color: white; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+        .progress-card-left { display: flex; align-items: center; gap: 1rem; }
+        .progress-avatar { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+        .progress-greeting h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .progress-greeting p { font-size: 0.85rem; opacity: 0.85; }
+        .progress-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .progress-stat { text-align: center; }
+        .progress-stat .p-val { font-size: 1.6rem; font-weight: 800; display: block; line-height: 1; }
+        .progress-stat .p-lbl { font-size: 0.75rem; opacity: 0.8; }
+        .progress-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.2); }
+        .progress-cta { background: white; color: var(--primary); border: none; padding: 0.65rem 1.4rem; border-radius: 2rem; font-weight: 700; font-family: inherit; font-size: 0.88rem; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+
+        /* ===== MENU SECTION ===== */
+        .menu-section { max-width: 1200px; margin: 4rem auto; padding: 0 2rem; }
+        .section-header { text-align: center; margin-bottom: 2.5rem; }
+        .section-header h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section-header p { color: var(--text-secondary); font-size: 1rem; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+        .menu-card { background: var(--bg-card); border-radius: 1.4rem; padding: 2rem 1.5rem; text-align: center; box-shadow: var(--shadow); transition: all 0.3s; border: 2px solid transparent; text-decoration: none; color: inherit; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .menu-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--primary), var(--secondary)); transform: scaleX(0); transition: transform 0.3s ease; }
+        .menu-card:hover { transform: translateY(-8px); border-color: rgba(99,102,241,0.25); box-shadow: var(--shadow-lg); }
+        .menu-card:hover::after { transform: scaleX(1); }
+        .menu-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.1rem; font-size: 2rem; color: white; box-shadow: 0 8px 20px rgba(99,102,241,0.3); }
+        .menu-card h3 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--primary); }
+        .menu-card p { color: var(--text-secondary); margin-bottom: 1.2rem; line-height: 1.6; font-size: 0.95rem; flex-grow: 1; }
+        .card-progress { margin-bottom: 1rem; }
+        .card-progress-bar { height: 5px; background: var(--bg-secondary); border-radius: 100px; overflow: hidden; margin-bottom: 0.35rem; }
+        .card-progress-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.8s ease; }
+        .card-progress-label { font-size: 0.75rem; color: var(--text-secondary); text-align: right; }
+        .menu-stats { display: flex; justify-content: center; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
+        .menu-stats span { display: flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); font-size: 0.85rem; }
+        .menu-stats i { color: var(--primary); font-size: 0.85rem; }
+
+        /* ===== DOWNLOAD BANNER ===== */
+        .download-banner { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; }
+        .download-banner-card { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 2rem; padding: 2.5rem; color: white; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem; box-shadow: var(--shadow-lg); }
+        .download-banner-content { flex: 1; min-width: 250px; }
+        .download-banner-content h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .download-banner-content p { opacity: 0.9; margin-bottom: 1rem; }
+        .download-banner-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .download-banner-stat .stat { font-size: 1.5rem; font-weight: 800; display: block; }
+        .download-banner-stat .label { font-size: 0.8rem; opacity: 0.8; }
+        .download-banner-btn { background: white; color: var(--primary); padding: 1rem 2.5rem; border-radius: 100px; text-decoration: none; font-weight: 700; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 0.8rem; transition: all 0.3s; }
+
+        /* ===== FEATURES ===== */
+        .features-section { max-width: 1200px; margin: 4rem auto; padding: 0 2rem; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.25rem; }
+        .feature-card { background: var(--bg-card); padding: 1.75rem; border-radius: 1.2rem; text-align: center; box-shadow: var(--shadow); transition: all 0.3s; border: 1px solid var(--border); }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .feature-icon { width: 56px; height: 56px; border-radius: 14px; background: rgba(99,102,241,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.4rem; color: var(--primary); }
+        .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+        .feature-card p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; }
+
+        /* ===== CTA ===== */
+        .cta-section { max-width: 1200px; margin: 4rem auto; padding: 0 2rem; text-align: center; }
+        .cta-card { background: var(--bg-card); border-radius: 2rem; padding: 3rem; border: 2px solid var(--border); }
+        .cta-card h2 { font-size: 2rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+        .cta-btn { padding: 1rem 2rem; border-radius: 100px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s; }
+        .cta-btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        .cta-btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 2px solid var(--border); }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); text-align: center; padding: 1.75rem 2rem; margin-top: 4rem; color: var(--text-secondary); font-size: 0.88rem; }
+        @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+        .live-dot { width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse-dot 1.8s ease-in-out infinite;margin-left:4px;vertical-align:middle; }
+    </style>
+</head>
+<body>
+
+    <!-- INSTALL BANNER -->
+    <div class="install-banner" id="installBanner">
+        <div class="install-icon"><img src="https://i.postimg.cc/J4xdc62M/20260305-233826.png" alt="CineLingua"></div>
+        <div class="install-content">
+            <h4 id="ib-title">ثبّت تطبيق CineLingua</h4>
+            <p id="ib-desc">تعلم الإنجليزية بسهولة من شاشتك الرئيسية</p>
+        </div>
+        <button class="install-btn" id="installBtn"><i class="fas fa-download"></i> <span id="ib-btn">تثبيت</span></button>
+        <button class="install-close" id="installClose"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="notif-overlay" id="notifOverlay"></div>
+    <div class="notif-prompt" id="notifPrompt">
+        <div class="notif-prompt-icon"></div>
+        <div class="notif-prompt-title" id="np-title">تفعيل الإشعارات</div>
+        <div class="notif-prompt-sub" id="np-sub">سنذكّرك يومياً بجلسة تعلمك حتى تبني عادة منتظمة</div>
+        <button class="notif-allow-btn" id="allowNotif"> السماح بالإشعارات</button>
+        <button class="notif-deny-btn" id="denyNotif">لاحقاً</button>
+    </div>
+    <div class="notif-blocked" id="notifBlocked">
+        <div class="notif-blocked-icon">🔕</div>
+        <div class="notif-blocked-title" id="nb-title">الإشعارات محظورة</div>
+        <div class="notif-blocked-steps" id="nb-steps">
+            اضغط على 🔒 بجانب الرابط<br>
+            ابحث عن «الإشعارات»<br>
+            اضبطها على «السماح»
+        </div>
+        <button class="notif-blocked-close" id="notifBlockedClose">فهمت</button>
+    </div>
+
+    <!-- SETTINGS PANEL -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <div class="settings-header-left">
+                <div class="settings-header-icon"><i class="fas fa-sliders-h"></i></div>
+                <div>
+                    <div class="settings-header-title" id="s-title">الإعدادات</div>
+                    <div class="settings-header-sub">CineLingua</div>
+                </div>
+            </div>
+            <button class="settings-close" onclick="closeSettings()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="settings-body">
+            <!-- Appearance -->
+            <div class="settings-section">
+                <div class="settings-section-title"><i class="fas fa-palette"></i> <span id="s-appearance">المظهر</span></div>
+                <div class="settings-theme-row">
+                    <button class="settings-theme-btn" id="btn-light" onclick="setTheme('light')">
+                        <div class="theme-preview light"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div>
+                        <i class="fas fa-sun"></i> <span id="s-light">فاتح</span>
+                    </button>
+                    <button class="settings-theme-btn" id="btn-dark" onclick="setTheme('dark')">
+                        <div class="theme-preview dark"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div>
+                        <i class="fas fa-moon"></i> <span id="s-dark">داكن</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Language -->
+            <div class="settings-section">
+                <div class="settings-section-title"><i class="fas fa-globe"></i> <span id="s-lang">اللغة</span></div>
+                <div class="settings-lang-row">
+                    <button class="settings-lang-btn" id="lang-ar" onclick="setLang('ar')">
+                        <span class="lang-flag"></span>
+                        <div class="lang-info"><span class="lang-name">العربية</span><span class="lang-sub">Arabic</span></div>
+                        <i class="fas fa-check lang-check"></i>
+                    </button>
+                    <button class="settings-lang-btn" id="lang-en" onclick="setLang('en')">
+                        <span class="lang-flag"></span>
+                        <div class="lang-info"><span class="lang-name">English</span><span class="lang-sub">الإنجليزية</span></div>
+                        <i class="fas fa-check lang-check"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Notifications -->
+            <div class="settings-section">
+                <div class="settings-section-title"><i class="fas fa-bell"></i> <span id="s-notif">الإشعارات</span></div>
+                <div class="settings-notif-card">
+                    <div class="settings-notif-top">
+                        <span class="settings-notif-label" id="s-notif-status">حالة الإشعارات</span>
+                        <span class="notif-badge default" id="notifBadge">غير محددة</span>
+                    </div>
+                    <button class="notif-action-btn" id="notifActionBtn" onclick="requestNotifSettings()">
+                        <i class="fas fa-bell"></i> <span id="s-notif-btn">تفعيل الإشعارات</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="settings-footer">CineLingua • v2.0</div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a class="logo" href="index.html"><i class="fas fa-film"></i> CineLingua</a>
+            <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="active" id="nav-home">الرئيسية</a></li>
+                <li><a href="lessons.html" id="nav-lessons">الكلمات</a></li>
+                <li><a href="stories.html" id="nav-stories">القصص</a></li>
+                <li><a href="tenses.html" id="nav-tenses">الأزمنة</a></li>
+                <li><a href="quiz.html" id="nav-quiz">الاختبارات</a></li>
+                <li><a href="verbs.html" id="nav-quiz">الأفعال والتصاريف</a></li>
+                <li><a href="grammar.html" id="nav-quiz">الجرامر</a></li>
+                <li><a href="download.html" id="nav-download">تحميل التطبيق</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="theme-toggle">
+                    <button class="theme-btn active" onclick="setTheme('light')"><i class="fas fa-sun"></i></button>
+                    <button class="theme-btn" onclick="setTheme('dark')"><i class="fas fa-moon"></i></button>
+                </div>
+                <button class="settings-btn" onclick="openSettings()"><i class="fas fa-cog"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <div class="hero-label"><i class="fas fa-star"></i> <span id="hero-label">منصة تعلم الإنجليزية</span></div>
+            <h1 id="hero-title">تعلم الإنجليزية بذكاء مع CineLingua</h1>
+            <p id="hero-desc">منصة تعليمية متكاملة تساعدك على تعلم الإنجليزية من خلال كلمات، قصص، أزمنة، واختبارات تفاعلية</p>
+            <div class="hero-buttons">
+                <a href="#menu" class="btn btn-primary"><i class="fas fa-play"></i> <span id="hero-start">ابدأ الآن</span></a>
+                <a href="download.html" class="btn btn-outline"><i class="fas fa-download"></i> <span id="hero-download">تحميل التطبيق</span></a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><span class="stat-number">1500+</span><span class="stat-label" id="stat-words">كلمة</span></div>
+                <div class="hero-stat"><span class="stat-number">30+</span><span class="stat-label" id="stat-stories">قصة</span></div>
+                <div class="hero-stat"><span class="stat-number">12</span><span class="stat-label" id="stat-tenses">زمن نحوي</span></div>
+                <div class="hero-stat"><span class="stat-number">6</span><span class="stat-label" id="stat-quizzes">أنواع اختبارات</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROGRESS BANNER -->
+    <div class="progress-banner" id="progressBanner">
+        <div class="progress-card" data-aos="fade-up">
+            <div class="progress-card-left">
+                <div class="progress-avatar"><i class="fas fa-user-graduate"></i></div>
+                <div class="progress-greeting">
+                    <h3 id="greetingText">أهلاً بعودتك!</h3>
+                    <p id="greetingSubtext">واصل تقدمك من حيث توقفت</p>
+                </div>
+            </div>
+            <div class="progress-stats">
+                <div class="progress-stat"><span class="p-val" id="pb-learned">0</span><span class="p-lbl" id="pb-words-lbl">كلمة تعلمتها</span></div>
+                <div class="progress-divider"></div>
+                <div class="progress-stat"><span class="p-val" id="pb-quizzes">0</span><span class="p-lbl" id="pb-quiz-lbl">اختبار أكملته</span></div>
+                <div class="progress-divider"></div>
+                <div class="progress-stat"><span class="p-val" id="pb-stories">0</span><span class="p-lbl" id="pb-stories-lbl">قصة قرأتها</span></div>
+                <div class="progress-divider"></div>
+                <div class="progress-stat"><span class="p-val" id="pb-streak"><i class="fas fa-fire" style="font-size:1rem"></i> 0</span><span class="p-lbl" id="pb-streak-lbl">يوم متتالي</span></div>
+            </div>
+            <a href="lessons.html" class="progress-cta"><i class="fas fa-arrow-left"></i> <span id="progress-cta-txt">واصل التعلم</span></a>
+        </div>
+    </div>
+
+    <!-- MENU -->
+    <section class="menu-section" id="menu">
+        <div class="section-header" data-aos="fade-up">
+            <h2 id="menu-title">اختر ما تريد تعلمه</h2>
+            <p id="menu-sub">محتوى متدرج من المبتدئ إلى المتقدم</p>
+        </div>
+        <div class="menu-grid">
+            <a href="lessons.html" class="menu-card" data-aos="fade-up">
+                <div class="menu-icon"><i class="fas fa-book"></i></div>
+                <h3 id="card-words-title">الكلمات</h3>
+                <p id="card-words-desc">تعلم المفردات الأساسية والمتقدمة مع النطق الصحيح والأمثلة التطبيقية</p>
+                <div class="card-progress"><div class="card-progress-bar"><div class="card-progress-fill" id="words-progress" style="width:0%"></div></div><div class="card-progress-label" id="words-progress-label">0 كلمة تعلمتها <span class="live-dot"></span></div></div>
+                <div class="menu-stats"><span><i class="fas fa-layer-group"></i> <span id="words-levels">3 مستويات</span></span><span><i class="fas fa-font"></i> 1500+ <span id="words-count">كلمة</span></span></div>
+            </a>
+            <a href="stories.html" class="menu-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="menu-icon"><i class="fas fa-book-open"></i></div>
+                <h3 id="card-stories-title">القصص</h3>
+                <p id="card-stories-desc">اقرأ قصصاً قصيرة ممتعة مع أسئلة تفاعلية وحسّن فهمك للغة</p>
+                <div class="card-progress"><div class="card-progress-bar"><div class="card-progress-fill" id="stories-progress" style="width:0%"></div></div><div class="card-progress-label" id="stories-progress-label">0 قصة محفوظة <span class="live-dot"></span></div></div>
+                <div class="menu-stats"><span><i class="fas fa-layer-group"></i> 30 <span id="stories-count">قصة</span></span><span><i class="fas fa-question-circle"></i> <span id="stories-interactive">أسئلة تفاعلية</span></span></div>
+            </a>
+            <a href="tenses.html" class="menu-card" data-aos="fade-up" data-aos-delay="150">
+                <div class="menu-icon"><i class="fas fa-clock"></i></div>
+                <h3 id="card-tenses-title">الأزمنة</h3>
+                <p id="card-tenses-desc">تعلم أزمنة اللغة الإنجليزية مع شرح مبسط وأمثلة وتمارين تفاعلية</p>
+                <div class="card-progress"><div class="card-progress-bar"><div class="card-progress-fill" id="tenses-progress" style="width:0%"></div></div><div class="card-progress-label" id="tenses-progress-label">0 زمن محفوظ <span class="live-dot"></span></div></div>
+                <div class="menu-stats"><span><i class="fas fa-layer-group"></i> 12 <span id="tenses-count">زمن</span></span><span><i class="fas fa-tasks"></i> <span id="tenses-exercises">تمارين تفاعلية</span></span></div>
+            </a>
+            <a href="quiz.html" class="menu-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="menu-icon"><i class="fas fa-question-circle"></i></div>
+                <h3 id="card-quiz-title">الاختبارات</h3>
+                <p id="card-quiz-desc">اختبر مستواك واكتشف نقاط قوتك وضعفك من خلال اختبارات متنوعة</p>
+                <div class="card-progress"><div class="card-progress-bar"><div class="card-progress-fill" id="quizzes-progress" style="width:0%"></div></div><div class="card-progress-label" id="quizzes-progress-label">0 اختبار أكملته <span class="live-dot"></span></div></div>
+                <div class="menu-stats"><span><i class="fas fa-layer-group"></i> 6 <span id="quiz-count">اختبارات</span></span><span><i class="fas fa-chart-line"></i> <span id="quiz-analysis">تحليل النتائج</span></span></div>
+            </a>
+        </div>
+    </section>
+
+    <!-- DOWNLOAD BANNER -->
+    <section class="download-banner" data-aos="fade-up">
+        <div class="download-banner-card">
+            <div class="download-banner-content">
+                <h3 id="dl-title">حمّل تطبيق CineLingua</h3>
+                <p id="dl-sub">نسخة أندرويد APK</p>
+                <div class="download-banner-stats">
+                    <div class="download-banner-stat"><span class="stat">3.2 MB</span><span class="label" id="dl-size">حجم الملف</span></div>
+                    <div class="download-banner-stat"><span class="stat">1.0.0</span><span class="label" id="dl-ver">الإصدار</span></div>
+                    <div class="download-banner-stat"><span class="stat">5.0+</span><span class="label" id="dl-android">أندرويد</span></div>
+                </div>
+            </div>
+            <a href="download.html" class="download-banner-btn"><i class="fas fa-download"></i> <span id="dl-btn">صفحة التحميل</span></a>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features-section" id="features">
+        <div class="section-header" data-aos="fade-up">
+            <h2 id="feat-title">لماذا CineLingua؟</h2>
+            <p id="feat-sub">مميزات تجعل تجربة تعلمك أسهل وأكثر فاعلية</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up"><div class="feature-icon"><i class="fas fa-volume-up"></i></div><h3 id="f1-title">النطق الصحيح</h3><p id="f1-desc">استمع للكلمات بصوت طبيعي وبطيء لإتقان النطق</p></div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100"><div class="feature-icon"><i class="fas fa-chart-line"></i></div><h3 id="f2-title">تتبع التقدم</h3><p id="f2-desc">اعرف كم كلمة تعلمت وكم قصة قرأت في أي وقت</p></div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="150"><div class="feature-icon"><i class="fas fa-bookmark"></i></div><h3 id="f3-title">حفظ المفضلة</h3><p id="f3-desc">احفظ الكلمات والقصص والأزمنة التي تريد مراجعتها لاحقاً</p></div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200"><div class="feature-icon"><i class="fas fa-fire"></i></div><h3 id="f4-title">نظام الـ Streak</h3><p id="f4-desc">حافظ على تقدمك اليومي وابنِ عادة تعلم منتظمة</p></div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" data-aos="fade-up">
+        <div class="cta-card">
+            <h2 id="cta-title">ابدأ رحلة تعلم الإنجليزية الآن</h2>
+            <p style="color:var(--text-secondary);margin-bottom:1rem" id="cta-sub">اختر طريقتك المفضلة لتبدأ التعلم</p>
+            <div class="cta-buttons">
+                <a href="#menu" class="cta-btn cta-btn-primary"><i class="fas fa-play"></i> <span id="cta-start">ابدأ التعلم مجاناً</span></a>
+                <a href="download.html" class="cta-btn cta-btn-secondary"><i class="fas fa-download"></i> <span id="cta-dl">تحميل التطبيق</span></a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"><p id="footer-txt">© 2026 CineLingua — جميع الحقوق محفوظة</p></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+    // =============================================
+    //  TRANSLATIONS
+    // =============================================
+    const i18n = {
+        ar: {
+            // nav
+            'nav-home':'الرئيسية','nav-lessons':'الكلمات','nav-stories':'القصص',
+            'nav-tenses':'الأزمنة','nav-quiz':'الاختبارات','nav-download':'تحميل التطبيق',
+            // settings panel
+            's-title':'الإعدادات','s-appearance':'المظهر','s-light':'فاتح','s-dark':'داكن',
+            's-lang':'اللغة','s-notif':'الإشعارات','s-notif-status':'حالة الإشعارات',
+            's-notif-btn':'تفعيل الإشعارات',
+            // notif badge
+            'notif-granted':'مفعّلة ✓','notif-denied':'محظورة','notif-default':'غير محددة',
+            // install banner
+            'ib-title':'ثبّت تطبيق CineLingua','ib-desc':'تعلم الإنجليزية بسهولة من شاشتك الرئيسية','ib-btn':'تثبيت',
+            // notif prompt
+            'np-title':'تفعيل الإشعارات 🔔','np-sub':'سنذكّرك يومياً بجلسة تعلمك حتى تبني عادة منتظمة',
+            'allowNotif':'✅ السماح بالإشعارات','denyNotif':'لاحقاً',
+            // notif blocked
+            'nb-title':'الإشعارات محظورة 🔕',
+            'nb-steps':'اضغط على 🔒 بجانب الرابط<br>ابحث عن «الإشعارات»<br>اضبطها على «السماح»',
+            'notifBlockedClose':'فهمت',
+            // hero
+            'hero-label':'منصة تعلم الإنجليزية','hero-title':'تعلم الإنجليزية بذكاء مع CineLingua',
+            'hero-desc':'منصة تعليمية متكاملة تساعدك على تعلم الإنجليزية من خلال كلمات، قصص، أزمنة، واختبارات تفاعلية',
+            'hero-start':'ابدأ الآن','hero-download':'تحميل التطبيق',
+            'stat-words':'كلمة','stat-stories':'قصة','stat-tenses':'زمن نحوي','stat-quizzes':'أنواع اختبارات',
+            // progress
+            'pb-words-lbl':'كلمة تعلمتها','pb-quiz-lbl':'اختبار أكملته',
+            'pb-stories-lbl':'قصة قرأتها','pb-streak-lbl':'يوم متتالي','progress-cta-txt':'واصل التعلم',
+            // menu
+            'menu-title':'اختر ما تريد تعلمه','menu-sub':'محتوى متدرج من المبتدئ إلى المتقدم',
+            'card-words-title':'الكلمات','card-words-desc':'تعلم المفردات الأساسية والمتقدمة مع النطق الصحيح والأمثلة التطبيقية',
+            'words-levels':'3 مستويات','words-count':'كلمة',
+            'card-stories-title':'القصص','card-stories-desc':'اقرأ قصصاً قصيرة ممتعة مع أسئلة تفاعلية وحسّن فهمك للغة',
+            'stories-count':'قصة','stories-interactive':'أسئلة تفاعلية',
+            'card-tenses-title':'الأزمنة','card-tenses-desc':'تعلم أزمنة اللغة الإنجليزية مع شرح مبسط وأمثلة وتمارين تفاعلية',
+            'tenses-count':'زمن','tenses-exercises':'تمارين تفاعلية',
+            'card-quiz-title':'الاختبارات','card-quiz-desc':'اختبر مستواك واكتشف نقاط قوتك وضعفك من خلال اختبارات متنوعة',
+            'quiz-count':'اختبارات','quiz-analysis':'تحليل النتائج',
+            // download
+            'dl-title':'حمّل تطبيق CineLingua','dl-sub':'نسخة أندرويد APK',
+            'dl-size':'حجم الملف','dl-ver':'الإصدار','dl-android':'أندرويد','dl-btn':'صفحة التحميل',
+            // features
+            'feat-title':'لماذا CineLingua؟','feat-sub':'مميزات تجعل تجربة تعلمك أسهل وأكثر فاعلية',
+            'f1-title':'النطق الصحيح','f1-desc':'استمع للكلمات بصوت طبيعي وبطيء لإتقان النطق',
+            'f2-title':'تتبع التقدم','f2-desc':'اعرف كم كلمة تعلمت وكم قصة قرأت في أي وقت',
+            'f3-title':'حفظ المفضلة','f3-desc':'احفظ الكلمات والقصص والأزمنة التي تريد مراجعتها لاحقاً',
+            'f4-title':'نظام الـ Streak','f4-desc':'حافظ على تقدمك اليومي وابنِ عادة تعلم منتظمة',
+            // cta
+            'cta-title':'ابدأ رحلة تعلم الإنجليزية الآن','cta-sub':'اختر طريقتك المفضلة لتبدأ التعلم',
+            'cta-start':'ابدأ التعلم مجاناً','cta-dl':'تحميل التطبيق',
+            'footer-txt':'© 2026 CineLingua — جميع الحقوق محفوظة',
+        },
+        en: {
+            'nav-home':'Home','nav-lessons':'Words','nav-stories':'Stories',
+            'nav-tenses':'Tenses','nav-quiz':'Quiz','nav-download':'Download App',
+            's-title':'Settings','s-appearance':'Appearance','s-light':'Light','s-dark':'Dark',
+            's-lang':'Language','s-notif':'Notifications','s-notif-status':'Notification Status',
+            's-notif-btn':'Enable Notifications',
+            'notif-granted':'Enabled ✓','notif-denied':'Blocked','notif-default':'Not Set',
+            'ib-title':'Install CineLingua','ib-desc':'Learn English from your home screen','ib-btn':'Install',
+            'np-title':'Stay Updated! 🔔','np-sub':'Enable notifications for daily reminders to keep you learning.',
+            'allowNotif':' Allow Notifications','denyNotif':'No Thanks',
+            'nb-title':'Notifications Blocked 🔕',
+            'nb-steps':'Click the 🔒 icon next to the URL<br>Find «Notifications»<br>Set it to «Allow»',
+            'notifBlockedClose':'Got it',
+            'hero-label':'English Learning Platform','hero-title':'Learn English Smartly with CineLingua',
+            'hero-desc':'A comprehensive learning platform to help you learn English through words, stories, tenses, and interactive quizzes.',
+            'hero-start':'Start Now','hero-download':'Download App',
+            'stat-words':'Words','stat-stories':'Stories','stat-tenses':'Tenses','stat-quizzes':'Quiz Types',
+            'pb-words-lbl':'Words Learned','pb-quiz-lbl':'Quizzes Done',
+            'pb-stories-lbl':'Stories Read','pb-streak-lbl':'Day Streak','progress-cta-txt':'Continue Learning',
+            'menu-title':'Choose What to Learn','menu-sub':'Content from beginner to advanced',
+            'card-words-title':'Words','card-words-desc':'Learn essential and advanced vocabulary with correct pronunciation and examples.',
+            'words-levels':'3 Levels','words-count':'Words',
+            'card-stories-title':'Stories','card-stories-desc':'Read fun short stories with interactive questions to improve your comprehension.',
+            'stories-count':'Stories','stories-interactive':'Interactive Questions',
+            'card-tenses-title':'Tenses','card-tenses-desc':'Learn English tenses with simple explanations, examples, and interactive exercises.',
+            'tenses-count':'Tenses','tenses-exercises':'Interactive Exercises',
+            'card-quiz-title':'Quizzes','card-quiz-desc':'Test your level and discover your strengths and weaknesses through various quizzes.',
+            'quiz-count':'Quizzes','quiz-analysis':'Result Analysis',
+            'dl-title':'Download CineLingua App','dl-sub':'Android APK Version',
+            'dl-size':'File Size','dl-ver':'Version','dl-android':'Android','dl-btn':'Download Page',
+            'feat-title':'Why CineLingua?','feat-sub':'Features that make your learning easier and more effective',
+            'f1-title':'Correct Pronunciation','f1-desc':'Listen to words naturally and slowly to master pronunciation.',
+            'f2-title':'Track Progress','f2-desc':'Know how many words you\'ve learned and stories you\'ve read anytime.',
+            'f3-title':'Save Favorites','f3-desc':'Save words, stories, and tenses you want to review later.',
+            'f4-title':'Streak System','f4-desc':'Maintain your daily progress and build a regular learning habit.',
+            'cta-title':'Start Your English Learning Journey Now','cta-sub':'Choose your preferred way to start learning',
+            'cta-start':'Start Learning Free','cta-dl':'Download App',
+            'footer-txt':'© 2026 CineLingua — All Rights Reserved',
+        }
+    };
+
+    let currentLang = localStorage.getItem('cl-lang') || 'ar';
+
+    function setLang(lang) {
+        currentLang = lang;
+        localStorage.setItem('cl-lang', lang);
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        const map = i18n[lang];
+        Object.keys(map).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = map[id];
+        });
+        // update lang buttons
+        document.getElementById('lang-ar').classList.toggle('active', lang === 'ar');
+        document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+        // update progress labels dynamically
+        loadProgress();
+    }
+
+    // =============================================
+    //  FIREBASE
+    // =============================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyCvi0VCJv3j6p8ICT1f97TePwDXAazmQMw",
+        authDomain: "cinelingua-fe7f1.firebaseapp.com",
+        projectId: "cinelingua-fe7f1",
+        storageBucket: "cinelingua-fe7f1.firebasestorage.app",
+        messagingSenderId: "157697610841",
+        appId: "1:157697610841:web:529db81f264e1a84ab0d48"
+    };
+    const VAPID_KEY = "BLRwJpw7gMvb5-pZVmo_zw0el29GABJhFAYMWMso3mcMHU_mQsOLnuL5x7YfRoQ_ujItpTuslqg_LM56Mdom5v4";
+    let messaging = null;
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+    function initFirebase(swReg) {
+        try {
+            messaging = firebase.messaging();
+            if (swReg) {
+                messaging.useServiceWorker(swReg);
+            }
+            messaging.onMessage(payload => {
+                const { title, body, image } = payload.notification;
+                navigator.serviceWorker.ready.then(reg => {
+                    reg.showNotification(title, {
+                        body, icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                        badge: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                        image: image || 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
+                        dir: 'rtl', lang: 'ar', vibrate: [200,100,200,100,200],
+                        tag: 'cinelingua-notif', renotify: true,
+                        actions: [{ action:'open', title:'📚 تعلم الآن' },{ action:'close', title:'لاحقاً' }]
+                    });
+                });
+            });
+        } catch(e) {}
+    }
+
+    let swRegistration = null;
+
+    async function getAndSaveFCMToken() {
+        if (!messaging) return;
+        try {
+            if (Notification.permission !== 'granted') return;
+            
+            const reg = swRegistration || window.swRegistration || await navigator.serviceWorker.ready;
+            const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+            if (!token) return;
+            
+            try {
+                const db = firebase.firestore();
+                await db.collection('fcmTokens').doc(token).set({ token, createdAt: firebase.firestore.FieldValue.serverTimestamp(), lastSeen: firebase.firestore.FieldValue.serverTimestamp(), userAgent: navigator.userAgent, platform: navigator.platform }, { merge: true });
+                
+            } catch(e) {}
+        } catch(e) {}
+    }
+
+    AOS.init({ duration: 900, once: true, offset: 60 });
+
+    // =============================================
+    //  THEME
+    // =============================================
+    window.setTheme = function(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.toggle('active', (theme==='light'&&btn.innerHTML.includes('sun'))||(theme==='dark'&&btn.innerHTML.includes('moon')));
+        });
+        document.getElementById('btn-light')?.classList.toggle('active', theme === 'light');
+        document.getElementById('btn-dark')?.classList.toggle('active', theme === 'dark');
+    };
+    setTheme(localStorage.getItem('theme') || 'light');
+
+    // =============================================
+    //  SETTINGS
+    // =============================================
+    function openSettings() {
+        document.getElementById('settingsOverlay').classList.add('show');
+        document.getElementById('settingsPanel').classList.add('show');
+        refreshNotifBadge();
+    }
+    function closeSettings() {
+        document.getElementById('settingsOverlay').classList.remove('show');
+        document.getElementById('settingsPanel').classList.remove('show');
+    }
+    function refreshNotifBadge() {
+        const perm = Notification.permission;
+        const badge = document.getElementById('notifBadge');
+        const btn = document.getElementById('notifActionBtn');
+        const map = i18n[currentLang];
+        badge.className = 'notif-badge ' + perm;
+        badge.textContent = perm === 'granted' ? map['notif-granted'] : perm === 'denied' ? map['notif-denied'] : map['notif-default'];
+        if (perm === 'granted') { btn.disabled = true; document.getElementById('s-notif-btn').textContent = map['notif-granted']; }
+        else if (perm === 'denied') { btn.disabled = true; document.getElementById('s-notif-btn').textContent = map['notif-denied']; }
+        else { btn.disabled = false; document.getElementById('s-notif-btn').textContent = map['s-notif-btn']; }
+    }
+    async function requestNotifSettings() {
+        const result = await Notification.requestPermission();
+        refreshNotifBadge();
+        if (result === 'granted') {
+            getAndSaveFCMToken();
+            sendWelcomeNotif();
+            scheduleReminders();
+            registerBackgroundSync();
+        }
+    }
+
+    // =============================================
+    //  NAV
+    // =============================================
+    function toggleMenu() { document.getElementById('navMenu').classList.toggle('show'); }
+    document.querySelectorAll('.nav-menu a').forEach(a => a.addEventListener('click', () => document.getElementById('navMenu').classList.remove('show')));
+
+    // =============================================
+    //  PROGRESS
+    // =============================================
+    function loadProgress() {
+        const learnedWords = JSON.parse(localStorage.getItem('learnedWords')||'[]');
+        const completedQuizzes = JSON.parse(localStorage.getItem('cefr_completed_v2')||'[]');
+        const savedStories = JSON.parse(localStorage.getItem('savedStories')||'[]');
+        const savedTenses = JSON.parse(localStorage.getItem('savedTenses')||'[]');
+        const streak = JSON.parse(localStorage.getItem('streak')||'{"count":0}');
+        const isEn = currentLang === 'en';
+        const hasProgress = learnedWords.length>0||completedQuizzes.length>0||savedStories.length>0||savedTenses.length>0;
+        document.getElementById('progressBanner').classList.toggle('show', hasProgress);
+        if (hasProgress) {
+            const h = new Date().getHours();
+            document.getElementById('greetingText').textContent = isEn ? (h<12?'Good Morning!':h<17?'Welcome Back!':'Good Evening!') : (h<12?'صباح النور!':h<17?'مرحباً بعودتك!':'مساء النور!');
+            let sub = isEn ? 'Continue from where you left off' : 'واصل تقدمك من حيث توقفت';
+            if (streak.count>=7) sub = isEn ? `${streak.count} day streak — keep going! 🔥` : `${streak.count} أيام متتالية — استمر! 🔥`;
+            else if (streak.count>=3) sub = isEn ? 'You\'re on the right track! 💪' : 'أنت في المسار الصحيح! 💪';
+            document.getElementById('greetingSubtext').textContent = sub;
+            document.getElementById('pb-learned').textContent = learnedWords.length;
+            document.getElementById('pb-quizzes').textContent = completedQuizzes.length;
+            document.getElementById('pb-stories').textContent = savedStories.length;
+            document.getElementById('pb-streak').innerHTML = `<i class="fas fa-fire" style="font-size:1rem;margin-left:0.2rem"></i> ${streak.count}`;
+        }
+        document.getElementById('words-progress').style.width = Math.min(Math.round((learnedWords.length/1000)*100),100)+'%';
+        document.getElementById('words-progress-label').innerHTML = `${learnedWords.length} ${isEn?'words learned':'كلمة تعلمتها'} <span class="live-dot"></span>`;
+        document.getElementById('stories-progress').style.width = Math.min(Math.round((savedStories.length/30)*100),100)+'%';
+        document.getElementById('stories-progress-label').innerHTML = `${savedStories.length} ${isEn?'stories saved':'قصة محفوظة'} <span class="live-dot"></span>`;
+        document.getElementById('tenses-progress').style.width = Math.min(Math.round((savedTenses.length/12)*100),100)+'%';
+        document.getElementById('tenses-progress-label').innerHTML = `${savedTenses.length} ${isEn?'tenses saved':'زمن محفوظ'} <span class="live-dot"></span>`;
+        document.getElementById('quizzes-progress').style.width = Math.min(Math.round((completedQuizzes.length/6)*100),100)+'%';
+        document.getElementById('quizzes-progress-label').innerHTML = `${completedQuizzes.length} ${isEn?'quizzes done':'اختبار أكملته'} <span class="live-dot"></span>`;
+    }
+    loadProgress();
+    window.addEventListener('storage', e => { if(['learnedWords','cefr_completed_v2','savedStories','savedTenses','streak'].includes(e.key)) loadProgress(); });
+    setInterval(loadProgress, 5000);
+
+    // =============================================
+    //  NOTIF
+    // =============================================
+    function showOverlay() { document.getElementById('notifOverlay').classList.add('show'); }
+    function hideOverlay() { document.getElementById('notifOverlay').classList.remove('show'); }
+    function showNotifPrompt() {
+        if (!('Notification' in window)) return;
+        if (Notification.permission === 'granted') return;
+        if (Notification.permission === 'denied') { showOverlay(); document.getElementById('notifBlocked').classList.add('show'); return; }
+        showOverlay(); document.getElementById('notifPrompt').classList.add('show');
+    }
+    function hideNotifPrompt() { document.getElementById('notifPrompt').classList.remove('show'); hideOverlay(); }
+
+    document.getElementById('allowNotif').addEventListener('click', async () => {
+        if (Notification.permission === 'denied') { hideNotifPrompt(); showOverlay(); document.getElementById('notifBlocked').classList.add('show'); return; }
+        hideNotifPrompt();
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') { sendWelcomeNotif(); scheduleReminders(); getAndSaveFCMToken(); registerBackgroundSync(); }
+        else if (permission === 'denied') { showOverlay(); document.getElementById('notifBlocked').classList.add('show'); }
+    });
+    document.getElementById('denyNotif').addEventListener('click', hideNotifPrompt);
+    document.getElementById('notifOverlay').addEventListener('click', () => { hideNotifPrompt(); document.getElementById('notifBlocked').classList.remove('show'); });
+    document.getElementById('notifBlockedClose').addEventListener('click', () => { document.getElementById('notifBlocked').classList.remove('show'); hideOverlay(); });
+
+    // =============================================
+    //  INSTALL BANNER
+    // =============================================
+    let deferredPrompt;
+    const installBanner = document.getElementById('installBanner');
+    let bannerAutoHideTimer = null;
+    function isAppInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true || document.referrer.includes('android-app://') || localStorage.getItem('app_installed') === 'true';
+    }
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if (!isAppInstalled()) showInstallBanner(); });
+    function showInstallBanner() {
+        if (isAppInstalled()) return;
+        installBanner.classList.add('show');
+        bannerAutoHideTimer = setTimeout(() => { if (installBanner.classList.contains('show')) { installBanner.classList.remove('show'); showNotifPrompt(); } }, 8000);
+    }
+    document.getElementById('installBtn').addEventListener('click', async () => {
+        if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer);
+        if (deferredPrompt) { deferredPrompt.prompt(); const r = await deferredPrompt.userChoice; if (r.outcome==='accepted') localStorage.setItem('app_installed','true'); deferredPrompt=null; }
+        else if (/iPad|iPhone|iPod/.test(navigator.userAgent)) { alert('لتثبيت التطبيق على iOS:\n١. اضغط على زر المشاركة (📤)\n٢. اختر "أضف إلى الشاشة الرئيسية"'); }
+        installBanner.classList.remove('show'); showNotifPrompt();
+    });
+    document.getElementById('installClose').addEventListener('click', () => { if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer); installBanner.classList.remove('show'); showNotifPrompt(); });
+    window.addEventListener('appinstalled', () => { if (bannerAutoHideTimer) clearTimeout(bannerAutoHideTimer); installBanner.classList.remove('show'); localStorage.setItem('app_installed','true'); showNotifPrompt(); });
+
+    // =============================================
+    //  BACKGROUND SYNC
+    // =============================================
+    async function registerBackgroundSync() {
+        if (!('serviceWorker' in navigator)||Notification.permission!=='granted') return;
+        try { const reg = await navigator.serviceWorker.ready; if ('periodicSync' in reg) { const s = await navigator.permissions.query({name:'periodic-background-sync'}); if (s.state==='granted') await reg.periodicSync.register('cinelingua-background-sync',{minInterval:60*60*1000}); } } catch(e) {}
+    }
+
+    // =============================================
+    //  MAIN LOAD
+    // =============================================
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if (!isAppInstalled()) { setTimeout(() => { if (!installBanner.classList.contains('show')) showNotifPrompt(); }, 5000); }
+            else { showNotifPrompt(); registerBackgroundSync(); }
+        }, 1500);
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                swRegistration = reg;
+                initFirebase(reg);
+                setTimeout(() => { if (Notification.permission==='granted') { getAndSaveFCMToken(); registerBackgroundSync(); } }, 3000);
+                if (Notification.permission==='granted') scheduleReminders();
+            }).catch(err => console.log('SW failed:', err));
+        }
+        if (Notification.permission==='granted') setTimeout(getAndSaveFCMToken, 4000);
+    });
+
+    // =============================================
+    //  NOTIFICATIONS
+    // =============================================
+    async function getNotifData() { try { const res = await fetch('notifications.json?v='+Date.now()); return await res.json(); } catch(e) { return null; } }
+    function sendWelcomeNotif() {
+        navigator.serviceWorker.ready.then(reg => {
+            reg.showNotification('مرحباً في CineLingua! 🎓', { body:'سنذكّرك يومياً بدرسك. ابدأ تعلمك الآن!', icon:'https://i.postimg.cc/J4xdc62M/20260305-233826.png', badge:'https://i.postimg.cc/J4xdc62M/20260305-233826.png', image:'https://i.postimg.cc/J4xdc62M/20260305-233826.png', dir:'rtl', lang:'ar', vibrate:[200,100,200,100,200], tag:'welcome', renotify:true, actions:[{action:'open',title:'📚 تعلم الآن'},{action:'close',title:'لاحقاً'}] });
+        });
+    }
+    async function scheduleReminders() {
+        const data = await getNotifData(); if (!data) return;
+        if (data.update?.enabled && !localStorage.getItem('lastUpdateNotif')) {
+            navigator.serviceWorker.ready.then(reg => { reg.showNotification(data.update.title,{body:data.update.body,icon:'https://i.postimg.cc/J4xdc62M/20260305-233826.png',badge:'https://i.postimg.cc/J4xdc62M/20260305-233826.png',dir:'rtl',lang:'ar',vibrate:[300,100,300],tag:'update'}); });
+            localStorage.setItem('lastUpdateNotif','1');
+        } else if (!data.update?.enabled) { localStorage.removeItem('lastUpdateNotif'); }
+        checkScheduledReminders(data.reminders);
+        setInterval(() => checkScheduledReminders(data.reminders), 60000);
+    }
+    function checkScheduledReminders(reminders) {
+        if (!reminders||Notification.permission!=='granted') return;
+        const now=new Date(), h=now.getHours(), m=now.getMinutes(), today=now.toDateString(), yesterday=new Date(now-86400000).toDateString();
+        reminders.forEach((r,i) => {
+            if (r.enabled===false) { localStorage.removeItem(`notif_sent_${i}_${today}`); localStorage.removeItem(`notif_sent_${i}_${yesterday}`); return; }
+            const key=`notif_sent_${i}_${today}`;
+            if (h===r.hour&&m===(r.minute||0)&&!localStorage.getItem(key)) {
+                localStorage.setItem(key,'1');
+                navigator.serviceWorker.ready.then(reg => { reg.showNotification(r.title,{body:r.body,icon:'https://i.postimg.cc/J4xdc62M/20260305-233826.png',badge:'https://i.postimg.cc/J4xdc62M/20260305-233826.png',image:r.image||'https://i.postimg.cc/J4xdc62M/20260305-233826.png',dir:'rtl',lang:'ar',vibrate:[200,100,200,100,200],tag:'reminder-'+i,renotify:true,actions:[{action:'open',title:'📚 تعلم الآن'},{action:'close',title:'لاحقاً'}]}); });
+            }
+            localStorage.removeItem(`notif_sent_${i}_${yesterday}`);
+        });
+    }
+
+    // =============================================
+    //  INIT LANGUAGE
+    // =============================================
+    setLang(currentLang);
+    </script>
+</body>
+                    </html>
