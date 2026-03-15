@@ -85,7 +85,7 @@ async function sendToTokens(tokens, title, body, image, hour) {
                     { action: 'close', title: 'لاحقاً' }
                 ]
             },
-            fcm_options: { link: 'https://cinelingua.netlify.app/' }
+            fcm_options: { link: 'https://riad325r-maker.github.io/cine-lingua.-/' }
         },
         // نرسل الـ hour كـ data للـ SW يستخدمه في الـ tag
         data: { hour: String(hour) }
