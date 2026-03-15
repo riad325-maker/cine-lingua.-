@@ -3,741 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLingua | الاختبارات</title>
+    <title data-i18n="quizTitle">CineLingua | الاختبارات</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #ec4899;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
-            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.12);
-            --bg-primary: #f8fafc;
-            --bg-card: #ffffff;
-            --bg-secondary: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
-        }
-
-        [data-theme="dark"] {
-            --border: #334155;
-            --bg-primary: #0f172a;
-            --bg-card: #1e293b;
-            --bg-secondary: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-        }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        /* ===== NAVBAR ===== */
-        .navbar {
-            background: var(--bg-card);
-            box-shadow: 0 1px 0 var(--border);
-            position: fixed; width: 100%; top: 0; z-index: 1000;
-        }
-
-        .nav-container {
-            max-width: 1200px; margin: 0 auto;
-            padding: 0.9rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .logo {
-            display: flex; align-items: center; gap: 0.5rem;
-            font-size: 1.45rem; font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-decoration: none;
-        }
-
-        .nav-menu { display: flex; gap: 0.25rem; list-style: none; }
-
-        .nav-menu a {
-            text-decoration: none; color: var(--text-secondary);
-            font-weight: 500; padding: 0.5rem 0.9rem;
-            border-radius: 0.6rem; transition: all 0.2s; font-size: 0.9rem;
-        }
-
-        .nav-menu a:hover, .nav-menu a.active {
-            color: var(--primary); background: rgba(99,102,241,0.08);
-        }
-
-        .nav-right { display: flex; align-items: center; gap: 0.75rem; }
-
-        .theme-toggle { display: flex; background: var(--bg-secondary); padding: 0.2rem; border-radius: 2rem; }
-
-        .theme-btn {
-            padding: 0.4rem 0.8rem; border: none; background: transparent;
-            border-radius: 2rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; font-size: 0.85rem;
-        }
-
-        .theme-btn.active { background: var(--primary); color: white; }
-
-        .menu-toggle { background: none; border: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; display: none; }
-
-        @media (max-width: 768px) {
-            .menu-toggle { display: block; }
-            .nav-menu {
-                display: none; position: absolute; top: 100%; right: 0; left: 0;
-                background: var(--bg-card); flex-direction: column;
-                padding: 0.75rem; gap: 0.2rem;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-                border-bottom: 1px solid var(--border);
-            }
-            .nav-menu.show { display: flex; }
-            .nav-menu a { padding: 0.75rem 1rem; display: block; }
-        }
-
-        /* ===== LAYOUT ===== */
-        .container { max-width: 1200px; margin: 80px auto 2rem; padding: 0 1.5rem; }
-
-        /* ===== PAGE HEADER ===== */
-        .page-header { text-align: center; margin: 2rem 0 2.5rem; }
-
-        .page-header h1 {
-            font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .page-header p { color: var(--text-secondary); font-size: 0.95rem; }
-
-        .quiz-stats {
-            display: flex; justify-content: center; gap: 1rem;
-            margin-top: 1.25rem; flex-wrap: wrap;
-        }
-
-        .stat-item {
-            background: var(--bg-card); padding: 0.7rem 1.4rem;
-            border-radius: 2rem; border: 1px solid var(--border);
-            display: flex; align-items: center; gap: 0.5rem;
-            font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);
-        }
-
-        .stat-item i { color: var(--primary); font-size: 0.85rem; }
-        .stat-item span b { color: var(--text-primary); }
-
-        /* ===== FILTERS ===== */
-        .filters-container {
-            display: flex; justify-content: center;
-            gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 0.55rem 1.3rem; border: 2px solid var(--border);
-            background: var(--bg-card); border-radius: 2rem; cursor: pointer;
-            font-weight: 600; color: var(--text-secondary); transition: all 0.25s;
-            font-size: 0.88rem; font-family: inherit;
-        }
-
-        .filter-btn:hover  { border-color: var(--primary); color: var(--primary); }
-        .filter-btn.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-color: transparent; color: white;
-            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
-        }
-
-        /* ===== QUIZ CARDS ===== */
-        .quizzes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem; margin-bottom: 2rem;
-        }
-
-        .quiz-card {
-            background: var(--bg-card); border-radius: 1.25rem;
-            overflow: hidden; box-shadow: var(--shadow);
-            border: 2px solid transparent; transition: all 0.3s;
-        }
-
-        .quiz-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: rgba(99,102,241,0.3); }
-
-        .quiz-card-header {
-            padding: 1.75rem 1.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; position: relative; overflow: hidden;
-        }
-
-        .quiz-card-header::before {
-            content: '';
-            position: absolute; top: -20px; left: -20px;
-            width: 100px; height: 100px;
-            background: rgba(255,255,255,0.08); border-radius: 50%;
-        }
-
-        .quiz-card-header::after {
-            content: '';
-            position: absolute; bottom: -30px; right: -10px;
-            width: 120px; height: 120px;
-            background: rgba(255,255,255,0.05); border-radius: 50%;
-        }
-
-        .quiz-level-badge {
-            display: inline-flex; align-items: center; gap: 0.35rem;
-            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
-            padding: 0.25rem 0.75rem; border-radius: 100px;
-            font-size: 0.78rem; font-weight: 700; margin-bottom: 0.75rem;
-            position: relative; z-index: 1;
-        }
-
-        .quiz-card-title { font-size: 1.4rem; font-weight: 800; position: relative; z-index: 1; }
-
-        .quiz-card-body { padding: 1.4rem; }
-
-        .quiz-meta {
-            display: flex; justify-content: space-between;
-            color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;
-        }
-
-        .quiz-meta span { display: flex; align-items: center; gap: 0.35rem; }
-        .quiz-meta i { color: var(--primary); font-size: 0.8rem; }
-
-        .quiz-progress-bar {
-            width: 100%; height: 6px; background: var(--bg-secondary);
-            border-radius: 100px; overflow: hidden; margin-bottom: 1rem;
-        }
-
-        .quiz-progress-fill {
-            height: 100%; border-radius: 100px;
-            background: linear-gradient(90deg, var(--success), #16a34a);
-            transition: width 0.5s ease;
-        }
-
-        .quiz-card-footer { display: flex; justify-content: space-between; align-items: center; }
-
-        .score-badge {
-            background: var(--bg-secondary); padding: 0.3rem 0.8rem;
-            border-radius: 2rem; font-size: 0.82rem; font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .score-badge.done { background: rgba(34,197,94,0.12); color: #16a34a; }
-
-        .start-btn {
-            padding: 0.55rem 1.4rem; border: none; border-radius: 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; font-weight: 700; cursor: pointer; transition: all 0.25s;
-            font-size: 0.88rem; font-family: inherit;
-            display: flex; align-items: center; gap: 0.4rem;
-        }
-
-        .start-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(99,102,241,0.35); }
-
-        /* ===== QUIZ MODAL ===== */
-        .quiz-modal {
-            position: fixed; inset: 0;
-            background: var(--bg-primary);
-            z-index: 2000; opacity: 0; visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            overflow-y: auto;
-        }
-
-        .quiz-modal.active { opacity: 1; visibility: visible; }
-
-        .quiz-modal-container {
-            max-width: 680px; margin: 0 auto;
-            padding: 1.5rem 1.5rem 4rem;
-            min-height: 100vh;
-        }
-
-        /* Sticky header inside modal */
-        .quiz-modal-topbar {
-            position: sticky; top: 0; z-index: 10;
-            background: var(--bg-primary);
-            padding: 1rem 0 0.75rem;
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .modal-close-btn {
-            width: 38px; height: 38px; border-radius: 50%;
-            border: 1.5px solid var(--border); background: var(--bg-card);
-            color: var(--text-secondary); cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; font-size: 0.9rem;
-        }
-
-        .modal-close-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
-
-        .modal-meta { display: flex; align-items: center; gap: 0.75rem; }
-
-        .q-counter {
-            background: var(--primary); color: white;
-            padding: 0.3rem 0.9rem; border-radius: 2rem;
-            font-size: 0.82rem; font-weight: 700;
-        }
-
-        .q-timer {
-            background: var(--bg-card); border: 1px solid var(--border);
-            padding: 0.3rem 0.9rem; border-radius: 2rem;
-            font-size: 0.82rem; font-weight: 600; color: var(--text-secondary);
-            display: flex; align-items: center; gap: 0.4rem;
-            transition: color 0.3s, border-color 0.3s;
-        }
-
-        .q-timer.urgent { color: var(--danger); border-color: var(--danger); }
-
-        /* Progress bar across top */
-        .modal-progress-track {
-            height: 4px; background: var(--bg-secondary);
-            border-radius: 100px; overflow: hidden; margin-bottom: 1.75rem;
-        }
-
-        .modal-progress-fill {
-            height: 100%; border-radius: 100px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 0.4s ease;
-        }
-
-        /* Question */
-        .question-box {
-            background: linear-gradient(135deg, var(--primary), #7c3aed);
-            color: white; padding: 1.5rem; border-radius: 1.1rem;
-            font-size: 1.1rem; font-weight: 600; line-height: 1.65;
-            margin-bottom: 1.5rem;
-        }
-
-        .question-num {
-            font-size: 0.75rem; opacity: 0.75; font-weight: 500;
-            display: block; margin-bottom: 0.5rem;
-        }
-
-        /* Options */
-        .options-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.75rem; }
-
-        .option-item {
-            padding: 1rem 1.25rem; border: 2px solid var(--border);
-            border-radius: 1rem; cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; gap: 0.9rem;
-            background: var(--bg-card); user-select: none;
-        }
-
-        .option-item:hover:not(.locked) { border-color: var(--primary); background: rgba(99,102,241,0.04); }
-
-        .option-item.selected { border-color: var(--primary); background: rgba(99,102,241,0.07); }
-
-        .option-item.correct  { border-color: var(--success); background: rgba(34,197,94,0.08); }
-        .option-item.wrong    { border-color: var(--danger);  background: rgba(239,68,68,0.07); }
-
-        .option-letter {
-            width: 34px; height: 34px; border-radius: 50%;
-            background: var(--bg-secondary); display: flex; align-items: center;
-            justify-content: center; font-weight: 800; font-size: 0.9rem;
-            flex-shrink: 0; transition: all 0.2s; color: var(--text-secondary);
-        }
-
-        .option-item.selected .option-letter { background: var(--primary); color: white; }
-        .option-item.correct  .option-letter { background: var(--success); color: white; }
-        .option-item.wrong    .option-letter { background: var(--danger);  color: white; }
-
-        .option-text { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); }
-
-        .option-feedback-icon { margin-right: auto; font-size: 1rem; display: none; }
-        .option-item.correct .option-feedback-icon,
-        .option-item.wrong   .option-feedback-icon { display: block; }
-        .option-item.correct .option-feedback-icon { color: var(--success); }
-        .option-item.wrong   .option-feedback-icon { color: var(--danger); }
-
-        /* Feedback banner */
-        .answer-feedback {
-            padding: 0.85rem 1.1rem; border-radius: 0.85rem;
-            font-weight: 600; font-size: 0.92rem; margin-bottom: 1.25rem;
-            display: none; align-items: center; gap: 0.5rem;
-        }
-
-        .answer-feedback.show  { display: flex; }
-        .answer-feedback.right { background: rgba(34,197,94,0.12); color: #15803d; border: 1px solid rgba(34,197,94,0.25); }
-        .answer-feedback.wrong { background: rgba(239,68,68,0.1); color: #b91c1c; border: 1px solid rgba(239,68,68,0.2); }
-
-        /* Navigation */
-        .quiz-nav {
-            display: flex; justify-content: space-between; align-items: center; gap: 1rem;
-        }
-
-        .nav-btn {
-            padding: 0.7rem 1.5rem; border: none; border-radius: 2rem;
-            cursor: pointer; font-weight: 700; transition: all 0.25s;
-            display: flex; align-items: center; gap: 0.45rem;
-            font-size: 0.88rem; font-family: inherit;
-        }
-
-        .nav-prev {
-            background: var(--bg-card); color: var(--text-secondary);
-            border: 1.5px solid var(--border);
-        }
-
-        .nav-prev:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
-        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-        .nav-next {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; box-shadow: 0 4px 12px rgba(99,102,241,0.3);
-        }
-
-        .nav-next:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(99,102,241,0.4); }
-
-        .nav-skip {
-            background: transparent; color: var(--text-secondary);
-            border: none; font-size: 0.82rem; cursor: pointer;
-            font-family: inherit; padding: 0.5rem;
-            transition: color 0.2s; text-decoration: underline;
-        }
-
-        .nav-skip:hover { color: var(--primary); }
-
-        /* ===== RESULTS ===== */
-        .results-wrap { text-align: center; padding: 1rem 0; }
-
-        .result-circle {
-            width: 140px; height: 140px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            margin: 0 auto 1.5rem; color: white;
-            box-shadow: 0 12px 30px rgba(99,102,241,0.4);
-        }
-
-        .result-pct  { font-size: 2.8rem; font-weight: 800; line-height: 1; }
-        .result-sign { font-size: 1.1rem; opacity: 0.85; }
-
-        .result-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.4rem; }
-        .result-msg   { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.75rem; }
-
-        .results-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 0.85rem; margin-bottom: 2rem;
-        }
-
-        .result-stat {
-            background: var(--bg-secondary); padding: 1rem 0.75rem;
-            border-radius: 1rem; text-align: center;
-        }
-
-        .result-stat .rs-val { font-size: 1.6rem; font-weight: 800; display: block; }
-        .result-stat .rs-lbl { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.2rem; }
-        .result-stat.c .rs-val { color: var(--success); }
-        .result-stat.w .rs-val { color: var(--danger); }
-        .result-stat.s .rs-val { color: var(--text-secondary); }
-
-        .results-actions { display: flex; justify-content: center; gap: 0.85rem; flex-wrap: wrap; }
-
-        .res-btn {
-            padding: 0.75rem 1.8rem; border-radius: 2rem; font-weight: 700;
-            cursor: pointer; transition: all 0.25s; font-family: inherit;
-            font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;
-        }
-
-        .res-btn.primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; border: none;
-            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
-        }
-
-        .res-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(99,102,241,0.4); }
-
-        .res-btn.outline {
-            background: transparent; color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .res-btn.outline:hover { background: var(--primary); color: white; }
-
-        /* ===== REVIEW MODE ===== */
-        .review-item {
-            background: var(--bg-card); border-radius: 1.1rem;
-            padding: 1.25rem; margin-bottom: 1rem;
-            border: 2px solid var(--border);
-        }
-
-        .review-item.r-correct { border-color: rgba(34,197,94,0.35); }
-        .review-item.r-wrong   { border-color: rgba(239,68,68,0.3); }
-        .review-item.r-skipped { border-color: rgba(245,158,11,0.3); }
-
-        .review-q-header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 0.85rem; gap: 0.75rem;
-        }
-
-        .review-q-text { font-weight: 600; font-size: 0.95rem; line-height: 1.5; flex: 1; }
-
-        .review-tag {
-            padding: 0.2rem 0.65rem; border-radius: 100px;
-            font-size: 0.72rem; font-weight: 700; white-space: nowrap;
-        }
-
-        .tag-correct { background: rgba(34,197,94,0.15); color: #15803d; }
-        .tag-wrong   { background: rgba(239,68,68,0.12); color: #b91c1c; }
-        .tag-skipped { background: rgba(245,158,11,0.15); color: #b45309; }
-
-        .review-answers { display: flex; flex-direction: column; gap: 0.4rem; }
-
-        .review-answer {
-            padding: 0.55rem 0.85rem; border-radius: 0.65rem;
-            font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;
-        }
-
-        .review-answer.your-wrong { background: rgba(239,68,68,0.09); color: #b91c1c; }
-        .review-answer.correct-a  { background: rgba(34,197,94,0.1);  color: #15803d; }
-
-        /* ===== TOAST ===== */
-        .toast-container {
-            position: fixed; bottom: 2rem; left: 50%;
-            transform: translateX(-50%); z-index: 9999;
-            display: flex; flex-direction: column; gap: 0.45rem; align-items: center;
-        }
-
-        .toast {
-            background: var(--bg-card); color: var(--text-primary);
-            padding: 0.7rem 1.4rem; border-radius: 2rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.13); border: 1px solid var(--border);
-            font-weight: 600; font-size: 0.88rem;
-            display: flex; align-items: center; gap: 0.5rem;
-            animation: toastIn 0.3s ease; white-space: nowrap;
-        }
-
-        .toast.warn { border-color: var(--warning); color: var(--warning); }
-
-        @keyframes toastIn  { from { opacity:0; transform:translateY(12px) scale(0.92); } to { opacity:1; transform:translateY(0) scale(1); } }
-        @keyframes toastOut { to   { opacity:0; transform:translateY(12px) scale(0.92); } }
-
-        /* ===== DOMAIN BADGE ===== */
-        .domain-badge {
-            display: inline-flex; align-items: center; gap: 0.35rem;
-            padding: 0.22rem 0.75rem; border-radius: 100px;
-            font-size: 0.73rem; font-weight: 700; margin-bottom: 0.85rem;
-            letter-spacing: 0.04em;
-        }
-        .domain-grammar    { background: rgba(99,102,241,0.12); color: var(--primary); }
-        .domain-vocabulary { background: rgba(236,72,153,0.12); color: var(--secondary); }
-        .domain-reading    { background: rgba(16,185,129,0.12); color: #10b981; }
-        .domain-use_of_english { background: rgba(245,158,11,0.12); color: var(--warning); }
-
-        /* reading passage */
-        .reading-passage {
-            background: var(--bg-secondary); border-right: 3px solid var(--primary);
-            padding: 1rem 1.1rem; border-radius: 0.75rem;
-            font-size: 0.9rem; line-height: 1.75; color: var(--text-secondary);
-            margin-bottom: 1.25rem; font-style: italic;
-        }
-
-        /* True/False buttons */
-        .tf-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.75rem; }
-        .tf-option {
-            padding: 1rem; border: 2px solid var(--border); border-radius: 1rem;
-            cursor: pointer; text-align: center; font-weight: 700; font-size: 1rem;
-            background: var(--bg-card); transition: all 0.2s; user-select: none;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-            color: var(--text-primary);
-        }
-        .tf-option:hover:not(.locked) { border-color: var(--primary); background: rgba(99,102,241,0.04); }
-        .tf-option.selected { border-color: var(--primary); background: rgba(99,102,241,0.07); }
-        .tf-option.correct  { border-color: var(--success); background: rgba(34,197,94,0.08); color: #15803d; }
-        .tf-option.wrong    { border-color: var(--danger);  background: rgba(239,68,68,0.07);  color: #b91c1c; }
-
-        /* Fill in blank */
-        .fill-wrap { margin-bottom: 1.75rem; display: flex; flex-direction: column; gap: 0.65rem; }
-        .fill-hint { font-size: 0.82rem; color: var(--text-secondary); font-style: italic; }
-        .fill-input-row { display: flex; gap: 0.65rem; align-items: center; }
-        .fill-input {
-            flex: 1; background: var(--bg-secondary); border: 2px solid var(--border);
-            border-radius: 0.85rem; padding: 0.85rem 1rem; color: var(--text-primary);
-            font-size: 0.95rem; font-family: inherit; font-weight: 500;
-            transition: border 0.2s; outline: none; direction: ltr;
-        }
-        .fill-input:focus { border-color: var(--primary); }
-        .fill-input.correct { border-color: var(--success); background: rgba(34,197,94,0.06); }
-        .fill-input.wrong   { border-color: var(--danger);  background: rgba(239,68,68,0.05); }
-        .fill-check {
-            padding: 0.85rem 1.3rem; border: none; border-radius: 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; font-weight: 700; font-size: 0.85rem; cursor: pointer;
-            font-family: inherit; transition: all 0.2s; white-space: nowrap;
-        }
-        .fill-check:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
-        .fill-check:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* Explanation box */
-        .explanation-box {
-            background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.2);
-            border-radius: 0.85rem; padding: 0.85rem 1rem; margin-bottom: 1.25rem;
-            font-size: 0.87rem; color: var(--text-secondary); line-height: 1.6;
-            display: none; align-items: flex-start; gap: 0.5rem;
-        }
-        .explanation-box.show { display: flex; }
-        .explanation-box i { color: var(--primary); margin-top: 0.1rem; flex-shrink: 0; }
-
-        /* locked card */
-        .quiz-card.is-locked { opacity: 0.6; }
-        .quiz-card.is-locked .start-btn { cursor: not-allowed; opacity: 0.6; }
-
-        /* ===== FOOTER ===== */
-        .footer {
-            background: var(--bg-card); border-top: 1px solid var(--border);
-            text-align: center; padding: 1.75rem 2rem; margin-top: 4rem;
-            color: var(--text-secondary); font-size: 0.88rem;
-        }
-
-        @media (max-width: 480px) {
-            .results-grid { grid-template-columns: repeat(3, 1fr); }
-            .quiz-nav { flex-wrap: wrap; }
-            .tf-options { grid-template-columns: 1fr 1fr; }
-            .fill-input-row { flex-direction: column; }
-            .fill-check { width: 100%; }
-        }
-        /* ===== SETTINGS BUTTON ===== */
-        .settings-btn { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 2px 10px rgba(99,102,241,0.4); flex-shrink: 0; }
-        .settings-btn:hover { transform: rotate(90deg) scale(1.1); box-shadow: 0 4px 18px rgba(99,102,241,0.55); }
-        /* ===== SETTINGS PANEL ===== */
-        .settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9990; display: none; backdrop-filter: blur(4px); }
-        .settings-overlay.show { display: block; }
-        .settings-panel { position: fixed; top: 0; right: 0; z-index: 9991; width: 300px; max-width: 92vw; height: 100vh; background: var(--bg-card); display: flex; flex-direction: column; transform: translateX(110%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); overflow: hidden; }
-        .settings-panel.show { transform: translateX(0); }
-        .settings-header { padding: 1.4rem 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-        .settings-header-left { display: flex; align-items: center; gap: 0.85rem; }
-        .settings-header-icon { width: 40px; height: 40px; border-radius: 0.65rem; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-        .settings-header-title { font-size: 1.05rem; font-weight: 800; }
-        .settings-header-sub { font-size: 0.72rem; opacity: 0.75; margin-top: 1px; }
-        .settings-close { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: all 0.2s; }
-        .settings-close:hover { background: rgba(255,255,255,0.35); transform: rotate(90deg); }
-        .settings-body { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.4rem; }
-        .settings-section { display: flex; flex-direction: column; gap: 0.65rem; }
-        .settings-section-title { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); }
-        .settings-section-title i { color: var(--primary); }
-        .settings-theme-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
-        .settings-theme-btn { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.85rem 0.5rem; border-radius: 0.9rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); font-family: inherit; position: relative; transition: all 0.2s; }
-        .settings-theme-btn:hover { border-color: rgba(99,102,241,0.4); color: var(--primary); }
-        .settings-theme-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); color: var(--primary); }
-        .settings-theme-btn.active::after { content: '✓'; position: absolute; top: 6px; left: 8px; font-size: 0.65rem; font-weight: 800; width: 16px; height: 16px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 16px; text-align: center; }
-        .theme-preview { width: 100%; height: 48px; border-radius: 0.5rem; overflow: hidden; display: flex; flex-direction: column; gap: 3px; padding: 5px; border: 1px solid rgba(0,0,0,0.07); }
-        .theme-preview.light { background: #f8fafc; } .theme-preview.dark { background: #0f172a; }
-        .theme-preview .p-bar { height: 6px; border-radius: 3px; background: linear-gradient(90deg,#6366f1,#ec4899); }
-        .theme-preview .p-card { height: 7px; border-radius: 3px; }
-        .theme-preview.light .p-card { background: white; border: 1px solid #e2e8f0; } .theme-preview.dark .p-card { background: #1e293b; border: 1px solid #334155; }
-        .theme-preview .p-card.short { width: 65%; }
-        .settings-lang-row { display: flex; flex-direction: column; gap: 0.5rem; }
-        .settings-lang-btn { display: flex; align-items: center; gap: 0.85rem; padding: 0.9rem 1rem; border-radius: 0.85rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-family: inherit; width: 100%; color: var(--text-primary); transition: all 0.2s; }
-        .settings-lang-btn:hover { border-color: rgba(99,102,241,0.4); }
-        .settings-lang-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); }
-        .lang-flag { font-size: 1.4rem; flex-shrink: 0; } .lang-info { display: flex; flex-direction: column; flex: 1; gap: 1px; }
-        .lang-name { font-size: 0.9rem; font-weight: 700; } .lang-sub { font-size: 0.72rem; color: var(--text-secondary); }
-        .lang-check { color: var(--primary); font-size: 0.85rem; opacity: 0; transition: opacity 0.2s; }
-        .settings-lang-btn.active .lang-check { opacity: 1; }
-        .settings-notif-card { background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 0.9rem; overflow: hidden; }
-        .settings-notif-top { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
-        .settings-notif-label { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
-        .notif-badge { font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 2rem; }
-        .notif-badge.granted { background: rgba(34,197,94,0.12); color: #16a34a; } .notif-badge.denied { background: rgba(239,68,68,0.12); color: #dc2626; } .notif-badge.default { background: rgba(99,102,241,0.12); color: var(--primary); }
-        .notif-action-btn { width: 100%; padding: 0.85rem 1rem; border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .notif-action-btn:disabled { opacity: 0.5; cursor: not-allowed; background: var(--bg-secondary); color: var(--text-secondary); }
-        .settings-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.75rem; color: var(--text-secondary); flex-shrink: 0; }
-
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- SETTINGS PANEL -->
-    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
-    <div class="settings-panel" id="settingsPanel">
-        <div class="settings-header">
-            <div class="settings-header-left">
-                <div class="settings-header-icon"><i class="fas fa-sliders-h"></i></div>
-                <div><div class="settings-header-title" id="s-title">الإعدادات</div><div class="settings-header-sub">CineLingua</div></div>
-            </div>
-            <button class="settings-close" onclick="closeSettings()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="settings-body">
-            <div class="settings-section">
-                <div class="settings-section-title"><i class="fas fa-palette"></i> <span id="s-appearance">المظهر</span></div>
-                <div class="settings-theme-row">
-                    <button class="settings-theme-btn" id="btn-light" onclick="setTheme('light')"><div class="theme-preview light"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div><i class="fas fa-sun"></i> <span id="s-light">فاتح</span></button>
-                    <button class="settings-theme-btn" id="btn-dark" onclick="setTheme('dark')"><div class="theme-preview dark"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div><i class="fas fa-moon"></i> <span id="s-dark">داكن</span></button>
-                </div>
-            </div>
-            <div class="settings-section">
-                <div class="settings-section-title"><i class="fas fa-globe"></i> <span id="s-lang">اللغة</span></div>
-                <div class="settings-lang-row">
-                    <button class="settings-lang-btn" id="lang-ar" onclick="setLang('ar')"><span class="lang-flag"></span><div class="lang-info"><span class="lang-name">العربية</span><span class="lang-sub">Arabic</span></div><i class="fas fa-check lang-check"></i></button>
-                    <button class="settings-lang-btn" id="lang-en" onclick="setLang('en')"><span class="lang-flag"></span><div class="lang-info"><span class="lang-name">English</span><span class="lang-sub">الإنجليزية</span></div><i class="fas fa-check lang-check"></i></button>
-                </div>
-            </div>
-            <div class="settings-section">
-                <div class="settings-section-title"><i class="fas fa-bell"></i> <span id="s-notif">الإشعارات</span></div>
-                <div class="settings-notif-card">
-                    <div class="settings-notif-top"><span class="settings-notif-label" id="s-notif-status">حالة الإشعارات</span><span class="notif-badge default" id="notifBadge">غير محددة</span></div>
-                    <button class="notif-action-btn" id="notifActionBtn" onclick="requestNotifSettings()"><i class="fas fa-bell"></i> <span id="s-notif-btn">تفعيل الإشعارات</span></button>
-                </div>
-            </div>
-        </div>
-        <div class="settings-footer">CineLingua • v2.0</div>
-    </div>
-
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a class="logo" href="index.html"><i class="fas fa-film"></i>CineLingua </a>
-            <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html" id="nav-home">الرئيسية</a></li>
-                <li><a href="lessons.html" id="nav-lessons">الكلمات</a></li>
-                <li><a href="stories.html" id="nav-stories">القصص</a></li>
-                <li><a href="tenses.html" id="nav-tenses">الأزمنة</a></li>
-                <li><a href="quiz.html" id="nav-quiz" class="active">الاختبارات</a></li>
-                <li><a href="verbs.html" id="nav-quiz">الأفعال والتصاريف</a></li>
-                <li><a href="grammar.html" id="nav-quiz">الجرامر</a></li>
-                <li><a href="download.html" id="nav-download">تحميل التطبيق</a></li>
-            </ul>
-            <div class="nav-right">
-                <div class="theme-toggle">
-                    <button class="theme-btn active" onclick="setTheme('light')"><i class="fas fa-sun"></i></button>
-                    <button class="theme-btn" onclick="setTheme('dark')"><i class="fas fa-moon"></i></button>
-                </div>
-                <button class="settings-btn" onclick="openSettings()"><i class="fas fa-cog"></i></button>
-            </div>
-        </div>
-    </nav>
-
     <div class="container">
-
         <!-- PAGE HEADER -->
-        <div class="page-header">
-            <h1 id="page-title">اختبر مستواك</h1>
-            <p id="page-sub">ستة مستويات CEFR من A1 إلى C2 — أكمل كل مستوى للانتقال للتالي</p>
-            <div class="quiz-stats">
-                <div class="stat-item">
-                    <i class="fas fa-tasks"></i>
-                    <span><b id="totalQuizzes">6</b> <span id="lbl-quizzes">اختبارات</span></span>
+        <div class="page-header" style="text-align: center; display: block; margin-bottom: 2.5rem;">
+            <h1 data-i18n="quizTitle">اختبر مستواك</h1>
+            <p data-i18n="quizSub">ستة مستويات CEFR من A1 إلى C2 — أكمل كل مستوى للانتقال للتالي</p>
+            <div class="quiz-stats" style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap;">
+                <div class="stat-item" style="background: var(--bg-card); padding: 0.7rem 1.4rem; border-radius: 2rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">
+                    <i class="fas fa-tasks" style="color:var(--primary);"></i>
+                    <span><b id="totalQuizzes">6</b> <span data-i18n="lbl-quizzes">اختبارات</span></span>
                 </div>
-                <div class="stat-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span><b id="totalQuestions">0</b> <span id="lbl-questions">سؤال</span></span>
+                <div class="stat-item" style="background: var(--bg-card); padding: 0.7rem 1.4rem; border-radius: 2rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">
+                    <i class="fas fa-question-circle" style="color:var(--primary);"></i>
+                    <span><b id="totalQuestions">0</b> <span data-i18n="lbl-questions">سؤال</span></span>
                 </div>
-                <div class="stat-item">
+                <div class="stat-item" style="background: var(--bg-card); padding: 0.7rem 1.4rem; border-radius: 2rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">
                     <i class="fas fa-check-circle" style="color:var(--success)"></i>
-                    <span><b id="completedCount">0</b> <span id="lbl-completed">مكتمل</span></span>
+                    <span><b id="completedCount">0</b> <span data-i18n="completed">مكتمل</span></span>
                 </div>
-                <div class="stat-item">
+                <div class="stat-item" style="background: var(--bg-card); padding: 0.7rem 1.4rem; border-radius: 2rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">
                     <i class="fas fa-star" style="color:var(--warning)"></i>
-                    <span><span id="lbl-best">أفضل نتيجة</span>: <b id="bestScore">—</b></span>
+                    <span><span data-i18n="lbl-best">أفضل نتيجة</span>: <b id="bestScore">—</b></span>
                 </div>
             </div>
         </div>
 
         <!-- FILTERS -->
         <div class="filters-container">
-            <button class="filter-btn active" onclick="filterQuizzes('all', this)">الكل</button>
+            <button class="filter-btn active" onclick="filterQuizzes('all', this)" data-i18n="all">الكل</button>
             <button class="filter-btn" onclick="filterQuizzes('a1', this)">A1</button>
             <button class="filter-btn" onclick="filterQuizzes('a2', this)">A2</button>
             <button class="filter-btn" onclick="filterQuizzes('b1', this)">B1</button>
@@ -746,1275 +46,248 @@
             <button class="filter-btn" onclick="filterQuizzes('c2', this)">C2</button>
         </div>
 
-        <!-- QUIZ CARDS -->
+        <!-- QUIZZES GRID -->
         <div class="quizzes-grid" id="quizzesGrid"></div>
     </div>
 
     <!-- QUIZ MODAL -->
-    <div class="quiz-modal" id="quizModal">
+    <div class="quiz-modal" id="quizModal" style="position: fixed; inset: 0; background: var(--bg-primary); z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s; overflow-y: auto;">
         <div class="quiz-modal-container" id="quizModalContainer"></div>
     </div>
 
-    <!-- TOAST -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <p id="footer-txt">© 2026 CineLingua — جميع الحقوق محفوظة</p>
-    </footer>
-
-
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="translation.js"></script>
+    <script src="core.js"></script>
     <script>
-// =====================================================
-//  CEFR FULL CURRICULUM DATA
-//  4 domains per level: grammar, vocabulary, reading, use_of_english
-//  Question types: mcq, tf (true/false), fill (fill-in-blank)
-// =====================================================
-
 const QUIZ_DATA = {
-
-  // ══════════════════════════════════════════════════
-  //  A1 — BEGINNER
-  // ══════════════════════════════════════════════════
   a1: {
     grammar: [
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "Choose the correct sentence:",
-        options: ["I am a student.", "I is a student.", "I are a student.", "I be a student."],
-        correct: 0,
-        explanation: "نستخدم 'am' مع الضمير I فقط"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "She ___ a doctor.",
-        options: ["am", "are", "is", "be"],
-        correct: 2,
-        explanation: "مع he/she/it نستخدم 'is'"
-      },
-      {
-        type: "tf",
-        domain: "grammar",
-        question: "'They is students' is a correct sentence.",
-        correct: false,
-        explanation: "الصح: 'They ARE students' — مع they نستخدم are"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "What is the plural of 'book'?",
-        options: ["books", "bookes", "bookies", "book"],
-        correct: 0,
-        explanation: "الجمع العادي: نضيف s فقط"
-      },
-      {
-        type: "fill",
-        domain: "grammar",
-        question: "My name ___ Sara. (استخدم الفعل المناسب)",
-        answer: "is",
-        hint: "هو/هي/اسمي = is",
-        explanation: "مع أسماء المفرد نستخدم 'is'"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "Which is correct? 'I ___ 10 years old.'",
-        options: ["have", "is", "am", "are"],
-        correct: 2,
-        explanation: "للتعبير عن العمر نستخدم: I am + رقم + years old"
-      },
+      { type: "mcq", domain: "grammar", question: "Choose the correct sentence:", options: ["I am a student.", "I is a student.", "I are a student.", "I be a student."], correct: 0, explanation: "نستخدم 'am' مع الضمير I فقط" },
+      { type: "mcq", domain: "grammar", question: "She ___ a doctor.", options: ["am", "are", "is", "be"], correct: 2, explanation: "مع he/she/it نستخدم 'is'" },
+      { type: "tf", domain: "grammar", question: "'They is students' is a correct sentence.", correct: false, explanation: "الصح: 'They ARE students' — مع they نستخدم are" },
+      { type: "mcq", domain: "grammar", question: "What is the plural of 'book'?", options: ["books", "bookes", "bookies", "book"], correct: 0, explanation: "الجمع العادي: نضيف s فقط" },
+      { type: "fill", domain: "grammar", question: "My name ___ Sara. (استخدم الفعل المناسب)", answer: "is", hint: "هو/هي/اسمي = is", explanation: "مع أسماء المفرد نستخدم 'is'" },
+      { type: "mcq", domain: "grammar", question: "Which is correct? 'I ___ 10 years old.'", options: ["have", "is", "am", "are"], correct: 2, explanation: "للتعبير عن العمر نستخدم: I am + رقم + years old" },
     ],
     vocabulary: [
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "What does 'كتاب' mean in English?",
-        options: ["Pen", "Book", "Desk", "Bag"],
-        correct: 1,
-        explanation: "كتاب = Book"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which word is a color?",
-        options: ["Run", "Happy", "Red", "Walk"],
-        correct: 2,
-        explanation: "Red = أحمر — وهو لون"
-      },
-      {
-        type: "tf",
-        domain: "vocabulary",
-        question: "'Cat' and 'dog' are both animals.",
-        correct: true,
-        explanation: "نعم، cat (قطة) و dog (كلب) كلاهما حيوانات"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "What does 'مدرسة' mean in English?",
-        options: ["Hospital", "Market", "School", "Hotel"],
-        correct: 2,
-        explanation: "مدرسة = School"
-      },
-      {
-        type: "fill",
-        domain: "vocabulary",
-        question: "I drink ___ every morning. (ماء بالإنجليزية)",
-        answer: "water",
-        hint: "ماء",
-        explanation: "ماء = water"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which word means 'كبير'?",
-        options: ["Small", "Fast", "Big", "Tall"],
-        correct: 2,
-        explanation: "كبير = Big"
-      },
+      { type: "mcq", domain: "vocabulary", question: "What does 'كتاب' mean in English?", options: ["Pen", "Book", "Desk", "Bag"], correct: 1, explanation: "كتاب = Book" },
+      { type: "mcq", domain: "vocabulary", question: "Which word is a color?", options: ["Run", "Happy", "Red", "Walk"], correct: 2, explanation: "Red = أحمر — وهو لون" },
+      { type: "tf", domain: "vocabulary", question: "'Cat' and 'dog' are both animals.", correct: true, explanation: "نعم، cat (قطة) و dog (كلب) كلاهما حيوانات" },
+      { type: "mcq", domain: "vocabulary", question: "What does 'مدرسة' mean in English?", options: ["Hospital", "Market", "School", "Hotel"], correct: 2, explanation: "مدرسة = School" },
+      { type: "fill", domain: "vocabulary", question: "I drink ___ every morning. (ماء بالإنجليزية)", answer: "water", hint: "ماء", explanation: "ماء = water" },
+      { type: "mcq", domain: "vocabulary", question: "Which word means 'كبير'?", options: ["Small", "Fast", "Big", "Tall"], correct: 2, explanation: "كبير = Big" },
     ],
     reading: [
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "My name is Tom. I am eight years old. I have a cat. Her name is Mimi. Mimi is white and small.",
-        question: "How old is Tom?",
-        options: ["Six", "Seven", "Eight", "Nine"],
-        correct: 2,
-        explanation: "الفقرة تقول: 'I am eight years old'"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "My name is Tom. I am eight years old. I have a cat. Her name is Mimi. Mimi is white and small.",
-        question: "What color is Mimi?",
-        options: ["Black", "White", "Brown", "Orange"],
-        correct: 1,
-        explanation: "الفقرة تقول: 'Mimi is white'"
-      },
-      {
-        type: "tf",
-        domain: "reading",
-        passage: "My name is Tom. I am eight years old. I have a cat. Her name is Mimi. Mimi is white and small.",
-        question: "Mimi is a dog.",
-        correct: false,
-        explanation: "Mimi هي قطة (cat) وليس كلباً"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Sara is a student. She goes to school every day. She likes math and English. Her teacher is Mr. Ali.",
-        question: "What subjects does Sara like?",
-        options: ["Math and Science", "English and Art", "Math and English", "Science and History"],
-        correct: 2,
-        explanation: "الفقرة تقول: 'She likes math and English'"
-      },
+      { type: "mcq", domain: "reading", passage: "My name is Tom. I am eight years old. I have a cat. Her name is Mimi. Mimi is white and small.", question: "How old is Tom?", options: ["Six", "Seven", "Eight", "Nine"], correct: 2, explanation: "الفقرة تقول: 'I am eight years old'" },
+      { type: "mcq", domain: "reading", passage: "My name is Tom. I am eight years old. I have a cat. Her name is Mimi. Mimi is white and small.", question: "What color is Mimi?", options: ["Black", "White", "Brown", "Orange"], correct: 1, explanation: "الفقرة تقول: 'Mimi is white'" },
+      { type: "tf", domain: "reading", passage: "My name is Tom. I am eight years old. I have a cat. Her name is Mimi. Mimi is white and small.", question: "Mimi is a dog.", correct: false, explanation: "Mimi هي قطة (cat) وليس كلباً" },
+      { type: "mcq", domain: "reading", passage: "Sara is a student. She goes to school every day. She likes math and English. Her teacher is Mr. Ali.", question: "What subjects does Sara like?", options: ["Math and Science", "English and Art", "Math and English", "Science and History"], correct: 2, explanation: "الفقرة تقول: 'She likes math and English'" },
     ],
     use_of_english: [
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "Good ___, my name is Sara. (صباح الخير)",
-        answer: "morning",
-        hint: "صباح الخير = Good ___",
-        explanation: "Good morning = صباح الخير"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "How do you say 'مع السلامة' in English?",
-        options: ["Hello", "Thank you", "Goodbye", "Please"],
-        correct: 2,
-        explanation: "مع السلامة = Goodbye"
-      },
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "A: How are you? B: I ___ fine, thank you.",
-        answer: "am",
-        hint: "جواب 'How are you?'",
-        explanation: "I am fine = أنا بخير"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "What do you say when you want something? '___ , can I have some water?'",
-        options: ["Sorry", "Please", "Thanks", "Hello"],
-        correct: 1,
-        explanation: "Please = من فضلك — نستخدمها عند الطلب"
-      },
+      { type: "fill", domain: "use_of_english", question: "Good ___, my name is Sara. (صباح الخير)", answer: "morning", hint: "صباح الخير = Good ___", explanation: "Good morning = صباح الخير" },
+      { type: "mcq", domain: "use_of_english", question: "How do you say 'مع السلامة' in English?", options: ["Hello", "Thank you", "Goodbye", "Please"], correct: 2, explanation: "مع السلامة = Goodbye" },
+      { type: "fill", domain: "use_of_english", question: "A: How are you? B: I ___ fine, thank you.", answer: "am", hint: "جواب 'How are you?'", explanation: "I am fine = أنا بخير" },
+      { type: "mcq", domain: "use_of_english", question: "What do you say when you want something? '___ , can I have some water?'", options: ["Sorry", "Please", "Thanks", "Hello"], correct: 1, explanation: "Please = من فضلك — نستخدمها عند الطلب" },
     ]
   },
-
-  // ══════════════════════════════════════════════════
-  //  A2 — ELEMENTARY
-  // ══════════════════════════════════════════════════
   a2: {
     grammar: [
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "She ___ to school every day.",
-        options: ["go", "goes", "going", "gone"],
-        correct: 1,
-        explanation: "مع he/she/it في Present Simple نضيف s/es للفعل"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "They ___ football last Saturday.",
-        options: ["play", "plays", "played", "playing"],
-        correct: 2,
-        explanation: "last Saturday = الماضي → نستخدم Past Simple: played"
-      },
-      {
-        type: "tf",
-        domain: "grammar",
-        question: "'I am watching TV right now' is a correct Present Continuous sentence.",
-        correct: true,
-        explanation: "نعم، هذه جملة Present Continuous صحيحة — am + watching"
-      },
-      {
-        type: "fill",
-        domain: "grammar",
-        question: "There ___ a lot of people at the party last night.",
-        answer: "were",
-        hint: "الماضي من 'are'",
-        explanation: "were هي الماضي من are — للجمع"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "She is ___ than her sister. (tall)",
-        options: ["more tall", "taller", "tallest", "most tall"],
-        correct: 1,
-        explanation: "للصفات القصيرة: نضيف er للمقارنة → taller"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "How ___ milk do you want?",
-        options: ["many", "much", "few", "some"],
-        correct: 1,
-        explanation: "much = للأشياء غير المعدودة (milk, water, money)"
-      },
+      { type: "mcq", domain: "grammar", question: "She ___ to school every day.", options: ["go", "goes", "going", "gone"], correct: 1, explanation: "مع he/she/it في Present Simple نضيف s/es للفعل" },
+      { type: "mcq", domain: "grammar", question: "They ___ football last Saturday.", options: ["play", "plays", "played", "playing"], correct: 2, explanation: "last Saturday = الماضي → نستخدم Past Simple: played" },
+      { type: "tf", domain: "grammar", question: "'I am watching TV right now' is a correct Present Continuous sentence.", correct: true, explanation: "نعم، هذه جملة Present Continuous صحيحة — am + watching" },
+      { type: "fill", domain: "grammar", question: "There ___ a lot of people at the party last night.", answer: "were", hint: "الماضي من 'are'", explanation: "were هي الماضي من are — للجمع" },
+      { type: "mcq", domain: "grammar", question: "She is ___ than her sister. (tall)", options: ["more tall", "taller", "tallest", "most tall"], correct: 1, explanation: "للصفات القصيرة: نضيف er للمقارنة → taller" },
+      { type: "mcq", domain: "grammar", question: "How ___ milk do you want?", options: ["many", "much", "few", "some"], correct: 1, explanation: "much = للأشياء غير المعدودة (milk, water, money)" },
     ],
     vocabulary: [
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "My father's sister is my ___.",
-        options: ["Uncle", "Cousin", "Niece", "Aunt"],
-        correct: 3,
-        explanation: "أخت الأب أو الأم = Aunt (عمة/خالة)"
-      },
-      {
-        type: "tf",
-        domain: "vocabulary",
-        question: "'Kitchen' is a room where you sleep.",
-        correct: false,
-        explanation: "Kitchen = المطبخ (للطبخ)، وليس غرفة النوم (bedroom)"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which word means 'مشمس'?",
-        options: ["Rainy", "Cloudy", "Sunny", "Windy"],
-        correct: 2,
-        explanation: "مشمس = Sunny"
-      },
-      {
-        type: "fill",
-        domain: "vocabulary",
-        question: "I use a ___ to call people. (هاتف)",
-        answer: "phone",
-        hint: "هاتف",
-        explanation: "هاتف = phone"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "What is the opposite of 'expensive'?",
-        options: ["Beautiful", "Cheap", "Modern", "Heavy"],
-        correct: 1,
-        explanation: "Expensive = غالي ، Cheap = رخيص"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which one is a job?",
-        options: ["Hospital", "Teacher", "Kitchen", "Banana"],
-        correct: 1,
-        explanation: "Teacher = مدرس/مدرسة — هذه مهنة"
-      },
+      { type: "mcq", domain: "vocabulary", question: "My father's sister is my ___.", options: ["Uncle", "Cousin", "Niece", "Aunt"], correct: 3, explanation: "أخت الأب أو الأم = Aunt (عمة/خالة)" },
+      { type: "tf", domain: "vocabulary", question: "'Kitchen' is a room where you sleep.", correct: false, explanation: "Kitchen = المطبخ (للطبخ)، وليس غرفة النوم (bedroom)" },
+      { type: "mcq", domain: "vocabulary", question: "Which word means 'مشمس'?", options: ["Rainy", "Cloudy", "Sunny", "Windy"], correct: 2, explanation: "مشمس = Sunny" },
+      { type: "fill", domain: "vocabulary", question: "I use a ___ to call people. (هاتف)", answer: "phone", hint: "هاتف", explanation: "هاتف = phone" },
+      { type: "mcq", domain: "vocabulary", question: "What is the opposite of 'expensive'?", options: ["Beautiful", "Cheap", "Modern", "Heavy"], correct: 1, explanation: "Expensive = غالي ، Cheap = رخيص" },
+      { type: "mcq", domain: "vocabulary", question: "Which one is a job?", options: ["Hospital", "Teacher", "Kitchen", "Banana"], correct: 1, explanation: "Teacher = مدرس/مدرسة — هذه مهنة" },
     ],
     reading: [
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Ali works in a hospital. He is a doctor. He starts work at 8 o'clock in the morning. He finishes at 4 o'clock. He likes his job because he helps people.",
-        question: "What is Ali's job?",
-        options: ["Teacher", "Engineer", "Doctor", "Driver"],
-        correct: 2,
-        explanation: "الفقرة تقول: 'He is a doctor'"
-      },
-      {
-        type: "tf",
-        domain: "reading",
-        passage: "Ali works in a hospital. He is a doctor. He starts work at 8 o'clock in the morning. He finishes at 4 o'clock. He likes his job because he helps people.",
-        question: "Ali dislikes his job.",
-        correct: false,
-        explanation: "الفقرة تقول: 'He likes his job'"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Ali works in a hospital. He is a doctor. He starts work at 8 o'clock in the morning. He finishes at 4 o'clock. He likes his job because he helps people.",
-        question: "What time does Ali start work?",
-        options: ["7:00", "8:00", "9:00", "10:00"],
-        correct: 1,
-        explanation: "الفقرة تقول: 'He starts work at 8 o'clock'"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Last weekend, Nora went to the beach with her family. The weather was warm and sunny. They swam in the sea and ate ice cream. Nora had a great time.",
-        question: "Where did Nora go last weekend?",
-        options: ["The park", "The mountains", "The beach", "The mall"],
-        correct: 2,
-        explanation: "الفقرة تقول: 'Nora went to the beach'"
-      },
+      { type: "mcq", domain: "reading", passage: "Ali works in a hospital. He is a doctor. He starts work at 8 o'clock in the morning. He finishes at 4 o'clock. He likes his job because he helps people.", question: "What is Ali's job?", options: ["Teacher", "Engineer", "Doctor", "Driver"], correct: 2, explanation: "الفقرة تقول: 'He is a doctor'" },
+      { type: "tf", domain: "reading", passage: "Ali works in a hospital. He is a doctor. He starts work at 8 o'clock in the morning. He finishes at 4 o'clock. He likes his job because he helps people.", question: "Ali dislikes his job.", correct: false, explanation: "الفقرة تقول: 'He likes his job'" },
+      { type: "mcq", domain: "reading", passage: "Ali works in a hospital. He is a doctor. He starts work at 8 o'clock in the morning. He finishes at 4 o'clock. He likes his job because he helps people.", question: "What time does Ali start work?", options: ["7:00", "8:00", "9:00", "10:00"], correct: 1, explanation: "الفقرة تقول: 'He starts work at 8 o'clock'" },
+      { type: "mcq", domain: "reading", passage: "Last weekend, Nora went to the beach with her family. The weather was warm and sunny. They swam in the sea and ate ice cream. Nora had a great time.", question: "Where did Nora go last weekend?", options: ["The park", "The mountains", "The beach", "The mall"], correct: 2, explanation: "الفقرة تقول: 'Nora went to the beach'" },
     ],
     use_of_english: [
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "I haven't seen him ___ Monday. (منذ)",
-        answer: "since",
-        hint: "since = منذ نقطة زمنية محددة",
-        explanation: "since = منذ — نستخدمها مع نقطة زمنية (since Monday / since 2020)"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "___ you like some tea? (عرض بأدب)",
-        options: ["Do", "Will", "Would", "Are"],
-        correct: 2,
-        explanation: "Would you like = هل تريد؟ — أسلوب مؤدب للعرض"
-      },
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "She is good ___ English. (جيدة في)",
-        answer: "at",
-        hint: "good ___ something",
-        explanation: "good at = جيد في — حرف الجر الصحيح مع good"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "Which sentence is correct?",
-        options: ["I have 25 years.", "I am 25 years.", "I am 25 years old.", "My age is 25 years old."],
-        correct: 2,
-        explanation: "العمر بالإنجليزية: I am + رقم + years old"
-      },
+      { type: "fill", domain: "use_of_english", question: "I haven't seen him ___ Monday. (منذ)", answer: "since", hint: "since = منذ نقطة زمنية محددة", explanation: "since = منذ — نستخدمها مع نقطة زمنية (since Monday / since 2020)" },
+      { type: "mcq", domain: "use_of_english", question: "___ you like some tea? (عرض بأدب)", options: ["Do", "Will", "Would", "Are"], correct: 2, explanation: "Would you like = هل تريد؟ — أسلوب مؤدب للعرض" },
+      { type: "fill", domain: "use_of_english", question: "She is good ___ English. (جيدة في)", answer: "at", hint: "good ___ something", explanation: "good at = جيد في — حرف الجر الصحيح مع good" },
+      { type: "mcq", domain: "use_of_english", question: "Which sentence is correct?", options: ["I have 25 years.", "I am 25 years.", "I am 25 years old.", "My age is 25 years old."], correct: 2, explanation: "العمر بالإنجليزية: I am + رقم + years old" },
     ]
   },
-
-  // ══════════════════════════════════════════════════
-  //  B1 — INTERMEDIATE
-  // ══════════════════════════════════════════════════
   b1: {
     grammar: [
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "By the time we arrived, the movie ___.",
-        options: ["already starts", "has already started", "had already started", "already started"],
-        correct: 2,
-        explanation: "حدثان في الماضي — الأول يستخدم Past Perfect (had + V3)"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "If I ___ rich, I would travel the world.",
-        options: ["am", "was", "were", "be"],
-        correct: 2,
-        explanation: "Second conditional (خيالي): If + were → would + infinitive"
-      },
-      {
-        type: "tf",
-        domain: "grammar",
-        question: "'Used to' describes a past habit that no longer exists.",
-        correct: true,
-        explanation: "نعم — 'used to' للعادات الماضية المنقطعة: I used to smoke (كنت أدخن)"
-      },
-      {
-        type: "fill",
-        domain: "grammar",
-        question: "The report ___ by the manager tomorrow. (سيُكتب)",
-        answer: "will be written",
-        hint: "مبني للمجهول في المستقبل",
-        explanation: "Passive Future: will be + V3"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "She suggested ___ to the new restaurant.",
-        options: ["to go", "go", "going", "gone"],
-        correct: 2,
-        explanation: "suggest يتبعه الـ gerund (فعل + ing)"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "I wish I ___ more time to study.",
-        options: ["have", "had", "will have", "would have"],
-        correct: 1,
-        explanation: "Wish + past simple = تمني في الحاضر (غير حقيقي)"
-      },
+      { type: "mcq", domain: "grammar", question: "By the time we arrived, the movie ___.", options: ["already starts", "has already started", "had already started", "already started"], correct: 2, explanation: "حدثان في الماضي — الأول يستخدم Past Perfect (had + V3)" },
+      { type: "mcq", domain: "grammar", question: "If I ___ rich, I would travel the world.", options: ["am", "was", "were", "be"], correct: 2, explanation: "Second conditional (خيالي): If + were → would + infinitive" },
+      { type: "tf", domain: "grammar", question: "'Used to' describes a past habit that no longer exists.", correct: true, explanation: "نعم — 'used to' للعادات الماضية المنقطعة: I used to smoke (كنت أدخن)" },
+      { type: "fill", domain: "grammar", question: "The report ___ by the manager tomorrow. (سيُكتب)", answer: "will be written", hint: "مبني للمجهول في المستقبل", explanation: "Passive Future: will be + V3" },
+      { type: "mcq", domain: "grammar", question: "She suggested ___ to the new restaurant.", options: ["to go", "go", "going", "gone"], correct: 2, explanation: "suggest يتبعه الـ gerund (فعل + ing)" },
+      { type: "mcq", domain: "grammar", question: "I wish I ___ more time to study.", options: ["have", "had", "will have", "would have"], correct: 1, explanation: "Wish + past simple = تمني في الحاضر (غير حقيقي)" },
     ],
     vocabulary: [
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which word means 'to get better after an illness'?",
-        options: ["Suffer", "Recover", "Diagnose", "Prescribe"],
-        correct: 1,
-        explanation: "Recover = يتعافى / يتحسن بعد المرض"
-      },
-      {
-        type: "tf",
-        domain: "vocabulary",
-        question: "'Exhausted' means slightly tired.",
-        correct: false,
-        explanation: "Exhausted = منهك تماماً — أشد بكثير من 'tired'"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "What does 'punctual' mean?",
-        options: ["Late always", "On time", "Very fast", "Careful"],
-        correct: 1,
-        explanation: "Punctual = منضبط في المواعيد / دائماً في الوقت"
-      },
-      {
-        type: "fill",
-        domain: "vocabulary",
-        question: "The opposite of 'guilty' is ___.",
-        answer: "innocent",
-        hint: "بريء",
-        explanation: "Innocent = بريء — عكس guilty (مذنب)"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "She had to ___ the meeting because she was sick.",
-        options: ["cancel", "attend", "schedule", "join"],
-        correct: 0,
-        explanation: "Cancel = يلغي — المعنى المنطقي في السياق"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which word best describes someone who talks a lot?",
-        options: ["Shy", "Talkative", "Lazy", "Brave"],
-        correct: 1,
-        explanation: "Talkative = كثير الكلام / ثرثار"
-      },
+      { type: "mcq", domain: "vocabulary", question: "Which word means 'to get better after an illness'?", options: ["Suffer", "Recover", "Diagnose", "Prescribe"], correct: 1, explanation: "Recover = يتعافى / يتحسن بعد المرض" },
+      { type: "tf", domain: "vocabulary", question: "'Exhausted' means slightly tired.", correct: false, explanation: "Exhausted = منهك تماماً — أشد بكثير من 'tired'" },
+      { type: "mcq", domain: "vocabulary", question: "What does 'punctual' mean?", options: ["Late always", "On time", "Very fast", "Careful"], correct: 1, explanation: "Punctual = منضبط في المواعيد / دائماً في الوقت" },
+      { type: "fill", domain: "vocabulary", question: "The opposite of 'guilty' is ___.", answer: "innocent", hint: "بريء", explanation: "Innocent = بريء — عكس guilty (مذنب)" },
+      { type: "mcq", domain: "vocabulary", question: "She had to ___ the meeting because she was sick.", options: ["cancel", "attend", "schedule", "join"], correct: 0, explanation: "Cancel = يلغي — المعنى المنطقي في السياق" },
+      { type: "mcq", domain: "vocabulary", question: "Which word best describes someone who talks a lot?", options: ["Shy", "Talkative", "Lazy", "Brave"], correct: 1, explanation: "Talkative = كثير الكلام / ثرثار" },
     ],
     reading: [
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Social media has changed the way people communicate. Many people spend hours every day on platforms like Instagram and Twitter. While these platforms help people stay connected, experts warn that too much screen time can cause anxiety and reduce face-to-face communication skills.",
-        question: "What is the main idea of this paragraph?",
-        options: [
-          "Social media is always harmful",
-          "People should avoid the internet",
-          "Social media has both benefits and drawbacks",
-          "Experts love social media"
-        ],
-        correct: 2,
-        explanation: "الفقرة تذكر فوائد (stay connected) ومخاطر (anxiety) — أي أن لها إيجابيات وسلبيات"
-      },
-      {
-        type: "tf",
-        domain: "reading",
-        passage: "Social media has changed the way people communicate. Many people spend hours every day on platforms like Instagram and Twitter. While these platforms help people stay connected, experts warn that too much screen time can cause anxiety and reduce face-to-face communication skills.",
-        question: "Experts say social media has no negative effects.",
-        correct: false,
-        explanation: "الخبراء حذّروا من القلق (anxiety) وضعف التواصل الشخصي"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Social media has changed the way people communicate. Many people spend hours every day on platforms like Instagram and Twitter. While these platforms help people stay connected, experts warn that too much screen time can cause anxiety and reduce face-to-face communication skills.",
-        question: "According to the text, what is one negative effect of too much screen time?",
-        options: ["Better communication", "Reduced face-to-face skills", "More creativity", "Improved memory"],
-        correct: 1,
-        explanation: "الفقرة تقول: 'reduce face-to-face communication skills'"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "The Amazon rainforest produces 20% of the world's oxygen. It is home to millions of species of plants and animals. However, deforestation threatens this ecosystem. Every year, large areas are cleared for farming and industry.",
-        question: "Why is the Amazon rainforest important?",
-        options: [
-          "It is the largest desert",
-          "It produces oxygen and hosts many species",
-          "It provides water for cities",
-          "It is a popular tourist destination"
-        ],
-        correct: 1,
-        explanation: "الفقرة تذكر إنتاج الأوكسجين (20%) وملايين الأنواع"
-      },
+      { type: "mcq", domain: "reading", passage: "Social media has changed the way people communicate. Many people spend hours every day on platforms like Instagram and Twitter. While these platforms help people stay connected, experts warn that too much screen time can cause anxiety and reduce face-to-face communication skills.", question: "What is the main idea of this paragraph?", options: ["Social media is always harmful", "People should avoid the internet", "Social media has both benefits and drawbacks", "Experts love social media"], correct: 2, explanation: "الفقرة تذكر فوائد (stay connected) ومخاطر (anxiety) — أي أن لها إيجابيات وسلبيات" },
+      { type: "tf", domain: "reading", passage: "Social media has changed the way people communicate. Many people spend hours every day on platforms like Instagram and Twitter. While these platforms help people stay connected, experts warn that too much screen time can cause anxiety and reduce face-to-face communication skills.", question: "Experts say social media has no negative effects.", correct: false, explanation: "الخبراء حذّروا من القلق (anxiety) وضعف التواصل الشخصي" },
+      { type: "mcq", domain: "reading", passage: "Social media has changed the way people communicate. Many people spend hours every day on platforms like Instagram and Twitter. While these platforms help people stay connected, experts warn that too much screen time can cause anxiety and reduce face-to-face communication skills.", question: "According to the text, what is one negative effect of too much screen time?", options: ["Better communication", "Reduced face-to-face skills", "More creativity", "Improved memory"], correct: 1, explanation: "الفقرة تقول: 'reduce face-to-face communication skills'" },
+      { type: "mcq", domain: "reading", passage: "The Amazon rainforest produces 20% of the world's oxygen. It is home to millions of species of plants and animals. However, deforestation threatens this ecosystem. Every year, large areas are cleared for farming and industry.", question: "Why is the Amazon rainforest important?", options: ["It is the largest desert", "It produces oxygen and hosts many species", "It provides water for cities", "It is a popular tourist destination"], correct: 1, explanation: "الفقرة تذكر إنتاج الأوكسجين (20%) وملايين الأنواع" },
     ],
     use_of_english: [
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "Despite ___ hard, he failed the exam. (يدرس)",
-        answer: "studying",
-        hint: "despite + فعل + ing",
-        explanation: "Despite يتبعه gerund (V+ing) وليس infinitive"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "The harder you work, ___ you will succeed.",
-        options: ["the more", "the most", "more", "most"],
-        correct: 0,
-        explanation: "The + comparative ... the + comparative: كلما ... كلما"
-      },
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "He denied ___ the window. (يكسر)",
-        answer: "breaking",
-        hint: "deny + فعل + ing",
-        explanation: "deny يتبعه gerund: denied breaking"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "Which sentence uses 'however' correctly?",
-        options: [
-          "He is tired, however he keeps working.",
-          "He is tired however, he keeps working.",
-          "However tired he is keeps working.",
-          "He is however, tired keeps working."
-        ],
-        correct: 0,
-        explanation: "however يأتي بعد فاصلة في بداية الجملة الثانية"
-      },
+      { type: "fill", domain: "use_of_english", question: "Despite ___ hard, he failed the exam. (يدرس)", answer: "studying", hint: "despite + فعل + ing", explanation: "Despite يتبعه gerund (V+ing) وليس infinitive" },
+      { type: "mcq", domain: "use_of_english", question: "The harder you work, ___ you will succeed.", options: ["the more", "the most", "more", "most"], correct: 0, explanation: "The + comparative ... the + comparative: كلما ... كلما" },
+      { type: "fill", domain: "use_of_english", question: "He denied ___ the window. (يكسر)", answer: "breaking", hint: "deny + فعل + ing", explanation: "deny يتبعه gerund: denied breaking" },
+      { type: "mcq", domain: "use_of_english", question: "Which sentence uses 'however' correctly?", options: ["He is tired, however he keeps working.", "He is tired however, he keeps working.", "However tired he is keeps working.", "He is however, tired keeps working."], correct: 0, explanation: "however يأتي بعد فاصلة في بداية الجملة الثانية" },
     ]
   },
-
-  // ══════════════════════════════════════════════════
-  //  B2 — UPPER INTERMEDIATE
-  // ══════════════════════════════════════════════════
   b2: {
     grammar: [
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "'She must have forgotten' expresses:",
-        options: ["Obligation in the past", "A logical deduction about the past", "Permission", "A future plan"],
-        correct: 1,
-        explanation: "must have + V3 = استنتاج منطقي عن الماضي"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "Which sentence is in the subjunctive mood?",
-        options: [
-          "I wish I was there.",
-          "I wish I were there.",
-          "I hope I were there.",
-          "I wish I will be there."
-        ],
-        correct: 1,
-        explanation: "Subjunctive: I wish I were — نستخدم 'were' مع كل الضمائر في التمني"
-      },
-      {
-        type: "fill",
-        domain: "grammar",
-        question: "Not only ___ late, but he also forgot his report.",
-        answer: "did he arrive",
-        hint: "Not only + تقديم الفعل المساعد (inversion)",
-        explanation: "Not only يستدعي inversion: Not only did he arrive"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "She would rather you ___ her before coming.",
-        options: ["call", "called", "to call", "calling"],
-        correct: 1,
-        explanation: "would rather + subject + past simple: would rather you called"
-      },
-      {
-        type: "tf",
-        domain: "grammar",
-        question: "'It's high time you solved this problem' is grammatically correct.",
-        correct: true,
-        explanation: "It's high time + past simple — للتعبير عن شيء يجب أن يحدث الآن"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "The CEO, ___ had been with the company for decades, resigned.",
-        options: ["who", "whom", "which", "that"],
-        correct: 0,
-        explanation: "who = للأشخاص كفاعل في الجملة الوصفية"
-      },
+      { type: "mcq", domain: "grammar", question: "'She must have forgotten' expresses:", options: ["Obligation in the past", "A logical deduction about the past", "Permission", "A future plan"], correct: 1, explanation: "must have + V3 = استنتاج منطقي عن الماضي" },
+      { type: "mcq", domain: "grammar", question: "Which sentence is in the subjunctive mood?", options: ["I wish I was there.", "I wish I were there.", "I hope I were there.", "I wish I will be there."], correct: 1, explanation: "Subjunctive: I wish I were — نستخدم 'were' مع كل الضمائر في التمني" },
+      { type: "fill", domain: "grammar", question: "Not only ___ late, but he also forgot his report.", answer: "did he arrive", hint: "Not only + تقديم الفعل المساعد (inversion)", explanation: "Not only يستدعي inversion: Not only did he arrive" },
+      { type: "mcq", domain: "grammar", question: "She would rather you ___ her before coming.", options: ["call", "called", "to call", "calling"], correct: 1, explanation: "would rather + subject + past simple: would rather you called" },
+      { type: "tf", domain: "grammar", question: "'It's high time you solved this problem' is grammatically correct.", correct: true, explanation: "It's high time + past simple — للتعبير عن شيء يجب أن يحدث الآن" },
+      { type: "mcq", domain: "grammar", question: "The CEO, ___ had been with the company for decades, resigned.", options: ["who", "whom", "which", "that"], correct: 0, explanation: "who = للأشخاص كفاعل في الجملة الوصفية" },
     ],
     vocabulary: [
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "What does 'inevitable' mean?",
-        options: ["Unexpected", "Cannot be avoided", "Very dangerous", "Hard to understand"],
-        correct: 1,
-        explanation: "Inevitable = حتمي / لا يمكن تجنبه"
-      },
-      {
-        type: "fill",
-        domain: "vocabulary",
-        question: "The politician's speech was full of ___. Nobody believed him. (كلام فارغ)",
-        answer: "rhetoric",
-        hint: "خطاب بلاغي فارغ",
-        explanation: "Rhetoric = بلاغة / خطاب مزخرف لا يعكس الحقيقة"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which word means 'found everywhere'?",
-        options: ["Unique", "Rare", "Ubiquitous", "Ancient"],
-        correct: 2,
-        explanation: "Ubiquitous = موجود في كل مكان / منتشر"
-      },
-      {
-        type: "tf",
-        domain: "vocabulary",
-        question: "'Ambiguous' means something is very clear and easy to understand.",
-        correct: false,
-        explanation: "Ambiguous = غامض / يحتمل أكثر من تفسير — عكس clear"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which phrasal verb means 'to tolerate'?",
-        options: ["Put out", "Put off", "Put up with", "Put aside"],
-        correct: 2,
-        explanation: "Put up with = يتحمل / يتسامح مع"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "'Concise' writing is:",
-        options: ["Long and detailed", "Short and clear", "Emotional and dramatic", "Technical and complex"],
-        correct: 1,
-        explanation: "Concise = موجز وواضح — يقول الكثير بكلمات قليلة"
-      },
+      { type: "mcq", domain: "vocabulary", question: "What does 'inevitable' mean?", options: ["Unexpected", "Cannot be avoided", "Very dangerous", "Hard to understand"], correct: 1, explanation: "Inevitable = حتمي / لا يمكن تجنبه" },
+      { type: "fill", domain: "vocabulary", question: "The politician's speech was full of ___. Nobody believed him. (كلام فارغ)", answer: "rhetoric", hint: "خطاب بلاغي فارغ", explanation: "Rhetoric = بلاغة / خطاب مزخرف لا يعكس الحقيقة" },
+      { type: "mcq", domain: "vocabulary", question: "Which word means 'found everywhere'?", options: ["Unique", "Rare", "Ubiquitous", "Ancient"], correct: 2, explanation: "Ubiquitous = موجود في كل مكان / منتشر" },
+      { type: "tf", domain: "vocabulary", question: "'Ambiguous' means something is very clear and easy to understand.", correct: false, explanation: "Ambiguous = غامض / يحتمل أكثر من تفسير — عكس clear" },
+      { type: "mcq", domain: "vocabulary", question: "Which phrasal verb means 'to tolerate'?", options: ["Put out", "Put off", "Put up with", "Put aside"], correct: 2, explanation: "Put up with = يتحمل / يتسامح مع" },
+      { type: "mcq", domain: "vocabulary", question: "'Concise' writing is:", options: ["Long and detailed", "Short and clear", "Emotional and dramatic", "Technical and complex"], correct: 1, explanation: "Concise = موجز وواضح — يقول الكثير بكلمات قليلة" },
     ],
     reading: [
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Remote work has become increasingly common since the pandemic. Proponents argue it improves work-life balance and reduces commuting time. Critics, however, contend that it weakens team cohesion and blurs the boundary between professional and personal life. Companies are now adopting hybrid models as a compromise.",
-        question: "What solution do companies use to address both sides?",
-        options: ["Full remote work", "Full office work", "Hybrid models", "Shorter working hours"],
-        correct: 2,
-        explanation: "الفقرة تقول: 'Companies are now adopting hybrid models as a compromise'"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Remote work has become increasingly common since the pandemic. Proponents argue it improves work-life balance and reduces commuting time. Critics, however, contend that it weakens team cohesion and blurs the boundary between professional and personal life. Companies are now adopting hybrid models as a compromise.",
-        question: "What do critics say about remote work?",
-        options: [
-          "It increases productivity",
-          "It improves communication",
-          "It weakens team cohesion",
-          "It reduces stress"
-        ],
-        correct: 2,
-        explanation: "الفقرة تقول: 'critics contend that it weakens team cohesion'"
-      },
-      {
-        type: "tf",
-        domain: "reading",
-        passage: "Remote work has become increasingly common since the pandemic. Proponents argue it improves work-life balance and reduces commuting time. Critics, however, contend that it weakens team cohesion and blurs the boundary between professional and personal life. Companies are now adopting hybrid models as a compromise.",
-        question: "The text presents only positive views about remote work.",
-        correct: false,
-        explanation: "الفقرة تذكر وجهات نظر مؤيدة ومعارضة معاً"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Artificial intelligence is reshaping industries at an unprecedented pace. While it automates repetitive tasks and enhances efficiency, concerns persist about job displacement and algorithmic bias. Policymakers face the challenge of fostering innovation while ensuring ethical deployment.",
-        question: "What challenge do policymakers face according to the text?",
-        options: [
-          "Building better computers",
-          "Balancing innovation with ethical concerns",
-          "Training more engineers",
-          "Reducing internet costs"
-        ],
-        correct: 1,
-        explanation: "الفقرة: 'fostering innovation while ensuring ethical deployment'"
-      },
+      { type: "mcq", domain: "reading", passage: "Remote work has become increasingly common since the pandemic. Proponents argue it improves work-life balance and reduces commuting time. Critics, however, contend that it weakens team cohesion and blurs the boundary between professional and personal life. Companies are now adopting hybrid models as a compromise.", question: "What solution do companies use to address both sides?", options: ["Full remote work", "Full office work", "Hybrid models", "Shorter working hours"], correct: 2, explanation: "الفقرة تقول: 'Companies are now adopting hybrid models as a compromise'" },
+      { type: "mcq", domain: "reading", passage: "Remote work has become increasingly common since the pandemic. Proponents argue it improves work-life balance and reduces commuting time. Critics, however, contend that it weakens team cohesion and blurs the boundary between professional and personal life. Companies are now adopting hybrid models as a compromise.", question: "What do critics say about remote work?", options: ["It increases productivity", "It improves communication", "It weakens team cohesion", "It reduces stress"], correct: 2, explanation: "الفقرة تقول: 'critics contend that it weakens team cohesion'" },
+      { type: "tf", domain: "reading", passage: "Remote work has become increasingly common since the pandemic. Proponents argue it improves work-life balance and reduces commuting time. Critics, however, contend that it weakens team cohesion and blurs the boundary between professional and personal life. Companies are now adopting hybrid models as a compromise.", question: "The text presents only positive views about remote work.", correct: false, explanation: "الفقرة تذكر وجهات نظر مؤيدة ومعارضة معاً" },
+      { type: "mcq", domain: "reading", passage: "Artificial intelligence is reshaping industries at an unprecedented pace. While it automates repetitive tasks and enhances efficiency, concerns persist about job displacement and algorithmic bias. Policymakers face the challenge of fostering innovation while ensuring ethical deployment.", question: "What challenge do policymakers face according to the text?", options: ["Building better computers", "Balancing innovation with ethical concerns", "Training more engineers", "Reducing internet costs"], correct: 1, explanation: "الفقرة: 'fostering innovation while ensuring ethical deployment'" },
     ],
     use_of_english: [
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "The project was completed ___ schedule. (قبل الموعد)",
-        answer: "ahead of",
-        hint: "قبل / في وقت أبكر من المتوقع",
-        explanation: "Ahead of schedule = قبل الموعد المحدد"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "'Notwithstanding' is closest in meaning to:",
-        options: ["Because of", "In addition to", "In spite of", "As a result of"],
-        correct: 2,
-        explanation: "Notwithstanding = بالرغم من / على الرغم من = in spite of"
-      },
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "Barely ___ when the argument started. (بمجرد أن جلس)",
-        answer: "had he sat down",
-        hint: "Barely + inversion (تقديم الفعل المساعد)",
-        explanation: "Barely/Hardly/Scarcely تستدعي inversion: Barely had he sat down"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "Which sentence is correct?",
-        options: [
-          "He said he will come.",
-          "He said he would come.",
-          "He said he comes.",
-          "He said he came tomorrow."
-        ],
-        correct: 1,
-        explanation: "Reported speech: will → would عند التحويل للماضي"
-      },
+      { type: "fill", domain: "use_of_english", question: "The project was completed ___ schedule. (قبل الموعد)", answer: "ahead of", hint: "قبل / في وقت أبكر من المتوقع", explanation: "Ahead of schedule = قبل الموعد المحدد" },
+      { type: "mcq", domain: "use_of_english", question: "'Notwithstanding' is closest in meaning to:", options: ["Because of", "In addition to", "In spite of", "As a result of"], correct: 2, explanation: "Notwithstanding = بالرغم من / على الرغم من = in spite of" },
+      { type: "fill", domain: "use_of_english", question: "Barely ___ when the argument started. (بمجرد أن جلس)", answer: "had he sat down", hint: "Barely + inversion (تقديم الفعل المساعد)", explanation: "Barely/Hardly/Scarcely تستدعي inversion: Barely had he sat down" },
+      { type: "mcq", domain: "use_of_english", question: "Which sentence is correct?", options: ["He said he will come.", "He said he would come.", "He said he comes.", "He said he came tomorrow."], correct: 1, explanation: "Reported speech: will → would عند التحويل للماضي" },
     ]
   },
-
-  // ══════════════════════════════════════════════════
-  //  C1 — ADVANCED
-  // ══════════════════════════════════════════════════
   c1: {
     grammar: [
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "'Had I known about the meeting, I ___ attended.' The correct completion is:",
-        options: ["would", "would have", "will have", "had"],
-        correct: 1,
-        explanation: "Third conditional مع inversion: Had I known = If I had known → would have attended"
-      },
-      {
-        type: "fill",
-        domain: "grammar",
-        question: "The committee recommended that he ___ the findings. (يقدم)",
-        answer: "present",
-        hint: "Subjunctive بعد recommend/suggest/insist",
-        explanation: "Mandative subjunctive: recommend that + subject + base verb (بدون s)"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "Which sentence demonstrates correct use of the absolute phrase?",
-        options: [
-          "Weather permitting, we will proceed.",
-          "The weather permits, we will proceed.",
-          "If weather permits, we will proceed.",
-          "With weather permitting, we will proceed."
-        ],
-        correct: 0,
-        explanation: "Absolute phrase: Noun + Participle, + main clause"
-      },
-      {
-        type: "tf",
-        domain: "grammar",
-        question: "'Albeit' can replace 'although' in most formal contexts.",
-        correct: true,
-        explanation: "Albeit = although/even though — تستخدم في الكتابة الرسمية"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "Which is an example of 'litotes' (تقليل للتأكيد)?",
-        options: [
-          "She is very talented.",
-          "She is not without talent.",
-          "She is the most talented person.",
-          "She is somewhat talented."
-        ],
-        correct: 1,
-        explanation: "Litotes = إثبات شيء بنفي عكسه: 'not without talent' = talented"
-      },
-      {
-        type: "fill",
-        domain: "grammar",
-        question: "So important ___ the discovery that scientists worldwide celebrated.",
-        answer: "was",
-        hint: "تقديم الصفة في بداية الجملة يستدعي inversion",
-        explanation: "Fronting + inversion: So + adjective + was + subject"
-      },
+      { type: "mcq", domain: "grammar", question: "'Had I known about the meeting, I ___ attended.' The correct completion is:", options: ["would", "would have", "will have", "had"], correct: 1, explanation: "Third conditional مع inversion: Had I known = If I had known → would have attended" },
+      { type: "fill", domain: "grammar", question: "The committee recommended that he ___ the findings. (يقدم)", answer: "present", hint: "Subjunctive بعد recommend/suggest/insist", explanation: "Mandative subjunctive: recommend that + subject + base verb (بدون s)" },
+      { type: "mcq", domain: "grammar", question: "Which sentence demonstrates correct use of the absolute phrase?", options: ["Weather permitting, we will proceed.", "The weather permits, we will proceed.", "If weather permits, we will proceed.", "With weather permitting, we will proceed."], correct: 0, explanation: "Absolute phrase: Noun + Participle, + main clause" },
+      { type: "tf", domain: "grammar", question: "'Albeit' can replace 'although' in most formal contexts.", correct: true, explanation: "Albeit = although/even though — تستخدم في الكتابة الرسمية" },
+      { type: "mcq", domain: "grammar", question: "Which is an example of 'litotes' (تقليل للتأكيد)?", options: ["She is very talented.", "She is not without talent.", "She is the most talented person.", "She is somewhat talented."], correct: 1, explanation: "Litotes = إثبات شيء بنفي عكسه: 'not without talent' = talented" },
+      { type: "fill", domain: "grammar", question: "So important ___ the discovery that scientists worldwide celebrated.", answer: "was", hint: "تقديم الصفة في بداية الجملة يستدعي inversion", explanation: "Fronting + inversion: So + adjective + was + subject" },
     ],
     vocabulary: [
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "To 'atone' for something means to:",
-        options: ["Ignore it", "Make amends for it", "Repeat it", "Deny it"],
-        correct: 1,
-        explanation: "Atone = يكفّر عن / يعوّض — يُستخدم مع for"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which word means 'to make a situation worse'?",
-        options: ["Mitigate", "Ameliorate", "Exacerbate", "Alleviate"],
-        correct: 2,
-        explanation: "Exacerbate = يفاقم / يزيد الأمر سوءاً"
-      },
-      {
-        type: "fill",
-        domain: "vocabulary",
-        question: "His response was ___; it addressed none of the real issues. (سطحي/شكلي)",
-        answer: "perfunctory",
-        hint: "Perfunctory = شكلي / مؤدى دون اهتمام",
-        explanation: "Perfunctory = done as routine without care or interest"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "'Epistemic' relates to:",
-        options: ["Emotion and feeling", "Theory of knowledge", "Political systems", "Aesthetic judgment"],
-        correct: 1,
-        explanation: "Epistemic = معرفي — مرتبط بالمعرفة وكيفية اكتسابها"
-      },
-      {
-        type: "tf",
-        domain: "vocabulary",
-        question: "'A red herring' in an argument means a strong supporting point.",
-        correct: false,
-        explanation: "Red herring = تشتيت غير ذي صلة — يُستخدم لصرف الانتباه عن الموضوع الرئيسي"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "'Circumlocution' refers to:",
-        options: [
-          "Direct communication",
-          "Using many words to avoid saying something directly",
-          "A type of metaphor",
-          "A formal legal term"
-        ],
-        correct: 1,
-        explanation: "Circumlocution = التحدث بشكل غير مباشر باستخدام كلمات كثيرة"
-      },
+      { type: "mcq", domain: "vocabulary", question: "To 'atone' for something means to:", options: ["Ignore it", "Make amends for it", "Repeat it", "Deny it"], correct: 1, explanation: "Atone = يكفّر عن / يعوّض — يُستخدم مع for" },
+      { type: "mcq", domain: "vocabulary", question: "Which word means 'to make a situation worse'?", options: ["Mitigate", "Ameliorate", "Exacerbate", "Alleviate"], correct: 2, explanation: "Exacerbate = يفاقم / يزيد الأمر سوءاً" },
+      { type: "fill", domain: "vocabulary", question: "His response was ___; it addressed none of the real issues. (سطحي/شكلي)", answer: "perfunctory", hint: "Perfunctory = شكلي / مؤدى دون اهتمام", explanation: "Perfunctory = done as routine without care or interest" },
+      { type: "mcq", domain: "vocabulary", question: "'Epistemic' relates to:", options: ["Emotion and feeling", "Theory of knowledge", "Political systems", "Aesthetic judgment"], correct: 1, explanation: "Epistemic = معرفي — مرتبط بالمعرفة وكيفية اكتسابها" },
+      { type: "tf", domain: "vocabulary", question: "'A red herring' in an argument means a strong supporting point.", correct: false, explanation: "Red herring = تشتيت غير ذي صلة — يُستخدم لصرف الانتباه عن الموضوع الرئيسي" },
+      { type: "mcq", domain: "vocabulary", question: "'Circumlocution' refers to:", options: ["Direct communication", "Using many words to avoid saying something directly", "A type of metaphor", "A formal legal term"], correct: 1, explanation: "Circumlocution = التحدث بشكل غير مباشر باستخدام كلمات كثيرة" },
     ],
     reading: [
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "The concept of 'nudge theory', popularised by Thaler and Sunstein, proposes that subtle changes in how choices are presented can significantly influence behaviour without restricting freedom of choice. Governments have applied these insights to encourage healthier eating, increase organ donation rates, and improve tax compliance — all without legislation.",
-        question: "What is the key principle of nudge theory?",
-        options: [
-          "Forcing people to make better choices through law",
-          "Influencing behaviour through subtle environmental changes",
-          "Educating people about their options",
-          "Removing bad choices entirely"
-        ],
-        correct: 1,
-        explanation: "النظرية تقوم على 'subtle changes' في كيفية تقديم الخيارات دون إلزام"
-      },
-      {
-        type: "tf",
-        domain: "reading",
-        passage: "The concept of 'nudge theory', popularised by Thaler and Sunstein, proposes that subtle changes in how choices are presented can significantly influence behaviour without restricting freedom of choice. Governments have applied these insights to encourage healthier eating, increase organ donation rates, and improve tax compliance — all without legislation.",
-        question: "Nudge theory requires laws and regulations to be effective.",
-        correct: false,
-        explanation: "الفقرة تقول 'all without legislation' — لا تحتاج تشريعات"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "The concept of 'nudge theory', popularised by Thaler and Sunstein, proposes that subtle changes in how choices are presented can significantly influence behaviour without restricting freedom of choice. Governments have applied these insights to encourage healthier eating, increase organ donation rates, and improve tax compliance — all without legislation.",
-        question: "Which of the following is NOT mentioned as an application of nudge theory?",
-        options: ["Healthier eating", "Tax compliance", "Organ donation", "Reducing crime"],
-        correct: 3,
-        explanation: "الفقرة تذكر: eating, organ donation, tax compliance — لا تذكر crime"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Confirmation bias leads individuals to favour information that confirms their existing beliefs while dismissing contradictory evidence. This cognitive tendency distorts rational decision-making and is particularly prevalent in political discourse, where people selectively consume media that reinforces their worldview.",
-        question: "What does confirmation bias cause people to do?",
-        options: [
-          "Seek out challenging ideas",
-          "Make more rational decisions",
-          "Prefer information that matches their views",
-          "Avoid all forms of media"
-        ],
-        correct: 2,
-        explanation: "Confirmation bias = تفضيل المعلومات التي تؤكد معتقداتنا"
-      },
+      { type: "mcq", domain: "reading", passage: "The concept of 'nudge theory', popularised by Thaler and Sunstein, proposes that subtle changes in how choices are presented can significantly influence behaviour without restricting freedom of choice. Governments have applied these insights to encourage healthier eating, increase organ donation rates, and improve tax compliance — all without legislation.", question: "What is the key principle of nudge theory?", options: ["Forcing people to make better choices through law", "Influencing behaviour through subtle environmental changes", "Educating people about their options", "Removing bad choices entirely"], correct: 1, explanation: "النظرية تقوم على 'subtle changes' في كيفية تقديم الخيارات دون إلزام" },
+      { type: "tf", domain: "reading", passage: "The concept of 'nudge theory', popularised by Thaler and Sunstein, proposes that subtle changes in how choices are presented can significantly influence behaviour without restricting freedom of choice. Governments have applied these insights to encourage healthier eating, increase organ donation rates, and improve tax compliance — all without legislation.", question: "Nudge theory requires laws and regulations to be effective.", correct: false, explanation: "الفقرة تقول 'all without legislation' — لا تحتاج تشريعات" },
+      { type: "mcq", domain: "reading", passage: "The concept of 'nudge theory', popularised by Thaler and Sunstein, proposes that subtle changes in how choices are presented can significantly influence behaviour without restricting freedom of choice. Governments have applied these insights to encourage healthier eating, increase organ donation rates, and improve tax compliance — all without legislation.", question: "Which of the following is NOT mentioned as an application of nudge theory?", options: ["Healthier eating", "Tax compliance", "Organ donation", "Reducing crime"], correct: 3, explanation: "الفقرة تذكر: eating, organ donation, tax compliance — لا تذكر crime" },
+      { type: "mcq", domain: "reading", passage: "Confirmation bias leads individuals to favour information that confirms their existing beliefs while dismissing contradictory evidence. This cognitive tendency distorts rational decision-making and is particularly prevalent in political discourse, where people selectively consume media that reinforces their worldview.", question: "What does confirmation bias cause people to do?", options: ["Seek out challenging ideas", "Make more rational decisions", "Prefer information that matches their views", "Avoid all forms of media"], correct: 2, explanation: "Confirmation bias = تفضيل المعلومات التي تؤكد معتقداتنا" },
     ],
     use_of_english: [
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "The government implemented austerity measures to ___ the deficit. (للتخفيف من)",
-        answer: "mitigate",
-        hint: "To reduce the severity of something",
-        explanation: "Mitigate = يخفف / يقلل من حدة شيء ما"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "Which word best completes: 'Her ___ remarks offended everyone in the room'?",
-        options: ["candid", "tactful", "caustic", "vague"],
-        correct: 2,
-        explanation: "Caustic = لاذع / جارح — remarks that offend people"
-      },
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "The findings were ___ to previous research — they completely contradicted it.",
-        answer: "antithetical",
-        hint: "Antithetical = مناقض / معاكس تماماً",
-        explanation: "Antithetical = directly opposed or contrasted"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "Which sentence correctly uses 'lest'?",
-        options: [
-          "She studied hard lest she would fail.",
-          "She studied hard lest she fail.",
-          "She studied hard lest she fails.",
-          "She studied hard lest she failed."
-        ],
-        correct: 1,
-        explanation: "lest يتبعه subjunctive (base form): lest she fail — بدون to/would"
-      },
+      { type: "fill", domain: "use_of_english", question: "The government implemented austerity measures to ___ the deficit. (للتخفيف من)", answer: "mitigate", hint: "To reduce the severity of something", explanation: "Mitigate = يخفف / يقلل من حدة شيء ما" },
+      { type: "mcq", domain: "use_of_english", question: "Which word best completes: 'Her ___ remarks offended everyone in the room'?", options: ["candid", "tactful", "caustic", "vague"], correct: 2, explanation: "Caustic = لاذع / جارح — remarks that offend people" },
+      { type: "fill", domain: "use_of_english", question: "The findings were ___ to previous research — they completely contradicted it.", answer: "antithetical", hint: "Antithetical = مناقض / معاكس تماماً", explanation: "Antithetical = directly opposed or contrasted" },
+      { type: "mcq", domain: "use_of_english", question: "Which sentence correctly uses 'lest'?", options: ["She studied hard lest she would fail.", "She studied hard lest she fail.", "She studied hard lest she fails.", "She studied hard lest she failed."], correct: 1, explanation: "lest يتبعه subjunctive (base form): lest she fail — بدون to/would" },
     ]
   },
-
-  // ══════════════════════════════════════════════════
-  //  C2 — MASTERY
-  // ══════════════════════════════════════════════════
   c2: {
     grammar: [
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "Which sentence demonstrates 'zeugma' correctly?",
-        options: [
-          "She came, she saw, she conquered.",
-          "He lost his wallet and his temper.",
-          "The wind howled and the trees shook.",
-          "Time flies like an arrow."
-        ],
-        correct: 1,
-        explanation: "Zeugma = استخدام فعل واحد مع مفعولين مختلفين منطقياً: lost (wallet + temper)"
-      },
-      {
-        type: "fill",
-        domain: "grammar",
-        question: "Never ___ such a breathtaking view. (رأيت قط)",
-        answer: "had I seen",
-        hint: "Never في بداية الجملة → inversion",
-        explanation: "Never + had + subject + V3: Never had I seen"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "Which correctly uses the 'mixed conditional'?",
-        options: [
-          "If I had studied, I will pass.",
-          "If I had studied harder, I would be in a better position now.",
-          "If I study, I would have passed.",
-          "If I had studied, I would study more."
-        ],
-        correct: 1,
-        explanation: "Mixed conditional: If + past perfect (past) + would + infinitive (present result)"
-      },
-      {
-        type: "tf",
-        domain: "grammar",
-        question: "In formal English, 'whom' is used as the object of a verb or preposition.",
-        correct: true,
-        explanation: "Whom = مفعول به: 'To whom did you speak?' — Who = فاعل"
-      },
-      {
-        type: "mcq",
-        domain: "grammar",
-        question: "Identify the device in: 'It was the best of times, it was the worst of times.'",
-        options: ["Oxymoron", "Anaphora", "Antithesis", "Synecdoche"],
-        correct: 2,
-        explanation: "Antithesis = مقابلة — وضع فكرتين متناقضتين في جملة متوازنة"
-      },
-      {
-        type: "fill",
-        domain: "grammar",
-        question: "The more she practised, ___ she became. (كلما تدربت أكثر، أصبحت أفضل)",
-        answer: "the better",
-        hint: "The + comparative ... the + comparative",
-        explanation: "The more ... the better — تعبير التوازي المتصاعد"
-      },
+      { type: "mcq", domain: "grammar", question: "Which sentence demonstrates 'zeugma' correctly?", options: ["She came, she saw, she conquered.", "He lost his wallet and his temper.", "The wind howled and the trees shook.", "Time flies like an arrow."], correct: 1, explanation: "Zeugma = استخدام فعل واحد مع مفعولين مختلفين منطقياً: lost (wallet + temper)" },
+      { type: "fill", domain: "grammar", question: "Never ___ such a breathtaking view. (رأيت قط)", answer: "had I seen", hint: "Never في بداية الجملة → inversion", explanation: "Never + had + subject + V3: Never had I seen" },
+      { type: "mcq", domain: "grammar", question: "Which correctly uses the 'mixed conditional'?", options: ["If I had studied, I will pass.", "If I had studied harder, I would be in a better position now.", "If I study, I would have passed.", "If I had studied, I would study more."], correct: 1, explanation: "Mixed conditional: If + past perfect (past) + would + infinitive (present result)" },
+      { type: "tf", domain: "grammar", question: "In formal English, 'whom' is used as the object of a verb or preposition.", correct: true, explanation: "Whom = مفعول به: 'To whom did you speak?' — Who = فاعل" },
+      { type: "mcq", domain: "grammar", question: "Identify the device in: 'It was the best of times, it was the worst of times.'", options: ["Oxymoron", "Anaphora", "Antithesis", "Synecdoche"], correct: 2, explanation: "Antithesis = مقابلة — وضع فكرتين متناقضتين في جملة متوازنة" },
+      { type: "fill", domain: "grammar", question: "The more she practised, ___ she became. (كلما تدربت أكثر، أصبحت أفضل)", answer: "the better", hint: "The + comparative ... the + comparative", explanation: "The more ... the better — تعبير التوازي المتصاعد" },
     ],
     vocabulary: [
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "'Mellifluous' describes a voice that is:",
-        options: ["Harsh and grating", "Inaudibly soft", "Sweetly musical and smooth", "Intermittent"],
-        correct: 2,
-        explanation: "Mellifluous = عذب / ناعم كالعسل — من 'mel' اللاتينية (عسل)"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "'Sanguine' most closely means:",
-        options: ["Melancholic", "Bloodthirsty", "Optimistic", "Cautious"],
-        correct: 2,
-        explanation: "Sanguine = متفائل / واثق من حسن النتائج"
-      },
-      {
-        type: "fill",
-        domain: "vocabulary",
-        question: "Her prose has a rare ___ — every word earns its place. (نقاء أسلوبي)",
-        answer: "economy",
-        hint: "Economy of language = الاقتصاد في الكلمات",
-        explanation: "Economy (of language/style) = الإيجاز الدقيق / كل كلمة لها وزنها"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "A 'Pyrrhic victory' is:",
-        options: [
-          "A victory achieved through deception",
-          "A victory that costs more than it is worth",
-          "An unexpected easy victory",
-          "A victory celebrated too early"
-        ],
-        correct: 1,
-        explanation: "Pyrrhic victory = نصر بثمن باهظ — من الملك Pyrrhus الذي انتصر لكن خسر جيشه"
-      },
-      {
-        type: "tf",
-        domain: "vocabulary",
-        question: "'Laconic' describes someone who uses very few words.",
-        correct: true,
-        explanation: "Laconic = موجز جداً في الكلام — من إقليم Laconia (سبارطة) المعروف بقصر ردودهم"
-      },
-      {
-        type: "mcq",
-        domain: "vocabulary",
-        question: "Which word means 'fleeting' or 'lasting a very short time'?",
-        options: ["Perennial", "Protracted", "Ephemeral", "Immutable"],
-        correct: 2,
-        explanation: "Ephemeral = زائل / قصير العمر جداً"
-      },
+      { type: "mcq", domain: "vocabulary", question: "'Mellifluous' describes a voice that is:", options: ["Harsh and grating", "Inaudibly soft", "Sweetly musical and smooth", "Intermittent"], correct: 2, explanation: "Mellifluous = عذب / ناعم كالعسل — من 'mel' اللاتينية (عسل)" },
+      { type: "mcq", domain: "vocabulary", question: "'Sanguine' most closely means:", options: ["Melancholic", "Bloodthirsty", "Optimistic", "Cautious"], correct: 2, explanation: "Sanguine = متفائل / واثق من حسن النتائج" },
+      { type: "fill", domain: "vocabulary", question: "Her prose has a rare ___ — every word earns its place. (نقاء أسلوبي)", answer: "economy", hint: "Economy of language = الاقتصاد في الكلمات", explanation: "Economy (of language/style) = الإيجاز الدقيق / كل كلمة لها وزنها" },
+      { type: "mcq", domain: "vocabulary", question: "A 'Pyrrhic victory' is:", options: ["A victory achieved through deception", "A victory that costs more than it is worth", "An unexpected easy victory", "A victory celebrated too early"], correct: 1, explanation: "Pyrrhic victory = نصر بثمن باهظ — من الملك Pyrrhus الذي انتصر لكن خسر جيشه" },
+      { type: "tf", domain: "vocabulary", question: "'Laconic' describes someone who uses very few words.", correct: true, explanation: "Laconic = موجز جداً في الكلام — من إقليم Laconia (سبارطة) المعروف بقصر ردودهم" },
+      { type: "mcq", domain: "vocabulary", question: "Which word means 'fleeting' or 'lasting a very short time'?", options: ["Perennial", "Protracted", "Ephemeral", "Immutable"], correct: 2, explanation: "Ephemeral = زائل / قصير العمر جداً" },
     ],
     reading: [
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Orwell's 'Politics and the English Language' argued that political language is designed to make lies sound truthful and murder respectable. He believed that the decay of language and the decay of society are mutually reinforcing — that vague, euphemistic writing both reflects and perpetuates muddled thinking. His remedy was radical simplicity: prefer the short word, the active verb, the concrete image.",
-        question: "What is Orwell's central argument about political language?",
-        options: [
-          "It is necessarily complex due to difficult topics",
-          "It is deliberately obscure to conceal dishonesty",
-          "It reflects advanced literary skill",
-          "It should use more technical vocabulary"
-        ],
-        correct: 1,
-        explanation: "Orwell: السياسيون يستخدمون لغة غامضة لإخفاء الكذب — 'make lies sound truthful'"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "Orwell's 'Politics and the English Language' argued that political language is designed to make lies sound truthful and murder respectable. He believed that the decay of language and the decay of society are mutually reinforcing — that vague, euphemistic writing both reflects and perpetuates muddled thinking. His remedy was radical simplicity: prefer the short word, the active verb, the concrete image.",
-        question: "What does 'mutually reinforcing' mean in this context?",
-        options: [
-          "One causes the other, but not vice versa",
-          "Each one makes the other stronger or worse",
-          "They exist independently",
-          "One can solve the other"
-        ],
-        correct: 1,
-        explanation: "Mutually reinforcing = كل واحد يعزز الآخر — علاقة متبادلة تصاعدية"
-      },
-      {
-        type: "tf",
-        domain: "reading",
-        passage: "Orwell's 'Politics and the English Language' argued that political language is designed to make lies sound truthful and murder respectable. He believed that the decay of language and the decay of society are mutually reinforcing — that vague, euphemistic writing both reflects and perpetuates muddled thinking. His remedy was radical simplicity: prefer the short word, the active verb, the concrete image.",
-        question: "Orwell advocates for elaborate, sophisticated vocabulary as a solution.",
-        correct: false,
-        explanation: "Orwell يدعو للبساطة الجذرية: 'radical simplicity' — الكلمة القصيرة والفعل المبني للمعلوم"
-      },
-      {
-        type: "mcq",
-        domain: "reading",
-        passage: "The paradox of tolerance, articulated by philosopher Karl Popper, holds that a society that is tolerant without limit will eventually be seized by the intolerant. Popper concluded that in order to maintain a tolerant society, the society must be intolerant of intolerance itself — a position that remains contentious in liberal democratic discourse.",
-        question: "What is the paradox Popper identifies?",
-        options: [
-          "Tolerance always leads to greater freedom",
-          "Being tolerant of intolerance ultimately destroys tolerance",
-          "Intolerant societies are more stable",
-          "Democracy requires absolute freedom of expression"
-        ],
-        correct: 1,
-        explanation: "مفارقة التسامح: التسامح المطلق يؤدي إلى سيطرة المتعصبين وتدمير التسامح نفسه"
-      },
+      { type: "mcq", domain: "reading", passage: "Orwell's 'Politics and the English Language' argued that political language is designed to make lies sound truthful and murder respectable. He believed that the decay of language and the decay of society are mutually reinforcing — that vague, euphemistic writing both reflects and perpetuates muddled thinking. His remedy was radical simplicity: prefer the short word, the active verb, the concrete image.", question: "What is Orwell's central argument about political language?", options: ["It is necessarily complex due to difficult topics", "It is deliberately obscure to conceal dishonesty", "It reflects advanced literary skill", "It should use more technical vocabulary"], correct: 1, explanation: "Orwell: السياسيون يستخدمون لغة غامضة لإخفاء الكذب — 'make lies sound truthful'" },
+      { type: "mcq", domain: "reading", passage: "Orwell's 'Politics and the English Language' argued that political language is designed to make lies sound truthful and murder respectable. He believed that the decay of language and the decay of society are mutually reinforcing — that vague, euphemistic writing both reflects and perpetuates muddled thinking. His remedy was radical simplicity: prefer the short word, the active verb, the concrete image.", question: "What does 'mutually reinforcing' mean in this context?", options: ["One causes the other, but not vice versa", "Each one makes the other stronger or worse", "They exist independently", "One can solve the other"], correct: 1, explanation: "Mutually reinforcing = كل واحد يعزز الآخر — علاقة متبادلة تصاعدية" },
+      { type: "tf", domain: "reading", passage: "Orwell's 'Politics and the English Language' argued that political language is designed to make lies sound truthful and murder respectable. He believed that the decay of language and the decay of society are mutually reinforcing — that vague, euphemistic writing both reflects and perpetuates muddled thinking. His remedy was radical simplicity: prefer the short word, the active verb, the concrete image.", question: "Orwell advocates for elaborate, sophisticated vocabulary as a solution.", correct: false, explanation: "Orwell يدعو للبساطة الجذرية: 'radical simplicity' — الكلمة القصيرة والفعل المبني للمعلوم" },
+      { type: "mcq", domain: "reading", passage: "The paradox of tolerance, articulated by philosopher Karl Popper, holds that a society that is tolerant without limit will eventually be seized by the intolerant. Popper concluded that in order to maintain a tolerant society, the society must be intolerant of intolerance itself — a position that remains contentious in liberal democratic discourse.", question: "What is the paradox Popper identifies?", options: ["Tolerance always leads to greater freedom", "Being tolerant of intolerance ultimately destroys tolerance", "Intolerant societies are more stable", "Democracy requires absolute freedom of expression"], correct: 1, explanation: "مفارقة التسامح: التسامح المطلق يؤدي إلى سيطرة المتعصبين وتدمير التسامح نفسه" },
     ],
     use_of_english: [
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "The author's ___ prose strips away all sentiment, leaving only the stark facts.",
-        answer: "austere",
-        hint: "Austere = قاسٍ / زاهد / بلا زخرفة",
-        explanation: "Austere = severe and simple, without decoration or comfort"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "Which best demonstrates 'apophasis' (إثبات شيء بادعاء عدم ذكره)?",
-        options: [
-          "He is brilliant and hardworking.",
-          "I won't mention his three failed marriages.",
-          "He failed despite his best efforts.",
-          "His success is undeniable."
-        ],
-        correct: 1,
-        explanation: "Apophasis = 'I won't mention X' — يذكر الشيء بادعاء أنه لن يذكره"
-      },
-      {
-        type: "fill",
-        domain: "use_of_english",
-        question: "His later novels show a marked ___ from the optimism of his early work.",
-        answer: "departure",
-        hint: "A departure from = تحول / انعطاف عن",
-        explanation: "A departure from = ابتعاد / انحراف عن — تعبير أدبي شائع"
-      },
-      {
-        type: "mcq",
-        domain: "use_of_english",
-        question: "Which sentence uses 'tendentious' correctly?",
-        options: [
-          "The tendentious scientist published unbiased research.",
-          "His tendentious account conveniently omitted contrary evidence.",
-          "She gave a tendentious and impartial report.",
-          "The tendentious judge was respected for his fairness."
-        ],
-        correct: 1,
-        explanation: "Tendentious = منحاز / يخدم أجندة معينة — لا يتناسب مع unbiased/impartial/fairness"
-      },
+      { type: "fill", domain: "use_of_english", question: "The author's ___ prose strips away all sentiment, leaving only the stark facts.", answer: "austere", hint: "Austere = قاسٍ / زاهد / بلا زخرفة", explanation: "Austere = severe and simple, without decoration or comfort" },
+      { type: "mcq", domain: "use_of_english", question: "Which best demonstrates 'apophasis' (إثبات شيء بادعاء عدم ذكره)?", options: ["He is brilliant and hardworking.", "I won't mention his three failed marriages.", "He failed despite his best efforts.", "His success is undeniable."], correct: 1, explanation: "Apophasis = 'I won't mention X' — يذكر الشيء بادعاء أنه لن يذكره" },
+      { type: "fill", domain: "use_of_english", question: "His later novels show a marked ___ from the optimism of his early work.", answer: "departure", hint: "A departure from = تحول / انعطاف عن", explanation: "A departure from = ابتعاد / انحراف عن — تعبير أدبي شائع" },
+      { type: "mcq", domain: "use_of_english", question: "Which sentence uses 'tendentious' correctly?", options: ["The tendentious scientist published unbiased research.", "His tendentious account conveniently omitted contrary evidence.", "She gave a tendentious and impartial report.", "The tendentious judge was respected for his fairness."], correct: 1, explanation: "Tendentious = منحاز / يخدم أجندة معينة — لا يتناسب مع unbiased/impartial/fairness" },
     ]
   }
 };
 
-        // ===== QUIZZES DEFINITION =====        
         const QUIZZES = [
-            { id:1, title:'A1 — مبتدئ مطلق', level:'a1', levelAr:'A1', levelIcon:'fa-seedling',
-              cefrDesc:'التحيات · الأرقام · الألوان · الكلمات الأساسية',
-              timePerQuestion:35, unlockScore:0,
-              get questions(){ return buildQuestions('a1'); } },
-            { id:2, title:'A2 — مبتدئ', level:'a2', levelAr:'A2', levelIcon:'fa-star-half-alt',
-              cefrDesc:'الحاضر البسيط · الماضي · العائلة · التوصيف',
-              timePerQuestion:30, unlockScore:60,
-              get questions(){ return buildQuestions('a2'); } },
-            { id:3, title:'B1 — متوسط', level:'b1', levelAr:'B1', levelIcon:'fa-fire',
-              cefrDesc:'الشرط · المبني للمجهول · الأزمنة المركبة',
-              timePerQuestion:28, unlockScore:60,
-              get questions(){ return buildQuestions('b1'); } },
-            { id:4, title:'B2 — فوق المتوسط', level:'b2', levelAr:'B2', levelIcon:'fa-gem',
-              cefrDesc:'الاستنتاج · الـ Subjunctive · التعابير الاصطلاحية',
-              timePerQuestion:25, unlockScore:60,
-              get questions(){ return buildQuestions('b2'); } },
-            { id:5, title:'C1 — متقدم', level:'c1', levelAr:'C1', levelIcon:'fa-crown',
-              cefrDesc:'الأسلوب الأكاديمي · Inversion · المفردات المتقدمة',
-              timePerQuestion:22, unlockScore:60,
-              get questions(){ return buildQuestions('c1'); } },
-            { id:6, title:'C2 — إتقان تام', level:'c2', levelAr:'C2', levelIcon:'fa-bolt',
-              cefrDesc:'البلاغة · الأدب · مستوى المتحدث الأصلي',
-              timePerQuestion:20, unlockScore:60,
-              get questions(){ return buildQuestions('c2'); } },
+            { id:1, title:'A1 — مبتدئ مطلق', level:'a1', levelAr:'A1', levelIcon:'fa-seedling', cefrDesc:'التحيات · الأرقام · الألوان · الكلمات الأساسية', timePerQuestion:35, unlockScore:0, get questions(){ return buildQuestions('a1'); } },
+            { id:2, title:'A2 — مبتدئ', level:'a2', levelAr:'A2', levelIcon:'fa-star-half-alt', cefrDesc:'الحاضر البسيط · الماضي · العائلة · التوصيف', timePerQuestion:30, unlockScore:60, get questions(){ return buildQuestions('a2'); } },
+            { id:3, title:'B1 — متوسط', level:'b1', levelAr:'B1', levelIcon:'fa-fire', cefrDesc:'الشرط · المبني للمجهول · الأزمنة المركبة', timePerQuestion:28, unlockScore:60, get questions(){ return buildQuestions('b1'); } },
+            { id:4, title:'B2 — فوق المتوسط', level:'b2', levelAr:'B2', levelIcon:'fa-gem', cefrDesc:'الاستنتاج · الـ Subjunctive · التعابير الاصطلاحية', timePerQuestion:25, unlockScore:60, get questions(){ return buildQuestions('b2'); } },
+            { id:5, title:'C1 — متقدم', level:'c1', levelAr:'C1', levelIcon:'fa-crown', cefrDesc:'الأسلوب الأكاديمي · Inversion · المفردات المتقدمة', timePerQuestion:22, unlockScore:60, get questions(){ return buildQuestions('c1'); } },
+            { id:6, title:'C2 — إتقان تام', level:'c2', levelAr:'C2', levelIcon:'fa-bolt', cefrDesc:'البلاغة · الأدب · مستوى المتحدث الأصلي', timePerQuestion:20, unlockScore:60, get questions(){ return buildQuestions('c2'); } },
         ];
 
-        // Flatten all domains into one shuffled array per level
         function buildQuestions(lvl) {
             const d = QUIZ_DATA[lvl];
             if (!d) return [];
             return [...d.grammar, ...d.vocabulary, ...d.reading, ...d.use_of_english];
         }
 
-        const DOMAIN_LABELS = {
-            grammar:'قواعد', vocabulary:'مفردات',
-            reading:'قراءة وفهم', use_of_english:'استخدام اللغة'
-        };
-        const DOMAIN_ICONS = {
-            grammar:'fa-spell-check', vocabulary:'fa-book-open',
-            reading:'fa-file-alt', use_of_english:'fa-pen-nib'
-        };
+        const DOMAIN_LABELS = { grammar:'قواعد', vocabulary:'مفردات', reading:'قراءة وفهم', use_of_english:'استخدام اللغة' };
+        const DOMAIN_ICONS = { grammar:'fa-spell-check', vocabulary:'fa-book-open', reading:'fa-file-alt', use_of_english:'fa-pen-nib' };
 
-        // ===== STATE =====
         let completedQuizzes = JSON.parse(localStorage.getItem('cefr_completed_v2') || '[]');
         let currentFilter    = 'all';
         let currentQuiz      = null;
         let currentQIndex    = 0;
         let userAnswers      = {};
         let timer            = null;
-        let autoAdvanceTimer = null; // متغير جديد لتوقيت الانتقال التلقائي
+        let autoAdvanceTimer = null;
         let timeLeft         = 0;
 
-        // ===== INIT =====
-        document.addEventListener('DOMContentLoaded', () => {
-            updatePageStats();
-            displayQuizzes();
-        });
+        document.addEventListener('DOMContentLoaded', () => { updatePageStats(); displayQuizzes(); window.addEventListener('languageChanged', displayQuizzes); });
 
-        // ===== HELPERS =====
-        function getScore(id) {
-            const s = localStorage.getItem(`cefr_score_${id}`);
-            return s !== null ? parseInt(s) : null;
-        }
-        function isUnlocked(idx) {
-            if (idx === 0) return true;
-            const prevScore = getScore(QUIZZES[idx - 1].id);
-            return prevScore !== null && prevScore >= QUIZZES[idx].unlockScore;
-        }
+        function getScore(id) { const s = localStorage.getItem(`cefr_score_${id}`); return s !== null ? parseInt(s) : null; }
+        function isUnlocked(idx) { if (idx === 0) return true; const prevScore = getScore(QUIZZES[idx - 1].id); return prevScore !== null && prevScore >= QUIZZES[idx].unlockScore; }
 
-        // ===== PAGE STATS =====
         function updatePageStats() {
             const total = QUIZZES.reduce((s,q) => s + q.questions.length, 0);
             document.getElementById('totalQuestions').textContent = total;
             document.getElementById('totalQuizzes').textContent = QUIZZES.length;
             document.getElementById('completedCount').textContent = completedQuizzes.length;
             let best = null;
-            QUIZZES.forEach(q => {
-                const s = getScore(q.id);
-                if (s !== null && (best === null || s > best)) best = s;
-            });
+            QUIZZES.forEach(q => { const s = getScore(q.id); if (s !== null && (best === null || s > best)) best = s; });
             document.getElementById('bestScore').textContent = best !== null ? best + '%' : '—';
         }
 
-        // ===== FILTER =====
         function filterQuizzes(level, btn) {
             currentFilter = level;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -2022,7 +295,6 @@ const QUIZ_DATA = {
             displayQuizzes();
         }
 
-        // ===== DISPLAY CARDS =====
         function displayQuizzes() {
             const filtered = currentFilter === 'all' ? QUIZZES : QUIZZES.filter(q => q.level === currentFilter);
             const grid = document.getElementById('quizzesGrid');
@@ -2033,630 +305,127 @@ const QUIZ_DATA = {
                 const score   = getScore(quiz.id);
                 const progress = done ? 100 : 0;
                 return `
-                <div class="quiz-card ${locked ? 'is-locked' : ''}">
-                    <div class="quiz-card-header">
-                        <div class="quiz-level-badge">
-                            <i class="fas ${locked ? 'fa-lock' : quiz.levelIcon}"></i>
-                            ${quiz.levelAr}
-                        </div>
-                        <div class="quiz-card-title">${quiz.title}</div>
-                        <div style="font-size:0.78rem;opacity:0.8;margin-top:0.35rem;position:relative;z-index:1">${quiz.cefrDesc}</div>
+                <div class="cl-card quiz-card ${locked ? 'is-locked' : ''}">
+                    <div style="padding: 1.75rem 1.5rem; background: var(--gradient); color: white;">
+                        <div style="display: inline-flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.75rem;"><i class="fas ${locked ? 'fa-lock' : quiz.levelIcon}"></i> ${quiz.levelAr}</div>
+                        <div style="font-size: 1.4rem; font-weight: 800;">${quiz.title}</div>
+                        <div style="font-size:0.78rem;opacity:0.8;margin-top:0.35rem;">${quiz.cefrDesc}</div>
                     </div>
-                    <div class="quiz-card-body">
-                        <div class="quiz-meta">
-                            <span><i class="fas fa-question-circle"></i> ${quiz.questions.length} سؤال</span>
-                            <span><i class="fas fa-clock"></i> ${quiz.timePerQuestion} ث/سؤال</span>
+                    <div style="padding: 1.4rem;">
+                        <div style="display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">
+                            <span><i class="fas fa-question-circle" style="color:var(--primary);"></i> ${quiz.questions.length} ${t('lbl-questions')}</span>
+                            <span><i class="fas fa-clock" style="color:var(--primary);"></i> ${quiz.timePerQuestion} ث/سؤال</span>
                         </div>
-                        <div class="quiz-progress-bar">
-                            <div class="quiz-progress-fill" style="width:${progress}%"></div>
-                        </div>
-                        <div class="quiz-card-footer">
-                            <span class="score-badge ${done ? 'done' : ''}">
-                                ${score !== null
-                                    ? `<i class="fas fa-trophy"></i> ${score}%`
-                                    : locked ? '<i class="fas fa-lock"></i> مقفل' : 'لم يبدأ بعد'}
-                            </span>
-                            <button class="start-btn"
-                                onclick="${locked
-                                    ? `showToast('أكمل المستوى السابق بنسبة 60% أولاً','warn')`
-                                    : `startQuiz(${quiz.id})`}">
-                                <i class="fas fa-${locked ? 'lock' : done ? 'redo' : 'play'}"></i>
-                                ${locked ? 'مقفل' : done ? 'إعادة' : 'ابدأ'}
-                            </button>
+                        <div style="width: 100%; height: 6px; background: var(--bg-secondary); border-radius: 100px; overflow: hidden; margin-bottom: 1rem;"><div style="height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--success), #16a34a); width: ${progress}%;"></div></div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="score-badge ${done ? 'done' : ''}" style="background: var(--bg-secondary); padding: 0.3rem 0.8rem; border-radius: 2rem; font-size: 0.82rem; font-weight: 600;">${score !== null ? `<i class="fas fa-trophy"></i> ${score}%` : locked ? '<i class="fas fa-lock"></i> مقفل' : 'لم يبدأ بعد'}</span>
+                            <button class="learn-btn" onclick="${locked ? `showToast('أكمل المستوى السابق بنسبة 60% أولاً','warn')` : `startQuiz(${quiz.id})`}"><i class="fas fa-${locked ? 'lock' : done ? 'redo' : 'play'}"></i> ${locked ? 'مقفل' : done ? t('redo') : t('start')}</button>
                         </div>
                     </div>
                 </div>`;
             }).join('');
         }
 
-        // ===== START QUIZ =====
         function startQuiz(id) {
             currentQuiz = QUIZZES.find(q => q.id === id);
-            if (!currentQuiz || !currentQuiz.questions.length) {
-                showToast('لا توجد أسئلة في هذا الاختبار','warn'); return;
-            }
+            if (!currentQuiz || !currentQuiz.questions.length) { showToast('لا توجد أسئلة في هذا الاختبار','warn'); return; }
             currentQIndex = 0; userAnswers = {};
             document.getElementById('quizModal').classList.add('active');
             document.body.style.overflow = 'hidden';
             renderQuestion();
         }
 
-        // ===== CLOSE MODAL =====
-        function closeModal() {
-            // إلغاء أي مؤقت تلقائي عند الإغلاق
-            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
-            document.getElementById('quizModal').classList.remove('active');
-            document.body.style.overflow = '';
-            if (timer) { clearInterval(timer); timer = null; }
-        }
+        function closeModal() { if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; } document.getElementById('quizModal').classList.remove('active'); document.body.style.overflow = ''; if (timer) { clearInterval(timer); timer = null; } }
 
-        function confirmClose() {
-            if (Object.keys(userAnswers).length > 0) {
-                if (!confirm('هل تريد الخروج؟ لن يتم حفظ تقدمك')) return;
-            }
-            closeModal();
-        }
-
-        // ===== RENDER QUESTION =====
         function renderQuestion() {
-            // إلغاء أي مؤقت تلقائي قديم قبل عرض سؤال جديد
             if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+            const q = currentQuiz.questions[currentQIndex], total = currentQuiz.questions.length, pct = Math.round((currentQIndex / total) * 100), letters = ['A','B','C','D'];
+            const domainHTML = `<span class="domain-badge domain-${q.domain}" style="display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.22rem 0.75rem; border-radius: 100px; font-size: 0.73rem; font-weight: 700; margin-bottom: 0.85rem;"><i class="fas ${DOMAIN_ICONS[q.domain] || 'fa-circle'}"></i> ${DOMAIN_LABELS[q.domain] || q.domain}</span>`;
+            const passageHTML = q.passage ? `<div class="reading-passage" style="background: var(--bg-secondary); border-right: 3px solid var(--primary); padding: 1rem 1.1rem; border-radius: 0.75rem; font-size: 0.9rem; line-height: 1.75; color: var(--text-secondary); margin-bottom: 1.25rem; font-style: italic;"><i class="fas fa-quote-right" style="margin-left:0.5rem;opacity:0.5"></i>${q.passage}</div>` : '';
 
-            const q     = currentQuiz.questions[currentQIndex];
-            const total = currentQuiz.questions.length;
-            const pct   = Math.round((currentQIndex / total) * 100);
-            const letters = ['أ','ب','ج','د'];
-
-            // Domain badge
-            const domainHTML = `<span class="domain-badge domain-${q.domain}">
-                <i class="fas ${DOMAIN_ICONS[q.domain] || 'fa-circle'}"></i>
-                ${DOMAIN_LABELS[q.domain] || q.domain}
-            </span>`;
-
-            // Passage (reading only)
-            const passageHTML = q.passage
-                ? `<div class="reading-passage"><i class="fas fa-quote-right" style="margin-left:0.5rem;opacity:0.5"></i>${q.passage}</div>`
-                : '';
-
-            // Question body based on type
             let bodyHTML = '';
             if (q.type === 'mcq') {
-                bodyHTML = `<div class="options-list" id="optionsList">
-                    ${q.options.map((opt,i) => `
-                    <div class="option-item ${userAnswers[currentQIndex]===i?'selected':''}"
-                         onclick="selectMCQ(${i},this)">
-                        <span class="option-letter">${letters[i]||i}</span>
-                        <span class="option-text">${opt}</span>
-                        <i class="fas fa-check option-feedback-icon"></i>
-                    </div>`).join('')}
-                </div>`;
-
+                bodyHTML = `<div class="options-list" id="optionsList" style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.75rem;">${q.options.map((opt,i) => `<div class="option-item ${userAnswers[currentQIndex]===i?'selected':''}" onclick="selectMCQ(${i},this)" style="padding: 1rem 1.25rem; border: 2px solid var(--border); border-radius: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.9rem; background: var(--bg-card);"><span class="option-letter" style="width: 34px; height: 34px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; flex-shrink: 0;">${letters[i]||i}</span><span class="option-text" style="font-size: 0.95rem; font-weight: 500;">${opt}</span><i class="fas fa-check option-feedback-icon" style="margin-right: auto; display: none;"></i></div>`).join('')}</div>`;
             } else if (q.type === 'tf') {
                 const ans = userAnswers[currentQIndex];
-                bodyHTML = `<div class="tf-options" id="tfOptions">
-                    <div class="tf-option ${ans===true?'selected':''}" onclick="selectTF(true,this)">
-                        <i class="fas fa-check"></i> صحيح
-                    </div>
-                    <div class="tf-option ${ans===false?'selected':''}" onclick="selectTF(false,this)">
-                        <i class="fas fa-times"></i> خطأ
-                    </div>
-                </div>`;
-
+                bodyHTML = `<div class="tf-options" id="tfOptions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.75rem;"><div class="tf-option ${ans===true?'selected':''}" onclick="selectTF(true,this)" style="padding: 1rem; border: 2px solid var(--border); border-radius: 1rem; cursor: pointer; text-align: center; font-weight: 700; background: var(--bg-card); display: flex; align-items: center; justify-content: center; gap: 0.5rem;"><i class="fas fa-check"></i> True</div><div class="tf-option ${ans===false?'selected':''}" onclick="selectTF(false,this)" style="padding: 1rem; border: 2px solid var(--border); border-radius: 1rem; cursor: pointer; text-align: center; font-weight: 700; background: var(--bg-card); display: flex; align-items: center; justify-content: center; gap: 0.5rem;"><i class="fas fa-times"></i> False</div></div>`;
             } else if (q.type === 'fill') {
                 const prev = userAnswers[currentQIndex] !== undefined ? userAnswers[currentQIndex] : '';
-                bodyHTML = `<div class="fill-wrap">
-                    ${q.hint ? `<div class="fill-hint"><i class="fas fa-lightbulb"></i> تلميح: ${q.hint}</div>` : ''}
-                    <div class="fill-input-row">
-                        <input class="fill-input" id="fillInput" type="text"
-                            placeholder="اكتب إجابتك هنا..." value="${prev}" dir="ltr" autocomplete="off"
-                            onkeydown="if(event.key==='Enter') checkFill()">
-                        <button class="fill-check" onclick="checkFill()">
-                            <i class="fas fa-paper-plane"></i> تحقق
-                        </button>
-                    </div>
-                </div>`;
+                bodyHTML = `<div class="fill-wrap" style="margin-bottom: 1.75rem; display: flex; flex-direction: column; gap: 0.65rem;">${q.hint ? `<div class="fill-hint" style="font-size: 0.82rem; color: var(--text-secondary); font-style: italic;"><i class="fas fa-lightbulb"></i> تلميح: ${q.hint}</div>` : ''}<div style="display: flex; gap: 0.65rem; align-items: center;"><input class="fill-input" id="fillInput" type="text" placeholder="اكتب إجابتك هنا..." value="${prev}" dir="ltr" autocomplete="off" onkeydown="if(event.key==='Enter') checkFill()" style="flex: 1; background: var(--bg-secondary); border: 2px solid var(--border); border-radius: 0.85rem; padding: 0.85rem 1rem; outline: none;"><button class="fill-check" onclick="checkFill()" style="padding: 0.85rem 1.3rem; border: none; border-radius: 2rem; background: var(--gradient); color: white; font-weight: 700; font-size: 0.85rem; cursor: pointer;">تحقق</button></div></div>`;
             }
 
             const isLast = currentQIndex === total - 1;
             document.getElementById('quizModalContainer').innerHTML = `
-                <div class="quiz-modal-topbar">
-                    <button class="modal-close-btn" onclick="confirmClose()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <div class="modal-meta">
-                        <span class="q-counter">السؤال ${currentQIndex+1} من ${total}</span>
-                        <span class="q-timer" id="qTimer">
-                            <i class="fas fa-hourglass-half"></i>
-                            <span id="timeLeftSpan">${currentQuiz.timePerQuestion}</span> ث
-                        </span>
-                    </div>
-                </div>
-                <div class="modal-progress-track">
-                    <div class="modal-progress-fill" style="width:${pct}%"></div>
-                </div>
-
-                ${domainHTML}
-                ${passageHTML}
-
-                <div class="question-box">
-                    <span class="question-num">سؤال ${currentQIndex+1}</span>
-                    ${q.question}
-                </div>
-
-                ${bodyHTML}
-
-                <div class="answer-feedback" id="answerFeedback"></div>
-                <div class="explanation-box" id="explanationBox">
-                    <i class="fas fa-info-circle"></i>
-                    <span id="explanationText"></span>
-                </div>
-
-                <div class="quiz-nav">
-                    <!-- تم إخفاء زر السابق نهائياً -->
-                    <!-- <button class="nav-btn nav-prev" onclick="prevQuestion()" ${currentQIndex===0?'disabled':''}> ... </button> -->
-                    <div></div> <!-- هذا عنصر فارغ للحفاظ على التوازن -->
-                    <button class="nav-skip" onclick="skipQuestion()">تخطي</button>
-                    ${isLast
-                        ? `<button class="nav-btn nav-next" onclick="submitQuiz()"
-                            style="background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 12px rgba(16,185,129,0.3)">
-                            إنهاء <i class="fas fa-flag-checkered"></i></button>`
-                        : `<button class="nav-btn nav-next" id="nextBtn" onclick="manualNextQuestion()">
-                            التالي <i class="fas fa-chevron-left"></i></button>`}
-                </div>`;
-
+                <div class="modal-topbar"><button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button><div style="display: flex; align-items: center; gap: 0.75rem;"><span style="background: var(--primary); color: white; padding: 0.3rem 0.9rem; border-radius: 2rem; font-size: 0.82rem; font-weight: 700;">${currentQIndex+1}/${total}</span><span class="q-timer" id="qTimer" style="background: var(--bg-card); border: 1px solid var(--border); padding: 0.3rem 0.9rem; border-radius: 2rem; font-size: 0.82rem; font-weight: 600;"><i class="fas fa-hourglass-half"></i> <span id="timeLeftSpan">${currentQuiz.timePerQuestion}</span>s</span></div></div>
+                <div style="height: 4px; background: var(--bg-secondary); border-radius: 100px; overflow: hidden; margin-bottom: 1.75rem;"><div style="height: 100%; border-radius: 100px; background: var(--gradient); transition: width 0.4s ease; width: ${pct}%;"></div></div>
+                ${domainHTML}${passageHTML}<div class="question-box" style="background: var(--gradient); color: white; padding: 1.5rem; border-radius: 1.1rem; font-size: 1.1rem; font-weight: 600; line-height: 1.65; margin-bottom: 1.5rem;"><span style="font-size: 0.75rem; opacity: 0.75; font-weight: 500; display: block; margin-bottom: 0.5rem;">Question ${currentQIndex+1}</span>${q.question}</div>
+                ${bodyHTML}<div id="answerFeedback" style="padding: 0.85rem 1.1rem; border-radius: 0.85rem; font-weight: 600; font-size: 0.92rem; margin-bottom: 1.25rem; display: none; align-items: center; gap: 0.5rem;"></div>
+                <div id="explanationBox" style="background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.2); border-radius: 0.85rem; padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.87rem; color: var(--text-secondary); display: none; align-items: flex-start; gap: 0.5rem;"><i class="fas fa-info-circle" style="color: var(--primary); margin-top: 0.1rem;"></i><span id="explanationText"></span></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;"><button class="nav-skip" onclick="skipQuestion()" style="background: transparent; color: var(--text-secondary); border: none; font-size: 0.82rem; cursor: pointer; text-decoration: underline;">تخطي</button>${isLast ? `<button class="learn-btn" onclick="submitQuiz()">إنهاء <i class="fas fa-flag-checkered"></i></button>` : `<button class="learn-btn" id="nextBtn" onclick="manualNextQuestion()">التالي <i class="fas fa-chevron-left"></i></button>`}</div>`;
             startTimer();
         }
 
-        // ===== ANSWER SELECTION =====
-        function selectMCQ(idx, el) {
-            const list = document.getElementById('optionsList');
-            // منع الاختيار إذا كان السؤال مقفلاً (تمت الإجابة عليه)
-            if (!list || list.classList.contains('locked')) return;
+        function selectMCQ(idx, el) { const list = document.getElementById('optionsList'); if (!list || list.classList.contains('locked')) return; userAnswers[currentQIndex] = idx; revealMCQ(currentQuiz.questions[currentQIndex]); }
+        function selectTF(val, el) { const wrap = document.getElementById('tfOptions'); if (!wrap || wrap.classList.contains('locked')) return; userAnswers[currentQIndex] = val; revealTF(currentQuiz.questions[currentQIndex]); }
+        function checkFill() { const inp = document.getElementById('fillInput'); if (!inp || inp.disabled) return; const val = inp.value.trim().toLowerCase(), q = currentQuiz.questions[currentQIndex], correct = (q.answer || '').toLowerCase().trim(); userAnswers[currentQIndex] = val; const isRight = val === correct; inp.classList.add(isRight ? 'correct' : 'wrong'); inp.disabled = true; showFeedback(isRight, q.answer); showExplanation(q.explanation); startAutoAdvance(); }
 
-            // حفظ الإجابة
-            userAnswers[currentQIndex] = idx;
+        function showFeedback(isRight, correct) { const fb = document.getElementById('answerFeedback'); if (!fb) return; fb.style.display = 'flex'; if (isRight) { fb.className = 'answer-feedback show right'; fb.innerHTML = `<i class="fas fa-check-circle"></i> ممتاز! إجابة صحيحة ✓`; } else { fb.className = 'answer-feedback show wrong'; fb.innerHTML = `<i class="fas fa-times-circle"></i> الإجابة الصحيحة: <b style="margin-right:0.4rem">${correct}</b>`; } }
+        function showExplanation(text) { if (!text) return; const box = document.getElementById('explanationBox'), span = document.getElementById('explanationText'); if (box && span) { span.textContent = text; box.style.display = 'flex'; } }
 
-            // إظهار الحل الصحيح والخطأ
-            const q = currentQuiz.questions[currentQIndex];
-            revealMCQ(q);
-        }
-
-        function selectTF(val, el) {
-            const wrap = document.getElementById('tfOptions');
-            if (!wrap || wrap.classList.contains('locked')) return;
-
-            userAnswers[currentQIndex] = val;
-
-            const q = currentQuiz.questions[currentQIndex];
-            revealTF(q);
-        }
-
-        function checkFill() {
-            const inp = document.getElementById('fillInput');
-            const btn = document.querySelector('.fill-check');
-            if (!inp || inp.disabled) return;
-
-            const val = inp.value.trim().toLowerCase();
-            const q   = currentQuiz.questions[currentQIndex];
-            const correct = (q.answer || '').toLowerCase().trim();
-
-            userAnswers[currentQIndex] = val;
-
-            const isRight = val === correct;
-            inp.classList.add(isRight ? 'correct' : 'wrong');
-            inp.disabled = true;
-            if (btn) btn.disabled = true;
-            showFeedback(isRight, q.answer); // نمرر الإجابة الصحيحة
-            showExplanation(q.explanation);
-
-            // بدء مؤقت الانتقال التلقائي بعد عرض التغذية الراجعة
-            startAutoAdvance();
-        }
-
-        // ===== FEEDBACK & EXPLANATION =====
-        function showFeedback(isRight, correctAnswer) {
-            const fb = document.getElementById('answerFeedback');
-            if (!fb) return;
-            if (isRight) {
-                fb.className = 'answer-feedback show right';
-                fb.innerHTML = `<i class="fas fa-check-circle"></i> ممتاز! إجابة صحيحة ✓`;
-            } else {
-                fb.className = 'answer-feedback show wrong';
-                fb.innerHTML = `<i class="fas fa-times-circle"></i> الإجابة الصحيحة: <b style="margin-right:0.4rem">${correctAnswer}</b>`;
-            }
-        }
-
-        function showExplanation(text) {
-            if (!text) return;
-            const box = document.getElementById('explanationBox');
-            const span = document.getElementById('explanationText');
-            if (box && span) { span.textContent = text; box.classList.add('show'); }
-        }
-
-        // ===== TIMER =====
-        function startTimer() {
-            if (timer) clearInterval(timer);
-            timeLeft = currentQuiz.timePerQuestion;
-            updateTimerDisplay();
-            timer = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-                if (timeLeft <= 0) { clearInterval(timer); autoAdvance(); }
-            }, 1000);
-        }
-
-        function updateTimerDisplay() {
-            const el = document.getElementById('timeLeftSpan');
-            const te = document.getElementById('qTimer');
-            if (el) el.textContent = timeLeft;
-            if (te) te.classList.toggle('urgent', timeLeft <= 5);
-        }
-
-        function autoAdvance() {
-            // هذه الدالة تستدعى عندما ينتهي الوقت
-            if (currentQIndex < currentQuiz.questions.length - 1) { currentQIndex++; renderQuestion(); }
-            else submitQuiz();
-        }
-
-        // ===== NEW: START AUTO ADVANCE TIMER =====
-        function startAutoAdvance() {
-            // إلغاء أي مؤقت سابق
-            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
-
-            // تعيين مؤقت جديد للانتقال بعد 3 ثوانٍ
-            autoAdvanceTimer = setTimeout(() => {
-                autoAdvanceTimer = null; // تنظيف المتغير
-                if (currentQIndex < currentQuiz.questions.length - 1) {
-                    // إذا لم يكن السؤال الأخير، انتقل إلى التالي
-                    currentQIndex++;
-                    renderQuestion();
-                } else {
-                    // إذا كان السؤال الأخير، أنهِ الاختبار
-                    submitQuiz();
-                }
-            }, 3000); // 3000 ميلي ثانية = 3 ثوانٍ
-        }
-
-        // ===== NAVIGATION =====
-        function manualNextQuestion() {
-            // هذا الزر الآن يستدعي هذه الدالة بدلاً من nextQuestion
-            const q = currentQuiz.questions[currentQIndex];
-
-            // التحقق من وجود إجابة
-            if (userAnswers[currentQIndex] === undefined) {
-                showToast('اختر إجابة أو اضغط تخطي', 'warn');
-                return;
-            }
-
-            // إلغاء أي مؤقت تلقائي كان سيبدأ (لكن في حالتنا لن يكون موجوداً لأن المستخدم ضغط يدوياً)
-            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
-
-            // الانتقال إلى السؤال التالي فوراً (لأن المستخدم ضغط على الزر)
-            // يجب أولاً التأكد من عرض التغذية الراجعة (لكنها ستكون معروضة بالفعل)
-            // ثم الانتقال للسؤال التالي
-            currentQIndex++;
-            renderQuestion();
-        }
-
-        // دالة nextQuestion القديمة لم تعد مستخدمة، لكن سنبقيها أو نغير اسمها.
-        // يمكننا حذفها أو إعادة تسميتها.
-        // سأقوم بتعطيلها لمنع الاستخدام الخاطئ.
-        // function nextQuestion() { } // تم تعطيلها
-
-        function prevQuestion() { /* تم إخفاء الزر، لذا هذه الدالة لن تستخدم */ }
-
-        function skipQuestion() {
-            // إلغاء أي مؤقت تلقائي قبل التخطي
-            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
-
-            if (currentQIndex < currentQuiz.questions.length - 1) { currentQIndex++; renderQuestion(); }
-            else submitQuiz();
-        }
+        function startTimer() { if (timer) clearInterval(timer); timeLeft = currentQuiz.timePerQuestion; timer = setInterval(() => { timeLeft--; const el = document.getElementById('timeLeftSpan'); if (el) el.textContent = timeLeft; if (timeLeft <= 0) { clearInterval(timer); autoAdvance(); } }, 1000); }
+        function autoAdvance() { if (currentQIndex < currentQuiz.questions.length - 1) { currentQIndex++; renderQuestion(); } else submitQuiz(); }
+        function startAutoAdvance() { if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer); autoAdvanceTimer = setTimeout(() => { if (currentQIndex < currentQuiz.questions.length - 1) { currentQIndex++; renderQuestion(); } else submitQuiz(); }, 3000); }
+        function manualNextQuestion() { if (userAnswers[currentQIndex] === undefined) { showToast('اختر إجابة أو اضغط تخطي', 'warn'); return; } currentQIndex++; renderQuestion(); }
+        function skipQuestion() { if (currentQIndex < currentQuiz.questions.length - 1) { currentQIndex++; renderQuestion(); } else submitQuiz(); }
 
         function revealMCQ(q) {
-            const list = document.getElementById('optionsList');
-            if (!list) return;
-
-            // قفل القائمة لمنع أي تعديل
-            list.classList.add('locked');
-
-            // تطبيق الألوان (صح/خطأ) على الخيارات
+            const list = document.getElementById('optionsList'); if (!list) return; list.classList.add('locked');
             list.querySelectorAll('.option-item').forEach((o, i) => {
-                if (i === q.correct) {
-                    o.classList.add('correct');
-                    o.querySelector('.option-feedback-icon').className = 'fas fa-check option-feedback-icon';
-                } else if (userAnswers[currentQIndex] === i) {
-                    o.classList.add('wrong');
-                    o.querySelector('.option-feedback-icon').className = 'fas fa-times option-feedback-icon';
-                }
+                if (i === q.correct) { o.classList.add('correct'); o.querySelector('.option-feedback-icon').style.display = 'block'; }
+                else if (userAnswers[currentQIndex] === i) { o.classList.add('wrong'); o.querySelector('.option-feedback-icon').className = 'fas fa-times option-feedback-icon'; o.querySelector('.option-feedback-icon').style.display = 'block'; }
             });
-
-            const isRight = userAnswers[currentQIndex] === q.correct;
-            showFeedback(isRight, q.options[q.correct]);
-            showExplanation(q.explanation);
-
-            // بدء مؤقت الانتقال التلقائي
-            startAutoAdvance();
+            showFeedback(userAnswers[currentQIndex] === q.correct, q.options[q.correct]); showExplanation(q.explanation); startAutoAdvance();
         }
-
         function revealTF(q) {
-            const wrap = document.getElementById('tfOptions');
-            if (!wrap) return;
-
-            wrap.classList.add('locked');
-
-            wrap.querySelectorAll('.tf-option').forEach(b => {
-                const isTrue = b.textContent.includes('صحيح');
-                if (isTrue === q.correct) b.classList.add('correct');
-                else if (userAnswers[currentQIndex] === isTrue && isTrue !== q.correct) b.classList.add('wrong');
-            });
-
-            const isRight = userAnswers[currentQIndex] === q.correct;
-            showFeedback(isRight, q.correct ? 'صحيح ✓' : 'خطأ ✗');
-            showExplanation(q.explanation);
-
-            // بدء مؤقت الانتقال التلقائي
-            startAutoAdvance();
+            const wrap = document.getElementById('tfOptions'); if (!wrap) return; wrap.classList.add('locked');
+            wrap.querySelectorAll('.tf-option').forEach(b => { const isTrue = b.textContent.includes('True'); if (isTrue === q.correct) b.classList.add('correct'); else if (userAnswers[currentQIndex] === isTrue && isTrue !== q.correct) b.classList.add('wrong'); });
+            showFeedback(userAnswers[currentQIndex] === q.correct, q.correct ? 'True ✓' : 'False ✗'); showExplanation(q.explanation); startAutoAdvance();
         }
 
-        // ===== SUBMIT =====
         function submitQuiz() {
-            clearInterval(timer);
-            if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; } // إلغاء المؤقت إذا كان موجوداً
-
-            const total = currentQuiz.questions.length;
-            let correct = 0, wrong = 0, skipped = 0;
-            currentQuiz.questions.forEach((q, i) => {
-                const ans = userAnswers[i];
-                if (ans === undefined) { skipped++; return; }
-                let isRight = false;
-                if (q.type === 'mcq') isRight = ans === q.correct;
-                else if (q.type === 'tf') isRight = ans === q.correct;
-                else if (q.type === 'fill') isRight = ans.toLowerCase().trim() === (q.answer||'').toLowerCase().trim();
-                if (isRight) correct++; else wrong++;
-            });
+            clearInterval(timer); if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+            const total = currentQuiz.questions.length; let correct = 0, wrong = 0, skipped = 0;
+            currentQuiz.questions.forEach((q, i) => { const ans = userAnswers[i]; if (ans === undefined) { skipped++; return; } let isRight = false; if (q.type === 'mcq') isRight = ans === q.correct; else if (q.type === 'tf') isRight = ans === q.correct; else if (q.type === 'fill') isRight = ans.toLowerCase().trim() === (q.answer||'').toLowerCase().trim(); if (isRight) correct++; else wrong++; });
             const pct = Math.round((correct / total) * 100);
-
-            // Save — mark done only if ≥ 60%
-            if (pct >= 60 && !completedQuizzes.includes(currentQuiz.id)) {
-                completedQuizzes.push(currentQuiz.id);
-                localStorage.setItem('cefr_completed_v2', JSON.stringify(completedQuizzes));
-            }
-            const prev = getScore(currentQuiz.id);
-            if (prev === null || pct > prev) localStorage.setItem(`cefr_score_${currentQuiz.id}`, pct);
-
-            updatePageStats();
-            displayQuizzes();
-            showResults(correct, wrong, skipped, pct, total);
+            if (pct >= 60 && !completedQuizzes.includes(currentQuiz.id)) { completedQuizzes.push(currentQuiz.id); localStorage.setItem('cefr_completed_v2', JSON.stringify(completedQuizzes)); }
+            const prev = getScore(currentQuiz.id); if (prev === null || pct > prev) localStorage.setItem(`cefr_score_${currentQuiz.id}`, pct);
+            updatePageStats(); displayQuizzes(); showResults(correct, wrong, skipped, pct, total);
         }
 
-        // ===== SHOW RESULTS =====
         function showResults(correct, wrong, skipped, pct, total) {
-            let title, msg;
-            if (pct >= 90)      { title = 'ممتاز! 🏆';         msg = 'أداء استثنائي — أنت في القمة!'; }
-            else if (pct >= 75) { title = 'جيد جداً ✨';        msg = 'نتيجة قوية، واصل التحسن!'; }
-            else if (pct >= 60) { title = 'اجتزت المستوى ✅';   msg = 'لقد فتحت المستوى التالي!'; }
-            else                { title = 'تحتاج مراجعة 📚';    msg = `حصلت على ${pct}% — تحتاج 60% لفتح المستوى التالي.`; }
-
-            const nextQuiz = QUIZZES.find(q => q.id === currentQuiz.id + 1);
-            const unlockedNext = pct >= 60 && nextQuiz;
-
+            let title, msg; if (pct >= 90) { title = t('excellent'); msg = 'أداء استثنائي — أنت في القمة!'; } else if (pct >= 75) { title = t('veryGood'); msg = 'نتيجة قوية، واصل التحسن!'; } else if (pct >= 60) { title = t('passed'); msg = 'لقد فتحت المستوى التالي!'; } else { title = t('needsReview'); msg = `حصلت على ${pct}% — تحتاج 60% لفتح المستوى التالي.`; }
+            const nextQuiz = QUIZZES.find(q => q.id === currentQuiz.id + 1), unlockedNext = pct >= 60 && nextQuiz;
             document.getElementById('quizModalContainer').innerHTML = `
-                <div class="quiz-modal-topbar" style="border:none">
-                    <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
-                    <span style="font-weight:700;color:var(--text-secondary);font-size:0.9rem">${currentQuiz.title}</span>
-                    <div></div>
-                </div>
-                <div class="results-wrap">
-                    <div class="result-circle">
-                        <span class="result-pct">${pct}</span>
-                        <span class="result-sign">%</span>
-                    </div>
-                    <h2 class="result-title">${title}</h2>
-                    <p class="result-msg">${msg}</p>
-                    ${unlockedNext ? `<div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#16a34a;padding:0.65rem 1.2rem;border-radius:0.85rem;font-weight:700;font-size:0.9rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem">
-                        <i class="fas fa-unlock"></i> فتحت مستوى ${nextQuiz.levelAr}!
-                    </div>` : ''}
-                    <div class="results-grid">
-                        <div class="result-stat c"><span class="rs-val">${correct}</span><span class="rs-lbl"><i class="fas fa-check"></i> صحيح</span></div>
-                        <div class="result-stat w"><span class="rs-val">${wrong}</span><span class="rs-lbl"><i class="fas fa-times"></i> خطأ</span></div>
-                        <div class="result-stat s"><span class="rs-val">${skipped}</span><span class="rs-lbl"><i class="fas fa-forward"></i> تخطى</span></div>
-                    </div>
-                    <div class="results-actions">
-                        <button class="res-btn primary" onclick="startQuiz(${currentQuiz.id})">
-                            <i class="fas fa-redo"></i> أعد الاختبار
-                        </button>
-                        <button class="res-btn outline" onclick="showReview()">
-                            <i class="fas fa-list-check"></i> مراجعة الإجابات
-                        </button>
-                        ${unlockedNext ? `<button class="res-btn primary" onclick="closeModal();startQuiz(${nextQuiz.id})"
-                            style="background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 4px 12px rgba(34,197,94,0.3)">
-                            <i class="fas fa-arrow-left"></i> انتقل لـ ${nextQuiz.levelAr}
-                        </button>` : ''}
-                        <button class="res-btn outline" onclick="closeModal()" style="border-color:var(--border);color:var(--text-secondary)">
-                            <i class="fas fa-arrow-right"></i> رجوع
-                        </button>
-                    </div>
+                <div class="modal-topbar" style="border:none"><button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button><span style="font-weight:700;color:var(--text-secondary);font-size:0.9rem">${currentQuiz.title}</span></div>
+                <div class="results-wrap" style="text-align: center;"><div class="result-circle" style="width: 140px; height: 140px; border-radius: 50%; background: var(--gradient); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: white;"><span style="font-size: 2.8rem; font-weight: 800;">${pct}</span><span style="font-size: 1.1rem; opacity: 0.85;">%</span></div><h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.4rem;">${title}</h2><p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.75rem;">${msg}</p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 2rem;"><div style="background: var(--bg-secondary); padding: 1rem 0.75rem; border-radius: 1rem;"><span style="font-size: 1.6rem; font-weight: 800; color: var(--success); display: block;">${correct}</span><span style="font-size: 0.78rem; color: var(--text-secondary);">صحيح</span></div><div style="background: var(--bg-secondary); padding: 1rem 0.75rem; border-radius: 1rem;"><span style="font-size: 1.6rem; font-weight: 800; color: var(--danger); display: block;">${wrong}</span><span style="font-size: 0.78rem; color: var(--text-secondary);">خطأ</span></div><div style="background: var(--bg-secondary); padding: 1rem 0.75rem; border-radius: 1rem;"><span style="font-size: 1.6rem; font-weight: 800; color: var(--text-secondary); display: block;">${skipped}</span><span style="font-size: 0.78rem; color: var(--text-secondary);">تخطى</span></div></div>
+                    <div style="display: flex; justify-content: center; gap: 0.85rem; flex-wrap: wrap;"><button class="learn-btn" onclick="startQuiz(${currentQuiz.id})"><i class="fas fa-redo"></i> أعد الاختبار</button><button class="learn-btn" onclick="showReview()" style="background:var(--bg-secondary); color:var(--text-primary);"><i class="fas fa-list-check"></i> مراجعة الإجابات</button></div>
                 </div>`;
         }
 
-        // ===== REVIEW =====
         function showReview() {
-            const letters = ['أ','ب','ج','د'];
-            let html = `
-                <div class="quiz-modal-topbar">
-                    <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
-                    <span style="font-weight:700;font-size:0.9rem;color:var(--text-secondary)">مراجعة الإجابات</span>
-                    <div></div>
-                </div>`;
-
+            let html = `<div class="modal-topbar"><button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button><span style="font-weight:700;font-size:0.9rem;color:var(--text-secondary)">${t('reviewAnswers')}</span></div>`;
             currentQuiz.questions.forEach((q, i) => {
-                const ans     = userAnswers[i];
-                const skipped = ans === undefined;
-                let isRight   = false;
-                if (!skipped) {
-                    if (q.type === 'mcq') isRight = ans === q.correct;
-                    else if (q.type === 'tf') isRight = ans === q.correct;
-                    else isRight = ans.toLowerCase().trim() === (q.answer||'').toLowerCase().trim();
-                }
-
-                const cls = skipped ? 'r-skipped' : isRight ? 'r-correct' : 'r-wrong';
-                const tag = skipped ? '<span class="review-tag tag-skipped">تخطى</span>'
-                          : isRight ? '<span class="review-tag tag-correct">صحيح</span>'
-                          :           '<span class="review-tag tag-wrong">خطأ</span>';
-
-                const correctAns = q.type==='mcq' ? q.options[q.correct]
-                                 : q.type==='tf'  ? (q.correct ? 'صحيح ✓' : 'خطأ ✗')
-                                 :                  q.answer;
-                const yourAns    = q.type==='mcq' ? (ans!==undefined ? q.options[ans] : '—')
-                                 : q.type==='tf'  ? (ans===true ? 'صحيح' : ans===false ? 'خطأ' : '—')
-                                 :                  (ans || '—');
-
-                html += `<div class="review-item ${cls}">
-                    <div class="review-q-header">
-                        <div class="review-q-text">${i+1}. ${q.question}</div>
-                        ${tag}
-                    </div>
-                    <div class="review-answers">
-                        ${!skipped && !isRight ? `<div class="review-answer your-wrong">
-                            <i class="fas fa-times-circle"></i> إجابتك: ${yourAns}
-                        </div>` : ''}
-                        <div class="review-answer correct-a">
-                            <i class="fas fa-check-circle"></i> الإجابة الصحيحة: ${correctAns}
-                        </div>
-                        ${q.explanation ? `<div style="font-size:0.8rem;color:var(--text-secondary);padding:0.4rem 0.6rem;background:var(--bg-secondary);border-radius:0.5rem;margin-top:0.25rem">
-                            <i class="fas fa-info-circle" style="color:var(--primary);margin-left:0.3rem"></i>${q.explanation}
-                        </div>` : ''}
-                    </div>
-                </div>`;
+                const ans = userAnswers[i], skipped = ans === undefined; let isRight = false; if (!skipped) { if (q.type === 'mcq') isRight = ans === q.correct; else if (q.type === 'tf') isRight = ans === q.correct; else isRight = ans.toLowerCase().trim() === (q.answer||'').toLowerCase().trim(); }
+                const correctAns = q.type==='mcq' ? q.options[q.correct] : q.type==='tf' ? (q.correct ? 'True' : 'False') : q.answer;
+                const yourAns = q.type==='mcq' ? (ans!==undefined ? q.options[ans] : '—') : q.type==='tf' ? (ans===true ? 'True' : ans===false ? 'False' : '—') : (ans || '—');
+                html += `<div style="background: var(--bg-card); border-radius: 1.1rem; padding: 1.25rem; margin-bottom: 1rem; border: 2px solid var(--border);"><div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 0.85rem;">${i+1}. ${q.question}</div><div style="display: flex; flex-direction: column; gap: 0.4rem;">${!isRight && !skipped ? `<div style="padding: 0.55rem 0.85rem; border-radius: 0.65rem; background: rgba(239,68,68,0.09); color: #b91c1c; font-size: 0.85rem;">إجابتك: ${yourAns}</div>` : ''}<div style="padding: 0.55rem 0.85rem; border-radius: 0.65rem; background: rgba(34,197,94,0.1); color: #15803d; font-size: 0.85rem;">الإجابة الصحيحة: ${correctAns}</div>${q.explanation ? `<div style="font-size:0.8rem;color:var(--text-secondary);padding:0.4rem 0.6rem;background:var(--bg-secondary);border-radius:0.5rem;margin-top:0.25rem;"><i class="fas fa-info-circle" style="color:var(--primary);margin-left:0.3rem"></i>${q.explanation}</div>` : ''}</div></div>`;
             });
-
-            html += `<div style="text-align:center;margin-top:1.5rem">
-                <button class="res-btn primary" onclick="startQuiz(${currentQuiz.id})">
-                    <i class="fas fa-redo"></i> أعد الاختبار
-                </button>
-            </div>`;
-
+            html += `<div style="text-align:center;margin-top:1.5rem"><button class="learn-btn" onclick="startQuiz(${currentQuiz.id})" style="margin: 0 auto;"><i class="fas fa-redo"></i> أعد الاختبار</button></div>`;
             document.getElementById('quizModalContainer').innerHTML = html;
-            document.getElementById('quizModalContainer').scrollTop = 0;
         }
 
-        // ===== TOAST =====
-        function showToast(msg, type = 'info') {
-            const tc = document.getElementById('toastContainer');
-            const t  = document.createElement('div');
-            t.className = `toast ${type}`;
-            t.innerHTML = `<i class="fas fa-${type==='warn'?'exclamation-circle':'info-circle'}"></i> ${msg}`;
-            tc.appendChild(t);
-            setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 2200);
-        }
-
-        // ===== NAV =====
-        // ===== I18N =====
-        const i18n = {
-            ar: { 'nav-home':'الرئيسية','nav-lessons':'الكلمات','nav-stories':'القصص','nav-tenses':'الأزمنة','nav-quiz':'الاختبارات','nav-download':'تحميل التطبيق','s-title':'الإعدادات','s-appearance':'المظهر','s-light':'فاتح','s-dark':'داكن','s-lang':'اللغة','s-notif':'الإشعارات','s-notif-status':'حالة الإشعارات','s-notif-btn':'تفعيل الإشعارات','notif-granted':'مفعّلة ✓','notif-denied':'محظورة','notif-default':'غير محددة','page-title':'اختبر مستواك','page-sub':'ستة مستويات CEFR من A1 إلى C2 — أكمل كل مستوى للانتقال للتالي','lbl-quizzes':'اختبارات','lbl-questions':'سؤال','lbl-completed':'مكتمل','lbl-best':'أفضل نتيجة','footer-txt':'© 2026 CineLingua — جميع الحقوق محفوظة' },
-            en: { 'nav-home':'Home','nav-lessons':'Words','nav-stories':'Stories','nav-tenses':'Tenses','nav-quiz':'Quiz','nav-download':'Download App','s-title':'Settings','s-appearance':'Appearance','s-light':'Light','s-dark':'Dark','s-lang':'Language','s-notif':'Notifications','s-notif-status':'Notification Status','s-notif-btn':'Enable Notifications','notif-granted':'Enabled ✓','notif-denied':'Blocked','notif-default':'Not Set','page-title':'Test Your Level','page-sub':'Six CEFR levels from A1 to C2 — complete each level to unlock the next','lbl-quizzes':'Quizzes','lbl-questions':'Questions','lbl-completed':'Completed','lbl-best':'Best Score','footer-txt':'© 2026 CineLingua — All Rights Reserved' }
-        };
-        let currentLang = localStorage.getItem('cl-lang') || 'ar';
-        function tr(k) { return i18n[currentLang][k] || i18n['ar'][k] || k; }
-        function applyLang() {
-            const lang = currentLang;
-            document.documentElement.lang = lang; document.documentElement.dir = lang==='ar'?'rtl':'ltr';
-            Object.keys(i18n[lang]).forEach(id => { const el=document.getElementById(id); if(el) el.innerHTML=i18n[lang][id]; });
-            document.getElementById('lang-ar')?.classList.toggle('active', lang==='ar');
-            document.getElementById('lang-en')?.classList.toggle('active', lang==='en');
-        }
-        function setLang(lang) { currentLang=lang; localStorage.setItem('cl-lang',lang); applyLang(); }
-
-        // ===== SETTINGS =====
-        function openSettings() { document.getElementById('settingsOverlay').classList.add('show'); document.getElementById('settingsPanel').classList.add('show'); refreshNotifBadge(); }
-        function closeSettings() { document.getElementById('settingsOverlay').classList.remove('show'); document.getElementById('settingsPanel').classList.remove('show'); }
-        function refreshNotifBadge() {
-            const perm = Notification.permission, badge = document.getElementById('notifBadge'), btn = document.getElementById('notifActionBtn');
-            badge.className = 'notif-badge ' + perm;
-            badge.textContent = perm==='granted' ? tr('notif-granted') : perm==='denied' ? tr('notif-denied') : tr('notif-default');
-            if (perm==='granted') { btn.disabled=true; document.getElementById('s-notif-btn').textContent=tr('notif-granted'); }
-            else if (perm==='denied') { btn.disabled=true; document.getElementById('s-notif-btn').textContent=tr('notif-denied'); }
-            else { btn.disabled=false; document.getElementById('s-notif-btn').textContent=tr('s-notif-btn'); }
-        }
-        async function requestNotifSettings() {
-            const r = await Notification.requestPermission(); refreshNotifBadge();
-            if (r==='granted') { if (typeof window.saveFCMTokenAfterPermission==='function') setTimeout(window.saveFCMTokenAfterPermission,2000); navigator.serviceWorker.ready.then(reg => reg.showNotification('CineLingua 🎓', { body: currentLang==='ar'?'تم تفعيل الإشعارات! 🔔':'Notifications enabled! 🔔', icon:'https://i.postimg.cc/J4xdc62M/20260305-233826.png', vibrate:[200,100,200] })); }
-        }
-
-        function toggleMenu() { document.getElementById('navMenu').classList.toggle('show'); }
-        document.querySelectorAll('.nav-menu a').forEach(a =>
-            a.addEventListener('click', () => document.getElementById('navMenu').classList.remove('show'))
-        );
-
-        // ===== THEME =====
-        window.setTheme = function(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            document.querySelectorAll('.theme-btn').forEach(b => {
-                b.classList.toggle('active',
-                    (theme === 'light' && b.innerHTML.includes('sun')) ||
-                    (theme === 'dark'  && b.innerHTML.includes('moon'))
-                );
-            });
-        };
-        window.setTheme = function(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            document.querySelectorAll('.theme-btn').forEach(b => {
-                b.classList.toggle('active',
-                    (theme === 'light' && b.innerHTML.includes('sun')) ||
-                    (theme === 'dark'  && b.innerHTML.includes('moon'))
-                );
-            });
-            document.getElementById('btn-light')?.classList.toggle('active', theme==='light');
-            document.getElementById('btn-dark')?.classList.toggle('active', theme==='dark');
-        };
-        setTheme(localStorage.getItem('theme') || 'light');
-        applyLang();
+        function showToast(msg, type = 'info') { const tc = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type==='warn'?'exclamation-circle':'info-circle'}"></i> ${msg}`; tc.appendChild(t); setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 2200); }
     </script>
-
-    <!-- Firebase - حفظ التوكن للإشعارات -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-    <script>
-    (function() {
-        const _fbConfig = {
-            apiKey: "AIzaSyCvi0VCJv3j6p8ICT1f97TePwDXAazmQMw",
-            authDomain: "cinelingua-fe7f1.firebaseapp.com",
-            projectId: "cinelingua-fe7f1",
-            storageBucket: "cinelingua-fe7f1.firebasestorage.app",
-            messagingSenderId: "157697610841",
-            appId: "1:157697610841:web:529db81f264e1a84ab0d48"
-        };
-        const VAPID = "BLRwJpw7gMvb5-pZVmo_zw0el29GABJhFAYMWMso3mcMHU_mQsOLnuL5x7YfRoQ_ujItpTuslqg_LM56Mdom5v4";
-        if (!firebase.apps.length) firebase.initializeApp(_fbConfig);
-        let _msg = null;
-        try { _msg = firebase.messaging(); } catch(e) {}
-
-        async function _saveToken() {
-            try {
-                if (!_msg || Notification.permission !== "granted") return;
-                const token = await _msg.getToken({ vapidKey: VAPID, serviceWorkerRegistration: swRegistration || undefined });
-                if (!token) return;
-                const db = firebase.firestore();
-                await db.collection("fcmTokens").doc(token).set({
-                    token,
-                    page: window.location.pathname,
-                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-                console.log("✅ FCM Token saved");
-            } catch(e) { console.log("FCM:", e.message); }
-        }
-
-        window.addEventListener("load", () => {
-            if (Notification.permission === "granted") setTimeout(_saveToken, 3000);
-        });
-
-        window.saveFCMTokenAfterPermission = _saveToken;
-    })();
-    </script>
-
 </body>
-                                                                                                                                                                                                                       </html>
+</html>

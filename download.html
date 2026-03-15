@@ -8,404 +8,62 @@
     <meta name="theme-color" content="#6366f1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #ec4899;
-            --success: #22c55e; --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
-            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.12);
-            --bg-primary: #f8fafc; --bg-card: #ffffff; --bg-secondary: #f1f5f9;
-            --text-primary: #0f172a; --text-secondary: #64748b;
-        }
-        [data-theme="dark"] {
-            --border: #334155; --bg-primary: #0f172a; --bg-card: #1e293b;
-            --bg-secondary: #334155; --text-primary: #f8fafc; --text-secondary: #cbd5e1;
-        }
-        body { background: var(--bg-primary); color: var(--text-primary); font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.3s, color 0.3s; min-height: 100vh; }
-
-        /* NAVBAR */
-        .navbar { background: var(--bg-card); box-shadow: 0 1px 0 var(--border); position: fixed; width: 100%; top: 0; z-index: 1000; }
-        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0.9rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.45rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
-        .nav-menu { display: flex; gap: 0.25rem; list-style: none; }
-        .nav-menu a { text-decoration: none; color: var(--text-secondary); font-weight: 500; padding: 0.5rem 0.9rem; border-radius: 0.6rem; transition: all 0.2s; font-size: 0.9rem; }
-        .nav-menu a:hover, .nav-menu a.active { color: var(--primary); background: rgba(99,102,241,0.08); }
-        .nav-right { display: flex; align-items: center; gap: 0.75rem; }
-        .theme-toggle { display: flex; background: var(--bg-secondary); padding: 0.2rem; border-radius: 2rem; }
-        .theme-btn { padding: 0.4rem 0.8rem; border: none; background: transparent; border-radius: 2rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; font-size: 0.85rem; }
-        .theme-btn.active { background: var(--primary); color: white; }
-        .menu-toggle { background: none; border: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; display: none; }
-        .settings-btn { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 2px 10px rgba(99,102,241,0.4); flex-shrink: 0; }
-        .settings-btn:hover { transform: rotate(90deg) scale(1.1); box-shadow: 0 4px 18px rgba(99,102,241,0.55); }
-
-        @media (max-width: 768px) {
-            .menu-toggle { display: block; }
-            .nav-menu { display: none; position: absolute; top: 100%; right: 0; left: 0; background: var(--bg-card); flex-direction: column; padding: 0.75rem; gap: 0.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-bottom: 1px solid var(--border); }
-            .nav-menu.show { display: flex; }
-            .nav-menu a { padding: 0.75rem 1rem; display: block; }
-        }
-
-        /* SETTINGS PANEL */
-        .settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9990; display: none; backdrop-filter: blur(4px); }
-        .settings-overlay.show { display: block; }
-        .settings-panel { position: fixed; top: 0; right: 0; z-index: 9991; width: 300px; max-width: 92vw; height: 100vh; background: var(--bg-card); display: flex; flex-direction: column; transform: translateX(110%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); overflow: hidden; }
-        .settings-panel.show { transform: translateX(0); }
-        .settings-header { padding: 1.4rem 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-        .settings-header-left { display: flex; align-items: center; gap: 0.85rem; }
-        .settings-header-icon { width: 40px; height: 40px; border-radius: 0.65rem; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-        .settings-header-title { font-size: 1.05rem; font-weight: 800; }
-        .settings-header-sub { font-size: 0.72rem; opacity: 0.75; margin-top: 1px; }
-        .settings-close { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: all 0.2s; }
-        .settings-close:hover { background: rgba(255,255,255,0.35); transform: rotate(90deg); }
-        .settings-body { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.4rem; }
-        .settings-section { display: flex; flex-direction: column; gap: 0.65rem; }
-        .settings-section-title { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); }
-        .settings-section-title i { color: var(--primary); }
-        .settings-theme-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
-        .settings-theme-btn { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.85rem 0.5rem; border-radius: 0.9rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); font-family: inherit; position: relative; transition: all 0.2s; }
-        .settings-theme-btn:hover { border-color: rgba(99,102,241,0.4); color: var(--primary); }
-        .settings-theme-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); color: var(--primary); }
-        .settings-theme-btn.active::after { content: '✓'; position: absolute; top: 6px; left: 8px; font-size: 0.65rem; font-weight: 800; width: 16px; height: 16px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 16px; text-align: center; }
-        .theme-preview { width: 100%; height: 48px; border-radius: 0.5rem; overflow: hidden; display: flex; flex-direction: column; gap: 3px; padding: 5px; border: 1px solid rgba(0,0,0,0.07); }
-        .theme-preview.light { background: #f8fafc; } .theme-preview.dark { background: #0f172a; }
-        .theme-preview .p-bar { height: 6px; border-radius: 3px; background: linear-gradient(90deg,#6366f1,#ec4899); }
-        .theme-preview .p-card { height: 7px; border-radius: 3px; }
-        .theme-preview.light .p-card { background: white; border: 1px solid #e2e8f0; } .theme-preview.dark .p-card { background: #1e293b; border: 1px solid #334155; }
-        .theme-preview .p-card.short { width: 65%; }
-        .settings-lang-row { display: flex; flex-direction: column; gap: 0.5rem; }
-        .settings-lang-btn { display: flex; align-items: center; gap: 0.85rem; padding: 0.9rem 1rem; border-radius: 0.85rem; border: 2px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-family: inherit; width: 100%; color: var(--text-primary); transition: all 0.2s; }
-        .settings-lang-btn:hover { border-color: rgba(99,102,241,0.4); }
-        .settings-lang-btn.active { border-color: var(--primary); background: rgba(99,102,241,0.08); }
-        .lang-flag { font-size: 1.4rem; flex-shrink: 0; }
-        .lang-info { display: flex; flex-direction: column; flex: 1; gap: 1px; }
-        .lang-name { font-size: 0.9rem; font-weight: 700; }
-        .lang-sub { font-size: 0.72rem; color: var(--text-secondary); }
-        .lang-check { color: var(--primary); font-size: 0.85rem; opacity: 0; transition: opacity 0.2s; }
-        .settings-lang-btn.active .lang-check { opacity: 1; }
-        .settings-notif-card { background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 0.9rem; overflow: hidden; }
-        .settings-notif-top { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
-        .settings-notif-label { font-size: 0.88rem; font-weight: 600; }
-        .notif-badge { font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 2rem; }
-        .notif-badge.granted { background: rgba(34,197,94,0.12); color: #16a34a; }
-        .notif-badge.denied  { background: rgba(239,68,68,0.12);  color: #dc2626; }
-        .notif-badge.default { background: rgba(99,102,241,0.12); color: var(--primary); }
-        .notif-action-btn { width: 100%; padding: 0.85rem 1rem; border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: opacity 0.2s; }
-        .notif-action-btn:disabled { opacity: 0.5; cursor: not-allowed; background: var(--bg-secondary); color: var(--text-secondary); }
-        .settings-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.75rem; color: var(--text-secondary); flex-shrink: 0; }
-
-        /* LAYOUT */
-        .container { max-width: 860px; margin: 100px auto 3rem; padding: 0 1.5rem; }
-        .page-header { text-align: center; margin-bottom: 2.5rem; }
-        .page-header h1 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
-        .page-header p { color: var(--text-secondary); font-size: 1rem; }
-
-        /* CARDS */
-        .dl-card { background: var(--bg-card); border-radius: 1.5rem; padding: 2rem; box-shadow: var(--shadow-lg); border: 2px solid var(--border); margin-bottom: 1.5rem; transition: border-color 0.3s; }
-        .dl-card:hover { border-color: rgba(99,102,241,0.2); }
-        .app-icon { width: 90px; height: 90px; background: white; border-radius: 22px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; box-shadow: 0 10px 25px rgba(99,102,241,0.2); padding: 8px; border: 2px solid var(--border); }
-        .app-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 14px; }
-        .card-title { text-align: center; font-size: 1.25rem; font-weight: 800; margin-bottom: 0.35rem; }
-        .card-sub { text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.75rem; }
-
-        /* INSTALL BTN */
-        .install-btn { width: 100%; padding: 1rem; border-radius: 0.9rem; border: none; background: linear-gradient(135deg, #22c55e, #10b981); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 0.65rem; box-shadow: 0 6px 18px rgba(34,197,94,0.35); transition: all 0.3s; margin-bottom: 1.5rem; }
-        .install-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(34,197,94,0.45); }
-        .install-btn.installed { background: var(--bg-secondary); color: var(--text-secondary); box-shadow: none; cursor: default; transform: none; }
-
-        /* FEATURES */
-        .features { background: var(--bg-secondary); border-radius: 1rem; padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; }
-        .feat { display: flex; align-items: center; gap: 0.6rem; font-size: 0.88rem; color: var(--text-secondary); }
-        .feat i { color: var(--success); font-size: 0.8rem; flex-shrink: 0; }
-
-        /* STEPS */
-        .section-label { font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
-        .section-label i { color: var(--primary); }
-        .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; }
-        .step { background: var(--bg-secondary); border-radius: 1rem; padding: 1.1rem 0.75rem; text-align: center; border: 1.5px solid var(--border); transition: all 0.25s; }
-        .step:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-3px); }
-        .step-n { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; margin: 0 auto 0.6rem; }
-        .step h4 { font-size: 0.82rem; font-weight: 700; color: var(--primary); margin-bottom: 0.3rem; }
-        .step p { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5; }
-
-        /* BACK */
-        .back { text-align: center; margin-top: 1.5rem; }
-        .back a { color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: gap 0.2s; }
-        .back a:hover { gap: 0.75rem; }
-
-        /* FOOTER */
-        .footer { background: var(--bg-card); border-top: 1px solid var(--border); text-align: center; padding: 1.5rem; color: var(--text-secondary); font-size: 0.88rem; margin-top: 3rem; }
-
-        @media (max-width: 600px) {
-            .steps { grid-template-columns: repeat(2, 1fr); }
-            .dl-card { padding: 1.35rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-    <!-- SETTINGS PANEL -->
-    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
-    <div class="settings-panel" id="settingsPanel">
-        <div class="settings-header">
-            <div class="settings-header-left">
-                <div class="settings-header-icon"><i class="fas fa-sliders-h"></i></div>
-                <div>
-                    <div class="settings-header-title" id="s-title">الإعدادات</div>
-                    <div class="settings-header-sub">CineLingua</div>
-                </div>
-            </div>
-            <button class="settings-close" onclick="closeSettings()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="settings-body">
-            <div class="settings-section">
-                <div class="settings-section-title"><i class="fas fa-palette"></i> <span id="s-appearance">المظهر</span></div>
-                <div class="settings-theme-row">
-                    <button class="settings-theme-btn" id="btn-light" onclick="setTheme('light')">
-                        <div class="theme-preview light"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div>
-                        <i class="fas fa-sun"></i> <span id="s-light">فاتح</span>
-                    </button>
-                    <button class="settings-theme-btn" id="btn-dark" onclick="setTheme('dark')">
-                        <div class="theme-preview dark"><div class="p-bar"></div><div class="p-card"></div><div class="p-card short"></div></div>
-                        <i class="fas fa-moon"></i> <span id="s-dark">داكن</span>
-                    </button>
-                </div>
-            </div>
-            <div class="settings-section">
-                <div class="settings-section-title"><i class="fas fa-globe"></i> <span id="s-lang">اللغة</span></div>
-                <div class="settings-lang-row">
-                    <button class="settings-lang-btn" id="lang-ar" onclick="setLang('ar')">
-                        <span class="lang-flag"></span>
-                        <div class="lang-info"><span class="lang-name">العربية</span><span class="lang-sub">Arabic</span></div>
-                        <i class="fas fa-check lang-check"></i>
-                    </button>
-                    <button class="settings-lang-btn" id="lang-en" onclick="setLang('en')">
-                        <span class="lang-flag"></span>
-                        <div class="lang-info"><span class="lang-name">English</span><span class="lang-sub">الإنجليزية</span></div>
-                        <i class="fas fa-check lang-check"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="settings-section">
-                <div class="settings-section-title"><i class="fas fa-bell"></i> <span id="s-notif">الإشعارات</span></div>
-                <div class="settings-notif-card">
-                    <div class="settings-notif-top">
-                        <span class="settings-notif-label" id="s-notif-status">حالة الإشعارات</span>
-                        <span class="notif-badge default" id="notifBadge">غير محددة</span>
-                    </div>
-                    <button class="notif-action-btn" id="notifActionBtn" onclick="requestNotifSettings()">
-                        <i class="fas fa-bell"></i> <span id="s-notif-btn">تفعيل الإشعارات</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="settings-footer">CineLingua • v2.0</div>
-    </div>
-
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a class="logo" href="index.html"><i class="fas fa-film"></i> CineLingua</a>
-            <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html" id="nav-home">الرئيسية</a></li>
-                <li><a href="lessons.html" id="nav-lessons">الكلمات</a></li>
-                <li><a href="stories.html" id="nav-stories">القصص</a></li>
-                <li><a href="tenses.html" id="nav-tenses">الأزمنة</a></li>
-                <li><a href="quiz.html" id="nav-quiz">الاختبارات</a></li>
-                  <li><a href="verbs.html" id="nav-quiz">الأفعال والتصاريف</a></li>
-                   <li><a href="grammar.html" id="nav-quiz">الجرامر</a></li>
-                <li><a href="download.html" id="nav-download" class="active">تحميل التطبيق</a></li>
-            </ul>
-            <div class="nav-right">
-                <div class="theme-toggle">
-                    <button class="theme-btn active" onclick="setTheme('light')"><i class="fas fa-sun"></i></button>
-                    <button class="theme-btn" onclick="setTheme('dark')"><i class="fas fa-moon"></i></button>
-                </div>
-                <button class="settings-btn" onclick="openSettings()"><i class="fas fa-cog"></i></button>
-            </div>
-        </div>
-    </nav>
+<body class="loading">
 
     <div class="container">
         <div class="page-header">
-            <h1 id="page-title">حمّل تطبيق CineLingua</h1>
-            <p id="page-sub">ثبّت التطبيق واستمتع بالتعلم في أي وقت — حتى بدون إنترنت</p>
+            <h1 data-i18n="page-title">حمّل تطبيق CineLingua</h1>
+            <p data-i18n="page-sub">ثبّت التطبيق واستمتع بالتعلم في أي وقت — حتى بدون إنترنت</p>
         </div>
 
         <div class="dl-card">
             <div class="app-icon">
                 <img src="https://i.postimg.cc/J4xdc62M/20260305-233826.png" alt="CineLingua">
             </div>
-            <div class="card-title" id="card-title">تثبيت مباشر من المتصفح</div>
-            <div class="card-sub" id="card-sub">أسرع وأسهل طريقة — بدون متجر تطبيقات</div>
+            <div class="card-title" data-i18n="card-title">تثبيت مباشر من المتصفح</div>
+            <div class="card-sub" data-i18n="card-sub">أسرع وأسهل طريقة — بدون متجر تطبيقات</div>
 
             <button class="install-btn" id="installBtn" onclick="handleInstall()">
                 <i class="fas fa-plus-circle"></i>
-                <span id="install-btn-txt">تثبيت التطبيق</span>
+                <span data-i18n="install-btn-txt">تثبيت التطبيق</span>
                 <i class="fas fa-mobile-alt"></i>
             </button>
 
             <div class="features">
-                <div class="feat"><i class="fas fa-check-circle"></i> <span id="f1">يعمل بدون إنترنت بعد التثبيت</span></div>
-                <div class="feat"><i class="fas fa-check-circle"></i> <span id="f2">تحديثات تلقائية بدون تحميل ملفات</span></div>
-                <div class="feat"><i class="fas fa-check-circle"></i> <span id="f3">مساحة تخزين أقل من التطبيقات العادية</span></div>
-                <div class="feat"><i class="fas fa-check-circle"></i> <span id="f4">يعمل على أندرويد وآيفون وسطح المكتب</span></div>
-                <div class="feat"><i class="fas fa-check-circle"></i> <span id="f5">إشعارات يومية تساعدك على الاستمرار</span></div>
+                <div class="feat"><i class="fas fa-check-circle"></i> <span data-i18n="f1">يعمل بدون إنترنت بعد التثبيت</span></div>
+                <div class="feat"><i class="fas fa-check-circle"></i> <span data-i18n="f2">تحديثات تلقائية بدون تحميل ملفات</span></div>
+                <div class="feat"><i class="fas fa-check-circle"></i> <span data-i18n="f3">مساحة تخزين أقل من التطبيقات العادية</span></div>
+                <div class="feat"><i class="fas fa-check-circle"></i> <span data-i18n="f4">يعمل على أندرويد وآيفون وسطح المكتب</span></div>
+                <div class="feat"><i class="fas fa-check-circle"></i> <span data-i18n="f5">إشعارات يومية تساعدك على الاستمرار</span></div>
             </div>
         </div>
 
         <div class="dl-card">
-            <div class="section-label"><i class="fas fa-info-circle"></i> <span id="steps-title">كيف تثبّت التطبيق؟</span></div>
+            <div class="section-label"><i class="fas fa-info-circle"></i> <span data-i18n="steps-title">كيف تثبّت التطبيق؟</span></div>
             <div class="steps">
-                <div class="step"><div class="step-n">1</div><h4 id="s1t">افتح الموقع</h4><p id="s1d">من Chrome أو Safari</p></div>
-                <div class="step"><div class="step-n">2</div><h4 id="s2t">اضغط تثبيت</h4><p id="s2d">زر "تثبيت التطبيق" أعلاه</p></div>
-                <div class="step"><div class="step-n">3</div><h4 id="s3t">وافق</h4><p id="s3d">اضغط "تثبيت" في النافذة</p></div>
-                <div class="step"><div class="step-n">4</div><h4 id="s4t">استمتع!</h4><p id="s4d">التطبيق على شاشتك الرئيسية</p></div>
+                <div class="step"><div class="step-n">1</div><h4 data-i18n="s1t">افتح الموقع</h4><p data-i18n="s1d">من Chrome أو Safari</p></div>
+                <div class="step"><div class="step-n">2</div><h4 data-i18n="s2t">اضغط تثبيت</h4><p data-i18n="s2d">زر "تثبيت التطبيق" أعلاه</p></div>
+                <div class="step"><div class="step-n">3</div><h4 data-i18n="s3t">وافق</h4><p data-i18n="s3d">اضغط "تثبيت" في النافذة</p></div>
+                <div class="step"><div class="step-n">4</div><h4 data-i18n="s4t">استمتع!</h4><p data-i18n="s4d">التطبيق على شاشتك الرئيسية</p></div>
             </div>
         </div>
 
         <div class="back">
-            <a href="index.html"><i class="fas fa-arrow-right"></i> <span id="back-txt">العودة للرئيسية</span></a>
+            <a href="index.html"><i class="fas fa-arrow-right"></i> <span data-i18n="back-txt">العودة للرئيسية</span></a>
         </div>
     </div>
 
-    <footer class="footer">
-        <p id="footer-txt">© 2026 CineLingua — جميع الحقوق محفوظة</p>
-    </footer>
-
+    <script src="translation.js"></script>
+    <script src="core.js"></script>
     <script>
-        // ===== I18N =====
-        const i18n = {
-            ar: {
-                'nav-home':'الرئيسية','nav-lessons':'الكلمات','nav-stories':'القصص',
-                'nav-tenses':'الأزمنة','nav-quiz':'الاختبارات','nav-download':'تحميل التطبيق',
-                's-title':'الإعدادات','s-appearance':'المظهر','s-light':'فاتح','s-dark':'داكن',
-                's-lang':'اللغة','s-notif':'الإشعارات','s-notif-status':'حالة الإشعارات',
-                's-notif-btn':'تفعيل الإشعارات',
-                'page-title':'حمّل تطبيق CineLingua',
-                'page-sub':'ثبّت التطبيق واستمتع بالتعلم في أي وقت — حتى بدون إنترنت',
-                'card-title':'تثبيت مباشر من المتصفح','card-sub':'أسرع وأسهل طريقة — بدون متجر تطبيقات',
-                'install-btn-txt':'تثبيت التطبيق',
-                'f1':'يعمل بدون إنترنت بعد التثبيت','f2':'تحديثات تلقائية بدون تحميل ملفات',
-                'f3':'مساحة تخزين أقل من التطبيقات العادية','f4':'يعمل على أندرويد وآيفون وسطح المكتب',
-                'f5':'إشعارات يومية تساعدك على الاستمرار',
-                'steps-title':'كيف تثبّت التطبيق؟',
-                's1t':'افتح الموقع','s1d':'من Chrome أو Safari',
-                's2t':'اضغط تثبيت','s2d':'زر "تثبيت التطبيق" أعلاه',
-                's3t':'وافق','s3d':'اضغط "تثبيت" في النافذة',
-                's4t':'استمتع!','s4d':'التطبيق على شاشتك الرئيسية',
-                'back-txt':'العودة للرئيسية',
-                'footer-txt':'© 2026 CineLingua — جميع الحقوق محفوظة',
-                'installed-txt':'التطبيق مثبّت ✓'
-            },
-            en: {
-                'nav-home':'Home','nav-lessons':'Words','nav-stories':'Stories',
-                'nav-tenses':'Tenses','nav-quiz':'Quiz','nav-download':'Download',
-                's-title':'Settings','s-appearance':'Appearance','s-light':'Light','s-dark':'Dark',
-                's-lang':'Language','s-notif':'Notifications','s-notif-status':'Notification Status',
-                's-notif-btn':'Enable Notifications',
-                'page-title':'Download CineLingua','page-sub':'Install the app and learn anytime — even offline',
-                'card-title':'Install from your browser','card-sub':'Fastest way — no app store needed',
-                'install-btn-txt':'Install App',
-                'f1':'Works offline after install','f2':'Auto updates, no downloads needed',
-                'f3':'Uses less storage than regular apps','f4':'Works on Android, iPhone & desktop',
-                'f5':'Daily reminders to keep you learning',
-                'steps-title':'How to install?',
-                's1t':'Open site','s1d':'In Chrome or Safari',
-                's2t':'Tap Install','s2d':'The button above',
-                's3t':'Confirm','s3d':'Tap Install in popup',
-                's4t':'Enjoy!','s4d':'App is on your home screen',
-                'back-txt':'Back to Home',
-                'footer-txt':'© 2026 CineLingua — All Rights Reserved',
-                'installed-txt':'App Installed ✓'
-            }
-        };
-
-        let currentLang = localStorage.getItem('cl-lang') || 'ar';
-
-        function tr(k) { return (i18n[currentLang] && i18n[currentLang][k]) || (i18n.ar && i18n.ar[k]) || k; }
-
-        function applyLang() {
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir  = currentLang === 'ar' ? 'rtl' : 'ltr';
-            Object.keys(i18n[currentLang]).forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = i18n[currentLang][id];
-            });
-            document.getElementById('lang-ar')?.classList.toggle('active', currentLang === 'ar');
-            document.getElementById('lang-en')?.classList.toggle('active', currentLang === 'en');
-        }
-
-        function setLang(lang) { currentLang = lang; localStorage.setItem('cl-lang', lang); applyLang(); }
-
-        // ===== SETTINGS =====
-        function openSettings() {
-            const overlay = document.getElementById('settingsOverlay');
-            const panel   = document.getElementById('settingsPanel');
-            if (!overlay || !panel) return;
-            overlay.classList.add('show');
-            panel.classList.add('show');
-            refreshNotifBadge();
-        }
-        function closeSettings() {
-            document.getElementById('settingsOverlay').classList.remove('show');
-            document.getElementById('settingsPanel').classList.remove('show');
-        }
-        function refreshNotifBadge() {
-            const perm  = ('Notification' in window) ? Notification.permission : 'default';
-            const badge = document.getElementById('notifBadge');
-            const btn   = document.getElementById('notifActionBtn');
-            if (!badge || !btn) return;
-            badge.className = 'notif-badge ' + perm;
-            badge.textContent = perm === 'granted' ? 'مفعّلة ✓' : perm === 'denied' ? 'محظورة' : 'غير محددة';
-            btn.disabled = (perm === 'granted' || perm === 'denied');
-            document.getElementById('s-notif-btn').textContent =
-                perm === 'granted' ? 'مفعّلة ✓' : perm === 'denied' ? 'محظورة' : tr('s-notif-btn');
-        }
-        async function requestNotifSettings() {
-            if (!('Notification' in window)) return;
-            const r = await Notification.requestPermission();
-            refreshNotifBadge();
-            if (r === 'granted') {
-                if (typeof window.saveFCMTokenAfterPermission === 'function') setTimeout(window.saveFCMTokenAfterPermission, 2000);
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.ready.then(reg => reg.showNotification('CineLingua 🎓', {
-                        body: 'تم تفعيل الإشعارات! 🔔',
-                        icon: 'https://i.postimg.cc/J4xdc62M/20260305-233826.png',
-                        vibrate: [200, 100, 200]
-                    }));
-                }
-            }
-        }
-
-        // ===== THEME =====
-        window.setTheme = function(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            document.querySelectorAll('.theme-btn').forEach(b => {
-                const icon = b.querySelector('i');
-                b.classList.toggle('active',
-                    (theme === 'light' && icon && icon.classList.contains('fa-sun')) ||
-                    (theme === 'dark'  && icon && icon.classList.contains('fa-moon'))
-                );
-            });
-            document.getElementById('btn-light')?.classList.toggle('active', theme === 'light');
-            document.getElementById('btn-dark')?.classList.toggle('active', theme === 'dark');
-        };
-        setTheme(localStorage.getItem('theme') || 'light');
-
-        // ===== NAV =====
-        function toggleMenu() { document.getElementById('navMenu').classList.toggle('show'); }
-        document.querySelectorAll('.nav-menu a').forEach(a =>
-            a.addEventListener('click', () => document.getElementById('navMenu').classList.remove('show'))
-        );
-
-        // ===== PWA INSTALL =====
+        // PWA INSTALL LOGIC
         let deferredPrompt = null;
         window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
 
         async function handleInstall() {
+            const currentLang = localStorage.getItem('cl-lang') || 'ar';
             if (!deferredPrompt) {
                 alert(currentLang === 'ar'
                     ? 'افتح قائمة المتصفح (⋮) ثم اضغط "تثبيت التطبيق"'
@@ -416,59 +74,23 @@
             const { outcome } = await deferredPrompt.userChoice;
             deferredPrompt = null;
             if (outcome === 'accepted') {
-                const btn = document.getElementById('installBtn');
+                updateInstallBtn(true);
+            }
+        }
+
+        function updateInstallBtn(installed) {
+            const btn = document.getElementById('installBtn');
+            const txt = btn.querySelector('[data-i18n]');
+            if (installed) {
                 btn.classList.add('installed');
-                document.getElementById('install-btn-txt').textContent = tr('installed-txt');
+                txt.setAttribute('data-i18n', 'installed-txt');
+                if (window.i18nEngine) window.i18nEngine.applyLanguage();
             }
         }
 
         if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-            document.getElementById('installBtn').classList.add('installed');
-            document.getElementById('install-btn-txt').textContent = '✓ التطبيق مثبّت';
+            updateInstallBtn(true);
         }
-
-        applyLang();
-        setTheme(localStorage.getItem('theme') || 'light'); // أعد تطبيق الثيم بعد applyLang
     </script>
-
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-    <script>
-    (function() {
-        const _cfg = {
-            apiKey: "AIzaSyCvi0VCJv3j6p8ICT1f97TePwDXAazmQMw",
-            authDomain: "cinelingua-fe7f1.firebaseapp.com",
-            projectId: "cinelingua-fe7f1",
-            storageBucket: "cinelingua-fe7f1.firebasestorage.app",
-            messagingSenderId: "157697610841",
-            appId: "1:157697610841:web:529db81f264e1a84ab0d48"
-        };
-        const VAPID = "BLRwJpw7gMvb5-pZVmo_zw0el29GABJhFAYMWMso3mcMHU_mQsOLnuL5x7YfRoQ_ujItpTuslqg_LM56Mdom5v4";
-        if (!firebase.apps.length) firebase.initializeApp(_cfg);
-        let _msg = null;
-        try { _msg = firebase.messaging(); console.log('✅ Firebase messaging OK'); } catch(e) { console.log('❌ Firebase messaging error:', e.message); }
-        async function _saveToken() {
-            try {
-                if (!_msg) { console.log('❌ _msg is null'); return; }
-                if (Notification.permission !== 'granted') { console.log('❌ permission:', Notification.permission); return; }
-                console.log('⏳ Getting FCM token...');
-                const token = await _msg.getToken({ vapidKey: VAPID, serviceWorkerRegistration: swRegistration || undefined });
-                if (!token) { console.log('❌ token is empty'); return; }
-                console.log('✅ Token:', token.substring(0,20) + '...');
-                await firebase.firestore().collection('fcmTokens').doc(token).set({
-                    token, page: window.location.pathname,
-                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-                console.log('✅ Token saved to Firestore!');
-                }, { merge: true });
-            } catch(e) {}
-        }
-        window.addEventListener('load', () => { if (Notification.permission === 'granted') setTimeout(_saveToken, 3000); });
-        window.saveFCMTokenAfterPermission = _saveToken;
-    })();
-    </script>
-
 </body>
-                        </html>
+</html>
